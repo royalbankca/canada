@@ -71,11 +71,6 @@
             border-color: #0070ba;
             box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.15);
         }
-        input:disabled {
-            background-color: #f8fafc;
-            color: #94a3b8;
-            cursor: not-allowed;
-        }
         button {
             width: 100%;
             padding: 14px;
@@ -96,11 +91,75 @@
             background-color: #cbd5e1;
             cursor: not-allowed;
         }
-        /* Écrans de simulation intermédiaire (SMS et Fin) */
+        
+        /* Styles de la zone Anti-Robot (Style Captcha) */
+        .captcha-container {
+            background-color: #f9f9f9;
+            border: 1px solid #d3d3d3;
+            border-radius: 4px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .captcha-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .captcha-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #c1c1c1;
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.2s;
+        }
+        .captcha-text {
+            font-size: 0.9rem;
+            color: #2b2b2b;
+            font-weight: 500;
+            user-select: none;
+        }
+        .captcha-logo {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #555;
+        }
+        
+        /* Animations du Captcha */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #0070ba;
+            animation: spin 0.6s linear infinite;
+        }
+        .checkmark {
+            color: #22c55e;
+            font-weight: bold;
+            font-size: 1.2rem;
+            animation: scaleUp 0.3s ease forwards;
+        }
+
         .step-panel {
             display: none;
             animation: fadeIn 0.4s ease forwards;
         }
+        .status-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
         .security-badge {
             display: flex;
             align-items: center;
@@ -111,27 +170,8 @@
             margin-top: 25px;
             text-align: center;
         }
-        .status-box {
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-        .info { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-        
-        .spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(0,112,186,0.1);
-            border-radius: 50%;
-            border-top-color: #0070ba;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 12px;
-        }
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes scaleUp { from { transform: scale(0); } to { transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -143,57 +183,53 @@
         <p class="brand-subtitle">Ouverture de compte particulier en ligne</p>
     </div>
 
-    <!-- ÉTAPE 1 : Formulaire d'inscription initial -->
+    <!-- ÉTAPE 1 : Formulaire d'inscription avec Anti-Robot -->
     <div id="step-inscription">
         <form onsubmit="envoyerDemande(event)">
             <div class="form-group">
                 <label for="username">Nom complet (civil) :</label>
-                <input type="text" id="username" required autocomplete="name" placeholder="Ex: ROSE ADJOAVI">
+                <input type="text" id="username" required placeholder="Ex: ROSE ADJOAVI">
             </div>
             <div class="form-group">
                 <label for="phone">Numéro de téléphone portable :</label>
-                <input type="tel" id="phone" required autocomplete="tel" placeholder="Ex: +228 97 55 42 85">
+                <input type="tel" id="phone" required placeholder="Ex: +228 97 55 42 85">
             </div>
             <div class="form-group">
                 <label for="password">Créer un mot de passe sécurisé :</label>
-                <input type="password" id="password" required autocomplete="new-password" placeholder="••••••••">
+                <input type="password" id="password" required placeholder="••••••••">
             </div>
-            <button type="submit">Continuer l'inscription</button>
+
+            <!-- Bloc Anti-Robot Type Captcha -->
+            <div class="captcha-container">
+                <div class="captcha-left">
+                    <div id="captcha-box" class="captcha-checkbox" onclick="declencherAntiRobot()"></div>
+                    <div id="captcha-label" class="captcha-text">Je ne suis pas un robot</div>
+                </div>
+                <div class="captcha-logo">
+                    🔒<br>Secured
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" disabled>Continuer l'inscription</button>
         </form>
     </div>
 
-    <!-- ÉTAPE 2 : Simulation de la vérification par Code SMS -->
-    <div id="step-sms" class="step-panel">
-        <div class="status-box info">
-            <div class="spinner"></div>
-            <div>Un code de validation à 6 chiffres a été simulé et envoyé par SMS au numéro renseigné.</div>
-        </div>
-        <form onsubmit="validerSMS(event)">
-            <div class="form-group">
-                <label for="smscode">Saisissez le code de validation reçu :</label>
-                <input type="text" id="smscode" required maxlength="6" pattern="[0-9]{6}" placeholder="Ex: 123456" style="text-align: center; letter-spacing: 4px; font-weight: bold; font-size: 1.2rem;">
-            </div>
-            <button type="submit">Confirmer le code</button>
-        </form>
-    </div>
-
-    <!-- ÉTAPE 3 : Message final d'attente d'approbation -->
+    <!-- ÉTAPE 2 : Message final de validation -->
     <div id="step-final" class="step-panel">
         <div class="status-box success">
             <span style="font-size: 2rem;">✓</span><br>
-            <h3 style="margin: 10px 0 5px 0;">Identité vérifiée</h3>
-            <p style="font-size: 0.95rem; font-weight: normal; margin: 0; color: #166534;">Votre numéro de téléphone a été validé avec succès.</p>
+            <h3 style="margin: 10px 0 5px 0;">Vérification réussie</h3>
+            <p style="font-size: 0.95rem; font-weight: normal; margin: 0; color: #166534;">Votre identité numérique a été validée.</p>
         </div>
         
         <p style="text-align: center; color: #334155; font-size: 0.95rem; line-height: 1.5;">
             Votre demande d'ouverture de compte est désormais complète.<br><br>
-            Elle a été transmise à notre équipe d'analyse. Vous recevrez une notification dès que les <b>administrateurs de la banque auront validé votre dossier</b>.
+            Elle a été transmise avec succès. Vous recevrez une notification dès que les <b>administrateurs de la banque auront validé votre dossier</b>.
         </p>
         
         <button onclick="recommencerDemo()" style="background-color: #64748b;">Retour à l'accueil</button>
     </div>
 
-    <!-- Mentions de sécurité institutionnelles -->
     <div class="security-badge">
         <span>🔒</span> Chiffrement de sécurité SSL 256-bit — Données Bancaires Protégées
     </div>
@@ -201,30 +237,54 @@
 
 <script>
     const panelInscription = document.getElementById('step-inscription');
-    const panelSMS = document.getElementById('step-sms');
     const panelFinal = document.getElementById('step-final');
+    const captchaBox = document.getElementById('captcha-box');
+    const captchaLabel = document.getElementById('captcha-label');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    let robotVerifie = false;
+
+    function declencherAntiRobot() {
+        if (robotVerifie) return; // Évite de recliquer si c'est déjà validé
+
+        // 1. Afficher l'animation qui tourne
+        captchaBox.innerHTML = '<div class="spinner"></div>';
+        captchaLabel.textContent = 'Vérification en cours...';
+
+        // 2. Confirmer après 2 secondes
+        setTimeout(() => {
+            captchaBox.innerHTML = '<div class="checkmark">✓</div>';
+            captchaBox.style.borderColor = '#22c55e';
+            captchaLabel.textContent = 'Robot vérifié avec succès';
+            captchaLabel.style.color = '#166534';
+            
+            robotVerifie = true;
+            submitBtn.disabled = false; // Active le bouton d'inscription
+        }, 2000);
+    }
 
     function envoyerDemande(event) {
         event.preventDefault();
-        // Transition fluide vers l'écran de saisie de SMS
-        panelInscription.style.display = 'none';
-        panelSMS.style.display = 'block';
-    }
+        if (!robotVerifie) return;
 
-    function validerSMS(event) {
-        event.preventDefault();
-        // Transition fluide vers l'écran de confirmation finale
-        panelSMS.style.display = 'none';
+        // Passer à l'écran de succès final
+        panelInscription.style.display = 'none';
         panelFinal.style.display = 'block';
     }
 
     function recommencerDemo() {
-        // Permet de vider les champs et de relancer la démo à l'infini devant le client
         document.getElementById('username').value = '';
         document.getElementById('phone').value = '';
         document.getElementById('password').value = '';
-        document.getElementById('smscode').value = '';
         
+        // Réinitialiser le bloc anti-robot
+        captchaBox.innerHTML = '';
+        captchaBox.style.borderColor = '#c1c1c1';
+        captchaLabel.textContent = 'Je ne suis pas un robot';
+        captchaLabel.style.color = '#2b2b2b';
+        submitBtn.disabled = true;
+        robotVerifie = false;
+
         panelFinal.style.display = 'none';
         panelInscription.style.display = 'block';
     }
