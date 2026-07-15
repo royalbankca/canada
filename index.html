@@ -3,193 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panneau d'Administration - Mini Banque</title>
+    <title>Ouverture de compte en ligne - Espace Client</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7fa;
             margin: 0;
             padding: 0;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        /* Barre latérale */
-        .sidebar {
-            width: 260px;
-            background-color: #0c2340;
-            color: white;
-            height: 100vh;
-            position: fixed;
-            padding: 20px;
+        .card {
+            background: #ffffff;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(12, 35, 64, 0.08);
+            width: 100%;
+            max-width: 440px;
             box-sizing: border-box;
+            border-top: 6px solid #0070ba;
         }
-        .sidebar h2 {
-            font-size: 1.4rem;
+        .brand-header {
+            text-align: center;
             margin-bottom: 30px;
-            border-bottom: 1px solid #1a3a60;
-            padding-bottom: 10px;
+        }
+        .brand-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0c2340;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .brand-subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin: 5px 0 0 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #334155;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #0070ba;
+            box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.15);
+        }
+        input:disabled {
+            background-color: #f8fafc;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            background-color: #0070ba;
+            color: white;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        button:hover:not(:disabled) {
+            background-color: #0c2340;
+        }
+        button:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
+        /* Écrans de simulation intermédiaire (SMS et Fin) */
+        .step-panel {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 25px;
             text-align: center;
         }
-        .menu-item {
-            padding: 12px;
-            color: #bdc3c7;
-            text-decoration: none;
-            display: block;
-            border-radius: 6px;
-            margin-bottom: 10px;
+        .status-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
             font-weight: 600;
+            margin-bottom: 20px;
         }
-        .menu-item.active, .menu-item:hover {
-            background-color: #1a3a60;
-            color: white;
-        }
-        /* Contenu principal */
-        .main-content {
-            margin-left: 260px;
-            padding: 40px;
-            width: calc(100% - 260px);
-            box-sizing: border-box;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .header h1 { margin: 0; color: #333; }
+        .info { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
         
-        /* Blocs de statistiques */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(0,112,186,0.1);
+            border-radius: 50%;
+            border-top-color: #0070ba;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
         }
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            border-left: 5px solid #0070ba;
-        }
-        .stat-card.waiting { border-left-color: #d97706; }
-        .stat-card.active-users { border-left-color: #22c55e; }
-        .stat-title { color: #64748b; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
-        .stat-value { font-size: 1.8rem; font-weight: bold; color: #1e293b; }
-
-        /* Tableau */
-        .table-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 15px; border-bottom: 1px solid #eef2f5; }
-        th { background-color: #f8fafc; color: #64748b; font-weight: 600; }
-        
-        .badge { padding: 6px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; }
-        .badge-waiting { background-color: #fef3c7; color: #d97706; }
-        .badge-approved { background-color: #dcfce7; color: #15803d; }
-        .badge-rejected { background-color: #fee2e2; color: #b91c1c; }
-        
-        .btn-action { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; margin-right: 5px; }
-        .btn-approve { background-color: #22c55e; color: white; }
-        .btn-reject { background-color: #ef4444; color: white; }
-        .btn-action:disabled { background-color: #cccccc; cursor: not-allowed; opacity: 0.6; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>Admin Banque 🍁</h2>
-        <a href="#" class="menu-item active">Demandes d'ouverture</a>
-        <a href="index.html" class="menu-item" style="color: #64748b; margin-top: 50px;">➔ Retour au Site</a>
+<div class="card">
+    <div class="brand-header">
+        <p class="brand-logo">🍁 Mini Banque</p>
+        <p class="brand-subtitle">Ouverture de compte particulier en ligne</p>
     </div>
 
-    <div class="main-content">
-        <div class="header">
-            <h1>Validation des Comptes</h1>
-            <span style="color: #64748b;">Rôle : <b>Superviseur</b></span>
-        </div>
-
-        <!-- Section Statistiques ajoutée -->
-        <div class="stats-grid">
-            <div class="stat-card waiting">
-                <div class="stat-title">Demandes en attente</div>
-                <div class="stat-value" id="stat-wait">2</div>
+    <!-- ÉTAPE 1 : Formulaire d'inscription initial -->
+    <div id="step-inscription">
+        <form onsubmit="envoyerDemande(event)">
+            <div class="form-group">
+                <label for="username">Nom complet (civil) :</label>
+                <input type="text" id="username" required autocomplete="name" placeholder="Ex: ROSE ADJOAVI">
             </div>
-            <div class="stat-card">
-                <div class="stat-title">Fonds Totaux Simulés</div>
-                <div class="stat-value">45 000 $</div>
+            <div class="form-group">
+                <label for="phone">Numéro de téléphone portable :</label>
+                <input type="tel" id="phone" required autocomplete="tel" placeholder="Ex: +228 97 55 42 85">
             </div>
-            <div class="stat-card active-users">
-                <div class="stat-title">Comptes Approuvés</div>
-                <div class="stat-value" id="stat-app">142</div>
+            <div class="form-group">
+                <label for="password">Créer un mot de passe sécurisé :</label>
+                <input type="password" id="password" required autocomplete="new-password" placeholder="••••••••">
             </div>
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nom complet</th>
-                        <th>Téléphone</th>
-                        <th>Date d'inscription</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id="row-1">
-                        <td><b>ROSE ADJOAVI</b></td>
-                        <td>+228 97 55 42 85</td>
-                        <td>15 Juillet 2026</td>
-                        <td><span id="badge-1" class="badge badge-waiting">En attente</span></td>
-                        <td>
-                            <button id="btn-app-1" class="btn-action btn-approve" onclick="changerStatut(1, 'approved')">Approuver</button>
-                            <button id="btn-rej-1" class="btn-action btn-reject" onclick="changerStatut(1, 'rejected')">Refuser</button>
-                        </td>
-                    </tr>
-                    <tr id="row-2">
-                        <td><b>Marc Koffi</b></td>
-                        <td>+229 90 12 34 56</td>
-                        <td>14 Juillet 2026</td>
-                        <td><span id="badge-2" class="badge badge-waiting">En attente</span></td>
-                        <td>
-                            <button id="btn-app-2" class="btn-action btn-approve" onclick="changerStatut(2, 'approved')">Approuver</button>
-                            <button id="btn-rej-2" class="btn-action btn-reject" onclick="changerStatut(2, 'rejected')">Refuser</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <button type="submit">Continuer l'inscription</button>
+        </form>
     </div>
 
-    <script>
-        let demandesEnAttente = 2;
-        let comptesApprouves = 142;
+    <!-- ÉTAPE 2 : Simulation de la vérification par Code SMS -->
+    <div id="step-sms" class="step-panel">
+        <div class="status-box info">
+            <div class="spinner"></div>
+            <div>Un code de validation à 6 chiffres a été simulé et envoyé par SMS au numéro renseigné.</div>
+        </div>
+        <form onsubmit="validerSMS(event)">
+            <div class="form-group">
+                <label for="smscode">Saisissez le code de validation reçu :</label>
+                <input type="text" id="smscode" required maxlength="6" pattern="[0-9]{6}" placeholder="Ex: 123456" style="text-align: center; letter-spacing: 4px; font-weight: bold; font-size: 1.2rem;">
+            </div>
+            <button type="submit">Confirmer le code</button>
+        </form>
+    </div>
 
-        function changerStatut(id, action) {
-            const badge = document.getElementById('badge-' + id);
-            const btnApprove = document.getElementById('btn-app-' + id);
-            const btnReject = document.getElementById('btn-rej-' + id);
+    <!-- ÉTAPE 3 : Message final d'attente d'approbation -->
+    <div id="step-final" class="step-panel">
+        <div class="status-box success">
+            <span style="font-size: 2rem;">✓</span><br>
+            <h3 style="margin: 10px 0 5px 0;">Identité vérifiée</h3>
+            <p style="font-size: 0.95rem; font-weight: normal; margin: 0; color: #166534;">Votre numéro de téléphone a été validé avec succès.</p>
+        </div>
+        
+        <p style="text-align: center; color: #334155; font-size: 0.95rem; line-height: 1.5;">
+            Votre demande d'ouverture de compte est désormais complète.<br><br>
+            Elle a été transmise à notre équipe d'analyse. Vous recevrez une notification dès que les <b>administrateurs de la banque auront validé votre dossier</b>.
+        </p>
+        
+        <button onclick="recommencerDemo()" style="background-color: #64748b;">Retour à l'accueil</button>
+    </div>
 
-            if (action === 'approved') {
-                badge.className = 'badge badge-approved';
-                badge.textContent = 'Approuvé';
-                comptesApprouves++;
-                document.getElementById('stat-app').textContent = comptesApprouves;
-            } else if (action === 'rejected') {
-                badge.className = 'badge badge-rejected';
-                badge.textContent = 'Refusé';
-            }
+    <!-- Mentions de sécurité institutionnelles -->
+    <div class="security-badge">
+        <span>🔒</span> Chiffrement de sécurité SSL 256-bit — Données Bancaires Protégées
+    </div>
+</div>
 
-            demandesEnAttente--;
-            document.getElementById('stat-wait').textContent = demandesEnAttente;
+<script>
+    const panelInscription = document.getElementById('step-inscription');
+    const panelSMS = document.getElementById('step-sms');
+    const panelFinal = document.getElementById('step-final');
 
-            btnApprove.disabled = true;
-            btnReject.disabled = true;
-        }
-    </script>
+    function envoyerDemande(event) {
+        event.preventDefault();
+        // Transition fluide vers l'écran de saisie de SMS
+        panelInscription.style.display = 'none';
+        panelSMS.style.display = 'block';
+    }
+
+    function validerSMS(event) {
+        event.preventDefault();
+        // Transition fluide vers l'écran de confirmation finale
+        panelSMS.style.display = 'none';
+        panelFinal.style.display = 'block';
+    }
+
+    function recommencerDemo() {
+        // Permet de vider les champs et de relancer la démo à l'infini devant le client
+        document.getElementById('username').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('smscode').value = '';
+        
+        panelFinal.style.display = 'none';
+        panelInscription.style.display = 'block';
+    }
+</script>
+
 </body>
 </html>
