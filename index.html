@@ -46,6 +46,7 @@
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 1rem;
+            transition: all 0.3s ease;
         }
         button {
             width: 100%;
@@ -60,10 +61,13 @@
             transition: background 0.2s;
             margin-top: 10px;
         }
-        button:hover {
+        button:hover:not(:disabled) {
             background-color: #15467d;
         }
-        /* Zone d'affichage des statuts de simulation */
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
         .status-box {
             margin-top: 20px;
             padding: 15px;
@@ -75,7 +79,6 @@
         .info { background-color: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; }
         .success { background-color: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
         
-        /* Animation simple de chargement */
         .spinner {
             display: inline-block;
             width: 20px;
@@ -94,7 +97,6 @@
 <div class="container">
     <h2>Créer un compte</h2>
     
-    <!-- Utilisation de onsubmit pour intercepter le clic et éviter l'erreur 405 -->
     <form id="registrationForm" onsubmit="gererInscription(event)">
         <div class="form-group">
             <label for="username">Nom complet :</label>
@@ -111,33 +113,43 @@
         <button type="submit" id="submitBtn">Créer mon compte</button>
     </form>
 
-    <!-- Zone de texte pour simuler le processus bancaire -->
     <div id="statusDisplay" class="status-box"></div>
 </div>
 
 <script>
     function gererInscription(event) {
-        // Étape cruciale : empêche le navigateur d'envoyer la requête au serveur GitHub Pages
         event.preventDefault();
 
         const form = document.getElementById('registrationForm');
         const submitBtn = document.getElementById('submitBtn');
         const statusDisplay = document.getElementById('statusDisplay');
+        const inputs = form.querySelectorAll('input');
 
-        // Désactiver le formulaire pendant la simulation
+        // Étape 1 : Bloquer les champs et le bouton pendant le traitement
         submitBtn.disabled = true;
-        form.style.opacity = "0.5";
+        inputs.forEach(input => input.disabled = true);
+        form.style.opacity = "0.6";
 
-        // Étape 1 : Simulation de la validation du code de vérification téléphonique
+        // Afficher l'animation de chargement
         statusDisplay.style.display = "block";
         statusDisplay.className = "status-box info";
         statusDisplay.innerHTML = '<div class="spinner"></div><br>Vérification du code de sécurité par téléphone en cours...';
 
-        // Étape 2 : Simulation du succès d'inscription après 3 secondes
+        // Étape 2 : Afficher le message de succès après 2 secondes
         setTimeout(() => {
             statusDisplay.className = "status-box success";
-            statusDisplay.innerHTML = "✓ Vérification réussie !<br><br>Votre demande d'inscription a bien été enregistrée.<br><br><small style='font-weight:normal; color:#555;'>Statut actuel : En attente d'approbation et de validation par les administrateurs de la banque.</small>";
-        }, 3000);
+            statusDisplay.innerHTML = "✓ Vérification réussie !<br><br>Votre demande d'inscription a bien été enregistrée.<br><br><small style='font-weight:normal; color:#555;'>Statut actuel : En attente d'approbation.<br><br><b>Le formulaire va se réinitialiser dans quelques secondes pour un nouveau test...</b></small>";
+            
+            // Étape 3 : Réactiver et vider les champs après 5 secondes supplémentaires
+            setTimeout(() => {
+                form.reset(); // Efface toutes les saisies
+                inputs.forEach(input => input.disabled = false); // Rend les champs modifiables
+                submitBtn.disabled = false; // Réactive le bouton
+                form.style.opacity = "1"; // Remet l'opacité normale
+                statusDisplay.style.display = "none"; // Cache le message de succès
+            }, 5000);
+
+        }, 2000);
     }
 </script>
 
