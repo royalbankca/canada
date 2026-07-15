@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ouverture de compte en ligne - Espace Client</title>
+    <title>Espace Client - Mini Banque</title>
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -27,7 +27,7 @@
         }
         .brand-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         .brand-logo {
             font-size: 1.8rem;
@@ -44,6 +44,31 @@
             font-size: 0.95rem;
             margin: 5px 0 0 0;
         }
+        
+        /* Système d'onglets Inscription / Connexion */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-weight: bold;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 0.95rem;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: #0070ba;
+            border-bottom-color: #0070ba;
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -62,9 +87,14 @@
             box-sizing: border-box;
             font-size: 1rem;
             color: #334155;
-            background-color: #ffffff;
         }
-        button {
+        input:focus {
+            outline: none;
+            border-color: #0070ba;
+            box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.15);
+        }
+        
+        button.btn-primary {
             width: 100%;
             padding: 14px;
             border: none;
@@ -76,32 +106,17 @@
             color: white;
             margin-top: 10px;
         }
-        button:hover {
+        button.btn-primary:hover {
             background-color: #0c2340;
         }
-        .captcha-container {
-            background-color: #f9f9f9;
-            border: 1px solid #22c55e;
-            border-radius: 4px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .captcha-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .checkmark {
-            color: #22c55e;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        .step-panel {
+
+        .panel {
             display: none;
         }
+        .panel.active {
+            display: block;
+        }
+
         .status-box {
             padding: 20px;
             border-radius: 8px;
@@ -110,6 +125,8 @@
             margin-bottom: 20px;
         }
         .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .error-box { background-color: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; display: none; }
+        
         .security-badge {
             display: flex;
             align-items: center;
@@ -119,14 +136,30 @@
             font-size: 0.8rem;
             margin-top: 25px;
         }
-        .follow-link {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            color: #0070ba;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
+        
+        /* Zone Tableau de Bord du compte connecté */
+        .account-details {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f8fafc;
+            margin-bottom: 20px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 0.95rem;
+        }
+        .detail-row:last-child { border: none; }
+        .badge {
+            background-color: #fef3c7;
+            color: #d97706;
+            padding: 2px 8px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -135,71 +168,127 @@
 <div class="card">
     <div class="brand-header">
         <p class="brand-logo">🍁 Mini Banque</p>
-        <p class="brand-subtitle">Ouverture de compte particulier en ligne</p>
+        <p class="brand-subtitle">Espace d'ouverture de compte</p>
     </div>
 
-    <!-- ÉTAPE 1 : Formulaire -->
-    <div id="step-inscription">
-        <form onsubmit="envoyerDemande(event)">
-            <div class="form-group">
-                <label for="username">Nom complet (civil) :</label>
-                <input type="text" id="username" required placeholder="Ex: ROSE ADJOAVI">
-            </div>
-            <div class="form-group">
-                <label for="phone">Numéro de téléphone portable :</label>
-                <input type="tel" id="phone" required placeholder="Ex: +228 97 55 42 85">
-            </div>
-            <div class="form-group">
-                <label for="password">Créer un mot de passe sécurisé :</label>
-                <input type="password" id="password" required placeholder="••••••••">
-            </div>
+    <!-- Onglets de navigation -->
+    <div class="tabs" id="authTabs">
+        <button class="tab-btn active" onclick="switchTab('inscription')">Inscription</button>
+        <button class="tab-btn" onclick="switchTab('connexion')">Connexion / Suivi</button>
+    </div>
 
-            <!-- Anti-Robot pré-validé pour éviter les bugs de clic -->
-            <div class="captcha-container">
-                <div class="captcha-left">
-                    <div class="checkmark">✓</div>
-                    <div style="font-size: 0.9rem; color: #166534; font-weight: 500;">Robot vérifié avec succès</div>
-                </div>
-                <div style="font-size: 0.75rem; color: #555; text-align: center;">🔒<br>Secured</div>
-            </div>
+    <!-- Message d'erreur global -->
+    <div id="errorDisplay" class="status-box error-box"></div>
 
-            <button type="submit" id="submitBtn">Créer mon compte</button>
+    <!-- SECTION 1 : INSCRIPTION -->
+    <div id="panel-inscription" class="panel active">
+        <form onsubmit="gererInscription(event)">
+            <div class="form-group">
+                <label for="reg-name">Nom complet :</label>
+                <input type="text" id="reg-name" required placeholder="Ex: ROSE ADJOAVI">
+            </div>
+            <div class="form-group">
+                <label for="reg-phone">Numéro de téléphone :</label>
+                <input type="tel" id="reg-phone" required placeholder="Ex: +22897554285">
+            </div>
+            <div class="form-group">
+                <label for="reg-pass">Créer un mot de passe :</label>
+                <input type="password" id="reg-pass" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-primary">Créer mon compte</button>
         </form>
-        <a href="#" class="follow-link">Déjà inscrit ? Suivre mon dossier</a>
     </div>
 
-    <!-- ÉTAPE 2 : Message final -->
-    <div id="step-final" class="step-panel">
+    <!-- SECTION 2 : CONNEXION -->
+    <div id="panel-connexion" class="panel">
+        <form onsubmit="gererConnexion(event)">
+            <div class="form-group">
+                <label for="login-phone">Identifiant (N° de Téléphone) :</label>
+                <input type="tel" id="login-phone" required placeholder="Ex: +22897554285">
+            </div>
+            <div class="form-group">
+                <label for="login-pass">Mot de passe :</label>
+                <input type="password" id="login-pass" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-primary">Se connecter à mon espace</button>
+        </form>
+    </div>
+
+    <!-- SECTION 3 : ESPACE COMPTE CONNECTÉ (STATUT) -->
+    <div id="panel-dashboard" class="panel">
         <div class="status-box success">
-            <span style="font-size: 2rem;">✓</span><br>
-            <h3 style="margin: 10px 0 5px 0;">Vérification réussie</h3>
-            <p style="font-size: 0.95rem; font-weight: normal; margin: 0; color: #166534;">Votre identité numérique a été validée.</p>
+            <span style="font-size: 1.5rem;">🔑 Connexion réussie</span>
         </div>
         
-        <p style="text-align: center; color: #334155; font-size: 0.95rem; line-height: 1.5;">
-            Votre demande d'ouverture de compte est désormais complète.<br><br>
-            Elle a été transmise avec succès. Vous recevrez une notification dès que les <b>administrateurs de la banque auront validé votre dossier</b>.
-        </p>
+        <h3 style="color: #0c2340; margin-top: 0;">Votre dossier de compte</h3>
         
-        <button onclick="redirigerUtilisateur()" style="background-color: #166534;">Terminer et quitter</button>
+        <div class="account-details">
+            <div class="detail-row">
+                <span><b>Titulaire :</b></span>
+                <span id="dash-name">ROSE ADJOAVI</span>
+            </div>
+            <div class="detail-row">
+                <span><b>Téléphone :</b></span>
+                <span id="dash-phone">+22897554285</span>
+            </div>
+            <div class="detail-row">
+                <span><b>Statut du compte :</b></span>
+                <span class="badge">En attente de validation</span>
+            </div>
+        </div>
+        
+        <p style="font-size: 0.85rem; color: #64748b; text-align: center; line-height: 1.4; margin-bottom: 20px;">
+            Les administrateurs de la mini-banque examinent actuellement vos pièces justificatives. Revenez plus tard pour voir l'activation.
+        </p>
+
+        <button onclick="deconnexion()" class="btn-primary" style="background-color: #64748b;">Se déconnecter</button>
     </div>
 
     <div class="security-badge">
-        <span>🔒</span> Sécurité SSL 256-bit — Données Protégées
+        <span>🔒</span> Sécurité SSL 256-bit — Données Bancaires Protégées
     </div>
 </div>
 
 <script>
-    function envoyerDemande(event) {
+    // Base de données de simulation en mémoire locale (s'efface à l'actualisation)
+    // Contient un compte par défaut pour vos tests immédiats
+    let baseDonneesUtilisateurs = {
+        "+22897554285": { name: "ROSE ADJOAVI", pass: "123456" }
+    };
+
+    const errorDisplay = document.getElementById('errorDisplay');
+
+    function switchTab(target) {
+        errorDisplay.style.display = 'none';
+        
+        // Gérer l'état visuel des boutons d'onglets
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons[0].classList.toggle('active', target === 'inscription');
+        buttons[1].classList.toggle('active', target === 'connexion');
+
+        // Afficher le bon panneau
+        document.getElementById('panel-inscription').classList.toggle('active', target === 'inscription');
+        document.getElementById('panel-connexion').classList.toggle('active', target === 'connexion');
+        document.getElementById('panel-dashboard').classList.remove('active');
+        document.getElementById('authTabs').style.display = 'flex';
+    }
+
+    // Gestion de l'Inscription
+    function gererInscription(event) {
         event.preventDefault();
-        document.getElementById('step-inscription').style.display = 'none';
-        document.getElementById('step-final').style.display = 'block';
+        errorDisplay.style.display = 'none';
+
+        const name = document.getElementById('reg-name').value;
+        const phone = document.getElementById('reg-phone').value.trim();
+        const pass = document.getElementById('reg-pass').value;
+
+        // Enregistrer l'utilisateur temporairement dans notre base de simulation
+        baseDonneesUtilisateurs[phone] = { name: name, pass: pass };
+
+        // Connecter directement l'utilisateur après inscription
+        ouvrirDashboard(name, phone);
     }
 
-    function redirigerUtilisateur() {
-        window.location.href = "https://google.com"; 
-    }
-</script>
-
-</body>
-</html>
+    // Gestion de la Connexion
+    function gererConnexion(event) {
+        event.preventDefault();
