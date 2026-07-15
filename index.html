@@ -48,6 +48,10 @@
             font-size: 1rem;
             transition: all 0.3s ease;
         }
+        input:disabled {
+            background-color: #f9f9f9;
+            color: #666;
+        }
         button {
             width: 100%;
             padding: 12px;
@@ -67,6 +71,13 @@
         button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
+        }
+        .btn-edit {
+            background-color: #6c757d;
+            margin-top: 15px;
+        }
+        .btn-edit:hover {
+            background-color: #5a6268;
         }
         .status-box {
             margin-top: 20px;
@@ -114,42 +125,51 @@
     </form>
 
     <div id="statusDisplay" class="status-box"></div>
+    
+    <!-- Bouton pour modifier manuellement masqué par défaut -->
+    <button id="editBtn" class="btn-edit" style="display: none;" onclick="activerModification()">Modifier mes informations</button>
 </div>
 
 <script>
+    const form = document.getElementById('registrationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const editBtn = document.getElementById('editBtn');
+    const statusDisplay = document.getElementById('statusDisplay');
+    const inputs = form.querySelectorAll('input');
+
     function gererInscription(event) {
         event.preventDefault();
 
-        const form = document.getElementById('registrationForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const statusDisplay = document.getElementById('statusDisplay');
-        const inputs = form.querySelectorAll('input');
-
-        // Étape 1 : Bloquer les champs et le bouton pendant le traitement
+        // Désactive les modifications pendant le chargement simulé
         submitBtn.disabled = true;
         inputs.forEach(input => input.disabled = true);
-        form.style.opacity = "0.6";
+        form.style.opacity = "0.7";
 
-        // Afficher l'animation de chargement
+        // Affiche l'animation d'attente
         statusDisplay.style.display = "block";
         statusDisplay.className = "status-box info";
         statusDisplay.innerHTML = '<div class="spinner"></div><br>Vérification du code de sécurité par téléphone en cours...';
+        editBtn.style.display = "none";
 
-        // Étape 2 : Afficher le message de succès après 2 secondes
+        // Déclenche le succès après 2 secondes
         setTimeout(() => {
             statusDisplay.className = "status-box success";
-            statusDisplay.innerHTML = "✓ Vérification réussie !<br><br>Votre demande d'inscription a bien été enregistrée.<br><br><small style='font-weight:normal; color:#555;'>Statut actuel : En attente d'approbation.<br><br><b>Le formulaire va se réinitialiser dans quelques secondes pour un nouveau test...</b></small>";
+            statusDisplay.innerHTML = "✓ Vérification réussie !<br><br>Votre demande d'inscription a bien été enregistrée.<br><br><small style='font-weight:normal; color:#555;'>Statut actuel : En attente d'approbation et de validation par les administrateurs de la banque.</small>";
             
-            // Étape 3 : Réactiver et vider les champs après 5 secondes supplémentaires
-            setTimeout(() => {
-                form.reset(); // Efface toutes les saisies
-                inputs.forEach(input => input.disabled = false); // Rend les champs modifiables
-                submitBtn.disabled = false; // Réactive le bouton
-                form.style.opacity = "1"; // Remet l'opacité normale
-                statusDisplay.style.display = "none"; // Cache le message de succès
-            }, 5000);
-
+            // Fait apparaître le bouton de modification manuelle
+            editBtn.style.display = "block";
         }, 2000);
+    }
+
+    function activerModification() {
+        // Réactive l'accès aux champs sans effacer le texte saisi
+        inputs.forEach(input => input.disabled = false);
+        submitBtn.disabled = false;
+        form.style.opacity = "1";
+
+        // Masque le bandeau de statut et le bouton de modification lui-même
+        statusDisplay.style.display = "none";
+        editBtn.style.display = "none";
     }
 </script>
 
