@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panneau d'Administration - Mini Banque</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        /* Barre latérale (Sidebar) */
+        .sidebar {
+            width: 260px;
+            background-color: #0c2340;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .sidebar h2 {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #1a3a60;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .menu-item {
+            padding: 12px;
+            color: #bdc3c7;
+            text-decoration: none;
+            display: block;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .menu-item.active, .menu-item:hover {
+            background-color: #1a3a60;
+            color: white;
+        }
+        /* Contenu principal */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            width: calc(100% - 260px);
+            box-sizing: border-box;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+        }
+        /* Tableau des demandes */
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #eef2f5;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+        }
+        /* Badges de statut */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .badge-waiting { background-color: #fef3c7; color: #d97706; }
+        .badge-approved { background-color: #dcfce7; color: #15803d; }
+        .badge-rejected { background-color: #fee2e2; color: #b91c1c; }
+        /* Boutons d'action */
+        .btn-action {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            transition: opacity 0.2s;
+        }
+        .btn-approve { background-color: #22c55e; color: white; }
+        .btn-reject { background-color: #ef4444; color: white; }
+        .btn-action:hover { opacity: 0.9; }
+        .btn-action:disabled { background-color: #cccccc; cursor: not-allowed; opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+    <!-- Barre latérale -->
+    <div class="sidebar">
+        <h2>Admin Banque 🍁</h2>
+        <a href="#" class="menu-item active">Demandes d'ouverture</a>
+        <a href="#" class="menu-item">Clients actifs</a>
+        <a href="#" class="menu-item">Transactions</a>
+        <a href="#" class="menu-item">Paramètres</a>
+    </div>
+
+    <!-- Zone principale -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Validation des Comptes</h1>
+            <span style="color: #64748b;">Connecté en tant que : <b>Gestionnaire</b></span>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom complet</th>
+                        <th>Téléphone</th>
+                        <th>Date d'inscription</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ligne de test basée sur votre saisie précédente -->
+                    <tr id="row-1">
+                        <td><b>ROSE ADJOAVI</b></td>
+                        <td>+228 97 55 42 85</td>
+                        <td>15 Juillet 2026</td>
+                        <td><span id="badge-1" class="badge badge-waiting">En attente</span></td>
+                        <td>
+                            <button id="btn-app-1" class="btn-action btn-approve" onclick="changerStatut(1, 'approved')">Approuver</button>
+                            <button id="btn-rej-1" class="btn-action btn-reject" onclick="changerStatut(1, 'rejected')">Refuser</button>
+                        </td>
+                    </tr>
+                    <tr id="row-2">
+                        <td><b>Marc Koffi</b></td>
+                        <td>+229 90 12 34 56</td>
+                        <td>14 Juillet 2026</td>
+                        <td><span id="badge-2" class="badge badge-waiting">En attente</span></td>
+                        <td>
+                            <button id="btn-app-2" class="btn-action btn-approve" onclick="changerStatut(2, 'approved')">Approuver</button>
+                            <button id="btn-rej-2" class="btn-action btn-reject" onclick="changerStatut(2, 'rejected')">Refuser</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function changerStatut(id, action) {
+            const badge = document.getElementById('badge-' + id);
+            const btnApprove = document.getElementById('btn-app-' + id);
+            const btnReject = document.getElementById('btn-rej-' + id);
+
+            if (action === 'approved') {
+                badge.className = 'badge badge-approved';
+                badge.textContent = 'Approuvé';
+            } else if (action === 'rejected') {
+                badge.className = 'badge badge-rejected';
+                badge.textContent = 'Refusé';
+            }
+
+            // Désactiver les boutons après traitement de la demande
+            btnApprove.disabled = true;
+            btnReject.disabled = true;
+        }
+    </script>
+
+</body>
+</html>
