@@ -165,28 +165,48 @@
                             </tr>
                         </thead>
                         <tbody id="transaction-rows">
-                            <tr style="font-size:0.95rem; border-bottom:1px solid #e2e8f0;"><td style="padding:12px 5px;">16 Juil 2026</td><td style="padding:12px 5px;">Dépôt initial approuvé</td><td style="padding:12px 5px; color: #16a34a; font-weight:600;">Complété</td><td style="padding:12px 5px; text-align:right; color: #16a34a; font-weight:600;">+5 450,00 $</td></tr>
+                            <tr style="font-size:0.95rem; border-bottom:1px solid #e2e8f0;">
+                                <td style="padding:12px 5px;">16 Juil 2026</td>
+                                <td style="padding:12px 5px;">Dépôt initial</td>
+                                <td style="padding:12px 5px; color: green;">Validé</td>
+                                <td style="padding:12px 5px; text-align:right; font-weight:600;">+5 450,00 $</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <div class="dashboard-box" style="height: fit-content;">
-                <h2 style="font-size: 19px; margin-top: 0; margin-bottom: 20px; color: var(--rbc-dark);">Transfert de fonds direct</h2>
-                <form onsubmit="actionVirement(event)">
-                    <div class="form-group"><label>Nom du bénéficiaire :</label><input type="text" id="vir-dest" required placeholder="Ex: Jean Dupont"></div>
-                    <div class="form-group"><label>Montant ($) :</label><input type="number" id="vir-amount" required placeholder="0.00"></div>
-                    <button type="submit" style="background-color: var(--rbc-dark);">Exécuter le transfert</button>
-                </form>
             </div>
         </div>
 
     </div>
 
+    <!-- SCRIPT DE NAVIGATION (FONCTIONS MANQUANTES) -->
     <script>
-        function basculerInterface(cible) {
-            document.querySelectorAll('.panel, .dashboard-layout').forEach(el => el.style.display = 'none');
-            document.getElementById('logout-btn').style.display = (cible === 'dashboard') ? 'inline-block' : 'none';
+        function basculerInterface(panel) {
+            document.getElementById('panel-inscription').classList.remove('active');
+            document.getElementById('panel-connexion').classList.remove('active');
+            document.getElementById('panel-dashboard').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'none';
 
-            if (cible === 'inscription') document.getElementById('panel-inscription').style.display = 'block';
-            if (cible === 'connexion') document.getElementById('panel-connexion').style.display = 'block';
+            if(panel === 'inscription') {
+                document.getElementById('panel-inscription').classList.add('active');
+            } else if(panel === 'connexion') {
+                document.getElementById('panel-connexion').classList.add('active');
+            } else if(panel === 'dashboard') {
+                document.getElementById('panel-dashboard').style.display = 'grid';
+                document.getElementById('logout-btn').style.display = 'block';
+            }
+        }
+
+        function ouvrirInscriptionTally() {
+            // Intégrer l'ID de votre formulaire Tally ici
+            Tally.openPopup('VOTRE_FORMULAIRE_ID'); 
+        }
+
+        function ouvrirConnexionTally() {
+            // Simuler ou lier vers l'authentification Tally
+            basculerInterface('dashboard');
+        }
+
+        function deconnexionGlobal() {
+            basculerInterface('connexion');
+        }
