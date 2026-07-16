@@ -3,212 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Client - Mini Banque</title>
+    <title>Portail Bancaire Sécurisé — RBC</title>
     <style>
+        :root {
+            --rbc-blue: #0051a2;
+            --rbc-dark: #0c2340;
+            --rbc-gold: #ffa300;
+            --bg-light: #f4f7fa;
+            --text-main: #334155;
+        }
+
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7fa;
+            background-color: var(--bg-light);
             margin: 0;
             padding: 0;
+            color: var(--text-main);
+        }
+
+        header {
+            background-color: #0d0d0d;
+            color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .rbc-brand {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--rbc-gold);
+            letter-spacing: -0.5px;
+        }
+
+        .rbc-brand span { color: #ffffff; font-weight: 400; }
+
+        .main-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 40px 20px;
+            min-height: calc(100vh - 120px);
+            box-sizing: border-box;
         }
+
         .card {
             background: #ffffff;
             padding: 40px 35px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(12, 35, 64, 0.08);
+            box-shadow: 0 10px 25px rgba(12, 35, 64, 0.06);
             width: 100%;
             max-width: 440px;
             box-sizing: border-box;
-            border-top: 6px solid #0070ba;
+            border-top: 6px solid var(--rbc-blue);
         }
-        .brand-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .brand-logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #0c2340;
-            margin: 0;
-        }
-        .brand-subtitle {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin: 5px 0 0 0;
-        }
-        .form-group {
-            margin-bottom: 18px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #1e293b;
-            font-size: 0.9rem;
-        }
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            color: #334155;
-            background-color: #ffffff;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            background-color: #0070ba;
-            color: white;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0c2340;
-        }
-        .panel {
-            display: none;
-        }
-        .panel.active {
-            display: block;
-        }
-        .status-box {
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-        .warning { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+        input, select { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 1rem; color: #334155; }
         
-        .switch-link {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            color: #0070ba;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        .security-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            color: #64748b;
-            font-size: 0.8rem;
-            margin-top: 25px;
-        }
+        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; background-color: var(--rbc-blue); color: white; transition: background 0.2s; }
+        button:hover { background-color: var(--rbc-dark); }
+
+        .switch-link { display: block; text-align: center; margin-top: 15px; color: var(--rbc-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+        
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* ÉCRAN CLIENT CONNECTÉ */
+        .dashboard-layout { display: none; width: 100%; max-width: 1200px; margin: 0 auto; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .dashboard-box { background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.01); }
+        .account-tile { background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 20px; border-radius: 8px; border-left: 5px solid var(--rbc-blue); display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .solde-montant { font-size: 24px; font-weight: 700; color: var(--rbc-dark); }
+        .transaction-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .transaction-table th, .transaction-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 0.95rem; }
+        .negative { color: #dc2626; font-weight: 600; }
+        .positive { color: #16a34a; font-weight: 600; }
+
+        /* ESPACE ADMIN */
+        .admin-layout { display: none; width: 100%; max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 1px solid #cbd5e1; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid #cbd5e1; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .badge-pending { background-color: #fffbeb; color: #b45309; }
+        .badge-approved { background-color: #dcfce7; color: #16a34a; }
+        
+        .nav-btn { background: none; border: 1px solid #ffffff; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .nav-btn:hover { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="brand-header">
-        <p class="brand-logo">🍁 Mini Banque</p>
-        <p id="brand-sub" class="brand-subtitle">Création de compte sécurisé</p>
-    </div>
-
-    <!-- PANNEAU 1 : INSCRIPTION -->
-    <div id="panel-inscription" class="panel active">
-        <form onsubmit="enregistrerCompte(event)">
-            <div class="form-group">
-                <label>Nom complet (civil) :</label>
-                <input type="text" id="reg-username" required placeholder="Ex: ROSE ADJOAVI">
-            </div>
-            <div class="form-group">
-                <label>Identifiant (Téléphone) :</label>
-                <input type="text" id="reg-phone" required placeholder="Ex: +228 97 55 42 85">
-            </div>
-            <div class="form-group">
-                <label>Créer votre mot de passe :</label>
-                <input type="password" id="reg-password" required placeholder="••••••••">
-            </div>
-            <button type="submit">Créer mon compte</button>
-        </form>
-        <a class="switch-link" onclick="basculerEcran('connexion')">Déjà inscrit ? Connectez-vous ici</a>
-    </div>
-
-    <!-- PANNEAU 2 : CONNEXION -->
-    <div id="panel-connexion" class="panel">
-        <form onsubmit="connecterUtilisateur(event)">
-            <div class="form-group">
-                <label>Identifiant (Téléphone) :</label>
-                <input type="text" id="login-id" required placeholder="Entrez votre numéro">
-            </div>
-            <div class="form-group">
-                <label>Mot de passe :</label>
-                <input type="password" id="login-pass" required placeholder="••••••••">
-            </div>
-            <button type="submit" style="background-color: #0c2340;">Se connecter au compte</button>
-        </form>
-        <a class="switch-link" onclick="basculerEcran('inscription')">➔ Créer un nouveau compte</a>
-    </div>
-
-    <!-- PANNEAU 3 : ESPACE SUIVI -->
-    <div id="panel-statut" class="panel">
-        <div class="status-box warning">
-            <span style="font-size: 1.8rem;">⏳</span><br>
-            <h3 style="margin: 10px 0 5px 0;">Dossier en cours d'analyse</h3>
-            <p style="font-size: 0.9rem; font-weight: normal; margin: 0;">En attente de validation administrative.</p>
+    <!-- BARRE DE NAVIGATION COMMUNE -->
+    <header>
+        <div>
+            <span id="nav-title" style="font-size: 15px; font-weight: 600; margin-right: 15px;">Espace Client Sécurisé</span>
+            <button id="admin-toggle-btn" class="nav-btn" onclick="ouvrirEspaceAdmin()">⚙️ Panel Admin</button>
+            <button id="logout-btn" class="nav-btn" style="display:none; background-color:#dc2626; border:none;" onclick="deconnexionGlobal()">Déconnexion</button>
         </div>
-        
-        <p style="text-align: center; color: #334155; font-size: 0.95rem; line-height: 1.5;">
-            Bienvenue sur votre espace personnel.<br><br>
-            Vos accès sont validés. Les services transactionnels s'activeront dès l'approbation finale de votre dossier.
-        </p>
-        
-        <button onclick="basculerEcran('connexion')" style="background-color: #64748b;">Se déconnecter</button>
-    </div>
+        <div class="rbc-brand">RBC <span>Banque Royale</span></div>
+    </header>
 
-    <div class="security-badge">
-        <span>🔒</span> Sécurité SSL — Données Protégées
-    </div>
-</div>
+    <div class="main-container">
 
-<script>
-    function basculerEcran(ecran) {
-        // Masquer tous les panneaux
-        document.getElementById('panel-inscription').style.display = 'none';
-        document.getElementById('panel-connexion').style.display = 'none';
-        document.getElementById('panel-statut').style.display = 'none';
-        
-        const subTitle = document.getElementById('brand-sub');
+        <!-- [PANNEAU 1] : INSCRIPTION CLIENT -->
+        <div id="panel-inscription" class="card panel active">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <h2 style="margin: 0; font-size: 22px; color: var(--rbc-dark);">Création de compte</h2>
+                <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Formulaire d'adhésion sécurisé</p>
+            </div>
+            <form onsubmit="actionInscription(event)">
+                <div class="form-group">
+                    <label>Nom complet (civil) :</label>
+                    <input type="text" id="reg-name" required placeholder="Ex: ROSE ADJOAVI">
+                </div>
+                <div class="form-group">
+                    <label>Identifiant (Numéro de téléphone) :</label>
+                    <input type="text" id="reg-id" required placeholder="Ex: +229 01 65 81 53 09">
+                </div>
+                <div class="form-group">
+                    <label>Créer un mot de passe :</label>
+                    <input type="password" id="reg-pass" required placeholder="••••••••">
+                </div>
+                <button type="submit">Soumettre ma demande</button>
+            </form>
+            <a class="switch-link" onclick="basculerInterface('connexion')">Déjà inscrit ? Ouvrir une session ici</a>
+        </div>
 
-        // Afficher le panneau demandé
-        if (ecran === 'inscription') {
-            document.getElementById('panel-inscription').style.display = 'block';
-            subTitle.textContent = "Création de compte sécurisé";
-        } else if (ecran === 'connexion') {
-            document.getElementById('panel-connexion').style.display = 'block';
-            subTitle.textContent = "Accès à l'espace personnel";
-        } else if (ecran === 'statut') {
-            document.getElementById('panel-statut').style.display = 'block';
-            subTitle.textContent = "Suivi de votre compte";
-        }
-    }
+        <!-- [PANNEAU 2] : CONNEXION CLIENT -->
+        <div id="panel-connexion" class="card panel">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <h2 style="margin: 0; font-size: 22px; color: var(--rbc-dark);">Ouverture de session</h2>
+                <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Accès utilisateur</p>
+            </div>
+            <form onsubmit="actionConnexion(event)">
+                <div class="form-group">
+                    <label>Identifiant (Téléphone) :</label>
+                    <input type="text" id="login-id" required placeholder="Entrez votre numéro">
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe :</label>
+                    <input type="password" id="login-pass" required placeholder="••••••••">
+                </div>
+                <button type="submit" style="background-color: var(--rbc-dark);">Se connecter</button>
+            </form>
+            <a class="switch-link" onclick="basculerInterface('inscription')">➔ Créer un nouveau dossier</a>
+        </div>
 
-    function enregistrerCompte(event) {
-        event.preventDefault();
-        basculerEcran('statut');
-    }
+        <!-- [PANNEAU 3] : ATTENTE VALIDATION CLIENT -->
+        <div id="panel-attente" class="card panel">
+            <div style="background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; padding: 25px; border-radius: 8px; text-align: center; font-weight: 600; margin-bottom: 20px;">
+                <span style="font-size: 2rem;">⏳</span><br>
+                <h3 style="margin: 10px 0 5px 0;">Dossier en cours d'analyse</h3>
+                <p style="font-size: 0.9rem; font-weight: normal; margin: 0;">Votre demande d'adhésion est en cours de traitement par notre service de conformité.</p>
+            </div>
+            <p style="text-align: center; font-size: 0.95rem; line-height: 1.5; color: #475569;">
+                Dès que l'administrateur système aura validé vos accès depuis son panneau de contrôle, votre tableau de bord financier s'activera automatiquement lors de votre prochaine connexion.
+            </p>
+            <button onclick="deconnexionGlobal()" style="background-color: #64748b;">Retour à l'accueil</button>
+        </div>
 
-    function connecterUtilisateur(event) {
-        event.preventDefault();
-        // Force la redirection peu importe la saisie pour éviter les blocages de démo
-        basculerEcran('statut');
-    }
-</script>
-
-</body>
-</html>
+        <!-- [PANNEAU 4] : TABLEAU DE BORD BANQUE (ACCÈS COMPLET) -->
+        <div id="panel-dashboard" class="dashboard-layout">
+            <div style="display: flex; flex-direction: column; gap: 30px;">
+                <div class="dashboard-box">
+                    <h2 style="font-size: 19px; margin-top: 0; margin-bottom: 20px; color: var(--rbc-dark);">Sommaire de vos comptes</h2>
+                    <div class="account-tile">
+                        <div>
+                            <div style="font-weight: 600;">Compte Chèques Personnel</div>
+                            <div style="font-size: 0.85rem; color: #64748b;">N° 00192-394811</div>
+                        </div>
+                        <div class="solde-montant" id="solde-client">5 000,00 $</div>
+                    </div>
+                </div>
+                <div class="dashboard-box">
+                    <h2 style="font-size: 19px; margin-top: 0; margin-bottom: 15px; color: var(--rbc-dark);">Historique des mouvements</h2>
+                    <table class="transaction-table">
+                        <thead><tr><th>Date</th><th>Description</th><th>Statut</th><th>Montant</th></tr></thead>
+                        <tbody id="transaction-rows">
