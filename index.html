@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon Banque - Espace Démo</title>
-    <!-- Script officiel requis pour intégrer les fenêtres Tally -->
-    <script src="https://tally.so"></script>
     <style>
         :root {
             --hz-blue: #0284c7;
@@ -81,10 +79,6 @@
         .dashboard-box { background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.01); }
         .account-tile { background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 20px; border-radius: 8px; border-left: 5px solid var(--hz-blue); display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .solde-montant { font-size: 24px; font-weight: 700; color: var(--hz-dark); }
-        
-        .form-group { margin-bottom: 18px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #1e293b; }
-        input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
 
         .nav-btn { background-color: var(--hz-blue); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
         .nav-btn:hover { background-color: var(--hz-dark); }
@@ -114,7 +108,7 @@
             <p style="font-size: 0.95rem; line-height: 1.5; color: #475569; margin-bottom: 20px;">
                 Veuillez cliquer sur le bouton ci-dessous pour lancer l'enregistrement sécurisé et soumettre votre demande.
             </p>
-            <button onclick="ouvrirInscriptionTally()">Lancer l'inscription</button>
+            <button onclick="ouvrirInscriptionDirecte()">Lancer l'inscription</button>
             <a class="switch-link" onclick="basculerInterface('connexion')">Déjà enregistré ? Accéder à l'espace</a>
         </div>
 
@@ -127,13 +121,13 @@
             <p style="font-size: 0.95rem; line-height: 1.5; color: #475569; margin-bottom: 20px;">
                 Utilisez le module d'authentification ci-dessous pour charger les données associées à votre tableau de bord.
             </p>
-            <button onclick="ouvrirConnexionTally()" style="background-color: var(--hz-dark);">Ouvrir la session</button>
+            <button onclick="ouvrirConnexionDirecte()" style="background-color: var(--hz-dark);">Ouvrir la session</button>
             <a class="switch-link" onclick="basculerInterface('inscription')">➔ Créer un nouveau dossier</a>
         </div>
 
         <!-- PANNEAU 3 : ESPACE CLIENT PRINCIPAL -->
         <div id="panel-dashboard" class="dashboard-layout">
-            <div style="display: flex; flex-direction: column; gap: 30px;">
+            <div style="display: flex; flex-direction: column; gap: 30px; width: 100%;">
                 <div class="dashboard-box">
                     <h2 style="font-size: 19px; margin: 0 0 20px 0; color: var(--hz-dark);">Sommaire financier de vos comptes (Démo)</h2>
                     <div class="account-tile">
@@ -171,13 +165,9 @@
 
     </div>
 
-    <!-- SCRIPT DE NAVIGATION ET INTÉGRATION CONFIGURÉ POUR TALLY -->
+    <!-- SCRIPT DE NAVIGATION DIRECTE -->
     <script>
-        // Configuration automatique avec vos IDs Tally réels récupérés
-        const TALLY_ID_INSCRIPTION = 'gD1oND'; 
-        const TALLY_ID_CONNEXION = 'Pdeq2e';
-
-        // Gestion de l'affichage des panneaux
+        // Gestion des panneaux d'affichage
         function basculerInterface(panel) {
             document.getElementById('panel-inscription').classList.remove('active');
             document.getElementById('panel-connexion').classList.remove('active');
@@ -189,17 +179,27 @@
             } else if(panel === 'connexion') {
                 document.getElementById('panel-connexion').classList.add('active');
             } else if(panel === 'dashboard') {
-                document.getElementById('panel-dashboard').style.display = 'grid';
+                document.getElementById('panel-dashboard').style.display = 'block';
                 document.getElementById('logout-btn').style.display = 'block';
             }
         }
 
-        // Déclenchement du formulaire Registration Form
-        function ouvrirInscriptionTally() {
-            Tally.openPopup(TALLY_ID_INSCRIPTION, {
-                layout: 'modal',
-                width: 460,
-                onSubmitted: (payload) => {
-                    alert("Démo : Inscription complétée ! Passage à l'étape d'accès.");
-                    basculerInterface('connexion');
-                }
+        // Ouverture directe du lien d'inscription et passage à l'étape suivante
+        function ouvrirInscriptionDirecte() {
+            window.open('https://tally.so', '_blank');
+            basculerInterface('connexion');
+        }
+
+        // Ouverture directe du lien de connexion et affichage du tableau de bord
+        function ouvrirConnexionDirecte() {
+            window.open('https://tally.so', '_blank');
+            basculerInterface('dashboard');
+        }
+
+        // Déconnexion
+        function deconnexionGlobal() {
+            basculerInterface('connexion');
+        }
+    </script>
+</body>
+</html>
