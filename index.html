@@ -56,18 +56,31 @@
 
         .card {
             background: #ffffff;
-            padding: 40px 35px;
+            padding: 30px 25px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
             width: 100%;
-            max-width: 460px;
+            max-width: 500px;
             box-sizing: border-box;
             border-top: 6px solid var(--hz-blue);
             text-align: center;
         }
 
+        /* Style pour les formulaires intégrés */
+        tally-iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            margin-top: 15px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
         button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; background-color: var(--hz-blue); color: white; transition: background 0.2s; margin-top: 15px; }
         button:hover { background-color: var(--hz-dark); }
+
+        .next-btn { background-color: #22c55e; margin-top: 20px; }
+        .next-btn:hover { background-color: #16a34a; }
 
         .switch-link { display: block; text-align: center; margin-top: 20px; color: var(--hz-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
         
@@ -101,27 +114,29 @@
 
         <!-- PANNEAU 1 : FORMULAIRE ENREGISTREMENT -->
         <div id="panel-inscription" class="card panel active">
-            <div style="margin-bottom: 25px;">
+            <div style="margin-bottom: 15px;">
                 <h2 style="margin: 0; font-size: 22px; color: var(--hz-dark);">Formulaire de dépôt</h2>
                 <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Initialisation du dossier de test</p>
             </div>
-            <p style="font-size: 0.95rem; line-height: 1.5; color: #475569; margin-bottom: 20px;">
-                Veuillez cliquer sur le bouton ci-dessous pour lancer l'enregistrement sécurisé et soumettre votre demande.
-            </p>
-            <button onclick="ouvrirInscriptionDirecte()">Lancer l'inscription</button>
+            
+            <!-- FORMULAIRE TALLY ENCASTRÉ -->
+            <iframe class="tally-iframe" src="https://tally.so" width="100%" height="380" frameborder="0" marginheight="0" marginwidth="0" title="Registration Form"></iframe>
+            
+            <button class="next-btn" onclick="basculerInterface('connexion')">Étape suivante : Vérification ➔</button>
             <a class="switch-link" onclick="basculerInterface('connexion')">Déjà enregistré ? Accéder à l'espace</a>
         </div>
 
         <!-- PANNEAU 2 : FORMULAIRE CONNEXION -->
         <div id="panel-connexion" class="card panel">
-            <div style="margin-bottom: 25px;">
+            <div style="margin-bottom: 15px;">
                 <h2 style="margin: 0; font-size: 22px; color: var(--hz-dark);">Vérification des accès</h2>
                 <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Validation de session</p>
             </div>
-            <p style="font-size: 0.95rem; line-height: 1.5; color: #475569; margin-bottom: 20px;">
-                Utilisez le module d'authentification ci-dessous pour charger les données associées à votre tableau de bord.
-            </p>
-            <button onclick="ouvrirConnexionDirecte()" style="background-color: var(--hz-dark);">Ouvrir la session</button>
+            
+            <!-- FORMULAIRE TALLY ENCASTRÉ -->
+            <iframe class="tally-iframe" src="https://tally.so" width="100%" height="380" frameborder="0" marginheight="0" marginwidth="0" title="Contact Form"></iframe>
+            
+            <button class="next-btn" style="background-color: var(--hz-dark);" onclick="basculerInterface('dashboard')">Accéder au Tableau de Bord ➔</button>
             <a class="switch-link" onclick="basculerInterface('inscription')">➔ Créer un nouveau dossier</a>
         </div>
 
@@ -165,9 +180,8 @@
 
     </div>
 
-    <!-- SCRIPT DE NAVIGATION DIRECTE -->
+    <!-- SCRIPT DE NAVIGATION INTERNE -->
     <script>
-        // Gestion des panneaux d'affichage
         function basculerInterface(panel) {
             document.getElementById('panel-inscription').classList.remove('active');
             document.getElementById('panel-connexion').classList.remove('active');
@@ -184,19 +198,6 @@
             }
         }
 
-        // Ouverture directe du lien d'inscription et passage à l'étape suivante
-        function ouvrirInscriptionDirecte() {
-            window.open('https://tally.so', '_blank');
-            basculerInterface('connexion');
-        }
-
-        // Ouverture directe du lien de connexion et affichage du tableau de bord
-        function ouvrirConnexionDirecte() {
-            window.open('https://tally.so', '_blank');
-            basculerInterface('dashboard');
-        }
-
-        // Déconnexion
         function deconnexionGlobal() {
             basculerInterface('connexion');
         }
