@@ -1,52 +1,205 @@
-<!-- SCRIPT DE NAVIGATION ET INTÉGRATION TALLY -->
-<script>
-    // 1. CONFIGURATION DE VOS LIENS TALLY (Remplacez par vos vrais identifiants ou liens)
-    // Si votre lien est https://tally.so, l'ID est "wA1234"
-    const TALLY_ID_INSCRIPTION = 'VOTRE_ID_FORMULAIRE_INSCRIPTION'; 
-    const TALLY_ID_CONNEXION = 'VOTRE_ID_FORMULAIRE_CONNEXION';
-
-    // Fonction pour basculer d'un écran à l'ancre
-    function basculerInterface(panel) {
-        document.getElementById('panel-inscription').classList.remove('active');
-        document.getElementById('panel-connexion').classList.remove('active');
-        document.getElementById('panel-dashboard').style.display = 'none';
-        document.getElementById('logout-btn').style.display = 'none';
-
-        if(panel === 'inscription') {
-            document.getElementById('panel-inscription').classList.add('active');
-        } else if(panel === 'connexion') {
-            document.getElementById('panel-connexion').classList.add('active');
-        } else if(panel === 'dashboard') {
-            document.getElementById('panel-dashboard').style.display = 'grid';
-            document.getElementById('logout-btn').style.display = 'block';
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Banque - Espace Démo</title>
+    <!-- Script officiel requis pour intégrer les fenêtres Tally -->
+    <script src="https://tally.so"></script>
+    <style>
+        :root {
+            --hz-blue: #0284c7;
+            --hz-dark: #0f172a;
+            --hz-light: #f8fafc;
+            --text-main: #334155;
         }
-    }
 
-    // Ouvrir le formulaire d'inscription dans une fenêtre surgissante (Popup)
-    function ouvrirInscriptionTally() {
-        Tally.openPopup(TALLY_ID_INSCRIPTION, {
-            layout: 'modal',
-            width: 500,
-            onSubmitted: (payload) => {
-                alert("Inscription reçue ! Un administrateur va valider votre dossier.");
-                basculerInterface('connexion');
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--hz-light);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        header {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 3px solid var(--hz-blue);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hz-brand {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--hz-blue);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .hz-brand span { color: var(--hz-dark); font-weight: 400; }
+
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: calc(100vh - 120px);
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+            width: 100%;
+            max-width: 460px;
+            box-sizing: border-box;
+            border-top: 6px solid var(--hz-blue);
+            text-align: center;
+        }
+
+        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; background-color: var(--hz-blue); color: white; transition: background 0.2s; margin-top: 15px; }
+        button:hover { background-color: var(--hz-dark); }
+
+        .switch-link { display: block; text-align: center; margin-top: 20px; color: var(--hz-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+        
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* INTERFACE COMPTE CLIENT (DASHBOARD) */
+        .dashboard-layout { display: none; width: 100%; max-width: 1200px; margin: 0 auto; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .dashboard-box { background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.01); }
+        .account-tile { background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 20px; border-radius: 8px; border-left: 5px solid var(--hz-blue); display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .solde-montant { font-size: 24px; font-weight: 700; color: var(--hz-dark); }
+        
+        .form-group { margin-bottom: 18px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+        input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+
+        .nav-btn { background-color: var(--hz-blue); border: none; color: white; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .nav-btn:hover { background-color: var(--hz-dark); }
+    </style>
+</head>
+<body>
+
+    <!-- BARRE DE NAVIGATION -->
+    <header>
+        <div>
+            <span id="nav-title" style="font-size: 15px; font-weight: 600; margin-right: 15px; color: var(--hz-dark);">Portail de validation (Démonstration)</span>
+            <button id="logout-btn" class="nav-btn" style="display:none; background-color:#dc2626;" onclick="deconnexionGlobal()">Fermer la session</button>
+        </div>
+        <div class="logo-container">
+            <div class="hz-brand">HORIZON<br><span>BANQUE</span></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+
+        <!-- PANNEAU 1 : FORMULAIRE ENREGISTREMENT -->
+        <div id="panel-inscription" class="card panel active">
+            <div style="margin-bottom: 25px;">
+                <h2 style="margin: 0; font-size: 22px; color: var(--hz-dark);">Formulaire de dépôt</h2>
+                <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Initialisation du dossier de test</p>
+            </div>
+            <p style="font-size: 0.95rem; line-height: 1.5; color: #475569; margin-bottom: 20px;">
+                Veuillez cliquer sur le bouton ci-dessous pour lancer l'enregistrement sécurisé et soumettre votre demande.
+            </p>
+            <button onclick="ouvrirInscriptionTally()">Lancer l'inscription</button>
+            <a class="switch-link" onclick="basculerInterface('connexion')">Déjà enregistré ? Accéder à l'espace</a>
+        </div>
+
+        <!-- PANNEAU 2 : FORMULAIRE CONNEXION -->
+        <div id="panel-connexion" class="card panel">
+            <div style="margin-bottom: 25px;">
+                <h2 style="margin: 0; font-size: 22px; color: var(--hz-dark);">Vérification des accès</h2>
+                <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Validation de session</p>
+            </div>
+            <p style="font-size: 0.95rem; line-height: 1.5; color: #475569; margin-bottom: 20px;">
+                Utilisez le module d'authentification ci-dessous pour charger les données associées à votre tableau de bord.
+            </p>
+            <button onclick="ouvrirConnexionTally()" style="background-color: var(--hz-dark);">Ouvrir la session</button>
+            <a class="switch-link" onclick="basculerInterface('inscription')">➔ Créer un nouveau dossier</a>
+        </div>
+
+        <!-- PANNEAU 3 : ESPACE CLIENT PRINCIPAL -->
+        <div id="panel-dashboard" class="dashboard-layout">
+            <div style="display: flex; flex-direction: column; gap: 30px;">
+                <div class="dashboard-box">
+                    <h2 style="font-size: 19px; margin: 0 0 20px 0; color: var(--hz-dark);">Sommaire financier de vos comptes (Démo)</h2>
+                    <div class="account-tile">
+                        <div>
+                            <div style="font-weight: 600;">Compte d'Épargne Standard</div>
+                            <div style="font-size: 0.85rem; color: #64748b;">N° 00000-000000</div>
+                        </div>
+                        <div class="solde-montant" id="solde-client">5 450,00 $</div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-box">
+                    <h2 style="font-size: 19px; margin-top: 0; margin-bottom: 15px; color: var(--hz-dark);">Opérations enregistrées</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; color:#64748b; font-size:0.9rem; border-bottom:1px solid #e2e8f0;">
+                                <th style="padding:10px 5px;">Date</th>
+                                <th style="padding:10px 5px;">Libellé de l'opération</th>
+                                <th style="padding:10px 5px;">Statut</th>
+                                <th style="padding:10px 5px; text-align:right;">Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transaction-rows">
+                            <tr style="font-size:0.95rem; border-bottom:1px solid #e2e8f0;">
+                                <td style="padding:12px 5px;">16 Juil 2026</td>
+                                <td style="padding:12px 5px;">Dépôt de démonstration</td>
+                                <td style="padding:12px 5px; color: green;">Simulé</td>
+                                <td style="padding:12px 5px; text-align:right; font-weight:600;">+5 450,00 $</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT DE NAVIGATION ET INTÉGRATION CONFIGURÉ POUR TALLY -->
+    <script>
+        // Configuration automatique avec vos IDs Tally réels récupérés
+        const TALLY_ID_INSCRIPTION = 'gD1oND'; 
+        const TALLY_ID_CONNEXION = 'Pdeq2e';
+
+        // Gestion de l'affichage des panneaux
+        function basculerInterface(panel) {
+            document.getElementById('panel-inscription').classList.remove('active');
+            document.getElementById('panel-connexion').classList.remove('active');
+            document.getElementById('panel-dashboard').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'none';
+
+            if(panel === 'inscription') {
+                document.getElementById('panel-inscription').classList.add('active');
+            } else if(panel === 'connexion') {
+                document.getElementById('panel-connexion').classList.add('active');
+            } else if(panel === 'dashboard') {
+                document.getElementById('panel-dashboard').style.display = 'grid';
+                document.getElementById('logout-btn').style.display = 'block';
             }
-        });
-    }
+        }
 
-    // Ouvrir le formulaire de connexion/vérification
-    function ouvrirConnexionTally() {
-        Tally.openPopup(TALLY_ID_CONNEXION, {
-            layout: 'modal',
-            width: 500,
-            onSubmitted: (payload) => {
-                // Une fois le formulaire soumis, on redirige vers le tableau de bord
-                basculerInterface('dashboard');
-            }
-        });
-    }
-
-    function deconnexionGlobal() {
-        basculerInterface('connexion');
-    }
-</script>
+        // Déclenchement du formulaire Registration Form
+        function ouvrirInscriptionTally() {
+            Tally.openPopup(TALLY_ID_INSCRIPTION, {
+                layout: 'modal',
+                width: 460,
+                onSubmitted: (payload) => {
+                    alert("Démo : Inscription complétée ! Passage à l'étape d'accès.");
+                    basculerInterface('connexion');
+                }
