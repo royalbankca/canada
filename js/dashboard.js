@@ -1,18 +1,17 @@
-// ===========================================
-// DEMO BANK
+//====================================================
+// ROYAL BANK
 // dashboard.js
-// ===========================================
+//====================================================
 
 let currentUser = null;
 let transactions = [];
+let balanceVisible = true;
 
-// ===========================================
+//====================================================
 // INITIALISATION
-// ===========================================
+//====================================================
 
-document.addEventListener("DOMContentLoaded", initDashboard);
-
-function initDashboard() {
+document.addEventListener("DOMContentLoaded", () => {
 
     loadUser();
 
@@ -20,116 +19,175 @@ function initDashboard() {
 
     updateDashboard();
 
-    updateCard();
-
-    updateNotifications();
-
     updateSummary();
 
-}
+    initializeEvents();
 
-// ===========================================
+});
+
+//====================================================
 // CHARGER LE CLIENT
-// ===========================================
+//====================================================
 
-function loadUser() {
+function loadUser(){
 
-    const user = localStorage.getItem("currentUser");
+    const data = localStorage.getItem("currentUser");
 
-    if (!user) {
+    if(!data){
 
-        window.location.href = "login.html";
-
+        window.location.href="login.html";
         return;
 
     }
 
-    currentUser = JSON.parse(user);
+    currentUser = JSON.parse(data);
 
 }
 
-// ===========================================
-// MISE À JOUR DASHBOARD
-// ===========================================
+//====================================================
+// TABLEAU DE BORD
+//====================================================
 
-function updateDashboard() {
+function updateDashboard(){
 
-    document.getElementById("welcomeName").textContent = currentUser.name;
+    document.getElementById("welcomeTitle").textContent =
+        "Bonjour " + currentUser.name;
 
-    document.getElementById("clientName").textContent = currentUser.name;
+    document.getElementById("welcomeName").textContent =
+        "Bienvenue sur votre espace bancaire sécurisé.";
 
-    document.getElementById("clientAccount").textContent = currentUser.account;
-
-    document.getElementById("accountNumber").textContent = currentUser.account;
-
-    document.getElementById("accessCode").textContent = currentUser.access;
-
-    document.getElementById("clientId").textContent = currentUser.id;
-
-    document.getElementById("balance").textContent =
-        "$ " + Number(currentUser.balance).toLocaleString();
-
-}
-
-// ===========================================
-// CARTE BANCAIRE
-// ===========================================
-
-function updateCard() {
+    document.getElementById("clientName").textContent =
+        currentUser.name;
 
     document.getElementById("cardHolder").textContent =
         currentUser.name.toUpperCase();
 
-    document.getElementById("cardLastDigits").textContent =
-        currentUser.account.slice(-4);
+    document.getElementById("clientAccount").textContent =
+        currentUser.account;
+
+    document.getElementById("accountNumber").textContent =
+        currentUser.account;
+
+    document.getElementById("clientId").textContent =
+        currentUser.id;
+
+    document.getElementById("clientInfoId").textContent =
+        currentUser.id;
+
+    document.getElementById("cardNumber").textContent =
+        formatCard(currentUser.account);
+
+    refreshBalance(currentUser.balance);
 
 }
-// ===========================================
-// CHARGEMENT DES TRANSACTIONS
-// ===========================================
 
-function loadTransactions() {
+//====================================================
+// FORMAT CARTE
+//====================================================
+
+function formatCard(number){
+
+    if(!number) return "**** **** **** ****";
+
+    return number.replace(/(.{4})/g,"$1 ").trim();
+
+}
+
+//====================================================
+// SOLDE
+//====================================================
+
+function refreshBalance(balance){
+
+    currentUser.balance = Number(balance);
+
+    if(balanceVisible){
+
+        document.getElementById("balance").textContent =
+            formatMoney(balance);
+
+    }else{
+
+        document.getElementById("balance").textContent =
+            "********";
+
+    }
+
+}
+
+//====================================================
+// FORMAT ARGENT
+//====================================================
+
+function formatMoney(amount){
+
+    return Number(amount).toLocaleString(
+
+        "en-CA",
+
+        {
+
+            style:"currency",
+
+            currency:"CAD"
+
+        }
+
+    );
+
+}
+
+//====================================================
+// AFFICHER / MASQUER LE SOLDE
+//====================================================
+
+function toggleBalance(){
+
+    balanceVisible = !balanceVisible;
+
+    refreshBalance(currentUser.balance);
+
+    const icon =
+        document.querySelector("#toggleBalance i");
+
+    if(balanceVisible){
+
+        icon.className="fas fa-eye";
+
+    }else{
+
+        icon.className="fas fa-eye-slash";
+
+    }
+
+}
+
+//====================================================
+// EVENEMENTS
+//====================================================
+
+function initializeEvents(){
+
+    document
+    .getElementById("toggleBalance")
+    .addEventListener("click",toggleBalance);
+
+}
+//====================================================
+// TRANSACTIONS
+//====================================================
+
+function loadTransactions(){
 
     const data = localStorage.getItem("transactions");
 
-    if (data) {
+    if(data){
 
         transactions = JSON.parse(data);
 
-    } else {
+    }else{
 
-        transactions = [
-
-            {
-                date: "15/07/2026",
-                type: "Virement reçu",
-                description: "Salaire",
-                amount: 2850,
-                status: "Complété"
-            },
-
-            {
-                date: "14/07/2026",
-                type: "Paiement",
-                description: "Internet",
-                amount: -89.99,
-                status: "Complété"
-            },
-
-            {
-                date: "13/07/2026",
-                type: "Retrait",
-                description: "Guichet automatique",
-                amount: -300,
-                status: "Complété"
-            }
-
-        ];
-
-        localStorage.setItem(
-            "transactions",
-            JSON.stringify(transactions)
-        );
+        transactions = [];
 
     }
 
@@ -137,27 +195,48 @@ function loadTransactions() {
 
 }
 
-// ===========================================
+//====================================================
 // AFFICHAGE DES TRANSACTIONS
-// ===========================================
+//====================================================
 
-function displayTransactions() {
+function displayTransactions(){
 
-    const table = document.getElementById("transactionsTable");
+    const table =
+        document.getElementById("transactionsTable");
 
-    if (!table) return;
+    if(!table) return;
 
-    table.innerHTML = "";
+    table.innerHTML="";
 
-    transactions.forEach(function(transaction){
+    if(transactions.length===0){
+
+        table.innerHTML=`
+
+<tr>
+
+<td colspan="5" style="text-align:center;padding:30px;">
+
+Aucune transaction disponible.
+
+</td>
+
+</tr>
+
+`;
+
+        return;
+
+    }
+
+    transactions.forEach(transaction=>{
 
         const amountClass =
-            transaction.amount >= 0
+            transaction.amount>=0
             ? "credit"
             : "debit";
 
         const sign =
-            transaction.amount >= 0
+            transaction.amount>=0
             ? "+"
             : "-";
 
@@ -173,13 +252,17 @@ function displayTransactions() {
 
 <td class="${amountClass}">
 
-${sign} ${Math.abs(transaction.amount).toLocaleString()} $
+${sign} ${Math.abs(transaction.amount).toLocaleString("en-CA",{
+
+minimumFractionDigits:2
+
+})} $
 
 </td>
 
 <td>
 
-<span class="status success">
+<span class="status active">
 
 ${transaction.status}
 
@@ -194,140 +277,24 @@ ${transaction.status}
     });
 
 }
-// ===========================================
-// NOTIFICATIONS
-// ===========================================
 
-function updateNotifications() {
-
-    const notifications = [
-
-        "Connexion sécurisée réussie.",
-        "Aucune opération suspecte détectée.",
-        "Votre compte est protégé."
-
-    ];
-
-    const container = document.querySelectorAll(".notification");
-
-    container.forEach(function(item,index){
-
-        if(notifications[index]){
-
-            const p = item.querySelector("p");
-
-            if(p){
-
-                p.textContent = notifications[index];
-
-            }
-
-        }
-
-    });
-
-}
-
-// ===========================================
-// RÉSUMÉ FINANCIER
-// ===========================================
-
-function updateSummary() {
-
-    let income = 0;
-
-    let expense = 0;
-
-    transactions.forEach(function(transaction){
-
-        if(transaction.amount >= 0){
-
-            income += transaction.amount;
-
-        }else{
-
-            expense += Math.abs(transaction.amount);
-
-        }
-
-    });
-
-    const saving = income - expense;
-
-    document.getElementById("monthlyIncome").textContent =
-        "+ " + income.toLocaleString() + " $";
-
-    document.getElementById("monthlyExpense").textContent =
-        "- " + expense.toLocaleString() + " $";
-
-    document.getElementById("savingAmount").textContent =
-        saving.toLocaleString() + " $";
-
-}
-
-// ===========================================
-// DATE ET HEURE
-// ===========================================
-
-function getCurrentDateTime(){
-
-    const now = new Date();
-
-    return now.toLocaleString("fr-CA");
-
-}
-// ===========================================
-// FORMAT DU SOLDE
-// ===========================================
-
-function formatMoney(amount){
-
-    return "$ " + Number(amount).toLocaleString("en-CA",{
-
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-
-    });
-
-}
-
-// ===========================================
-// ACTUALISER LE SOLDE
-// ===========================================
-
-function refreshBalance(newBalance){
-
-    currentUser.balance = Number(newBalance);
-
-    document.getElementById("balance").textContent =
-        formatMoney(currentUser.balance);
-
-    localStorage.setItem(
-        "currentUser",
-        JSON.stringify(currentUser)
-    );
-
-}
-
-// ===========================================
-// AJOUTER UNE TRANSACTION
-// ===========================================
+//====================================================
+// AJOUTER TRANSACTION
+//====================================================
 
 function addTransaction(type,description,amount){
 
-    const today = new Date();
+    const transaction={
 
-    const transaction = {
+        date:new Date().toLocaleDateString("fr-CA"),
 
-        date: today.toLocaleDateString("fr-CA"),
+        type:type,
 
-        type: type,
+        description:description,
 
-        description: description,
+        amount:Number(amount),
 
-        amount: Number(amount),
-
-        status: "Complété"
+        status:"Complété"
 
     };
 
@@ -347,383 +314,354 @@ function addTransaction(type,description,amount){
 
 }
 
-// ===========================================
-// RAFRAÎCHISSEMENT AUTOMATIQUE
-// ===========================================
+//====================================================
+// RESUME FINANCIER
+//====================================================
 
-setInterval(function(){
+function updateSummary(){
 
-    if(currentUser){
+    let income=0;
 
-        refreshBalance(currentUser.balance);
+    let expense=0;
 
-    }
+    transactions.forEach(item=>{
 
-},5000);
-// ===========================================
-// RECHERCHE D'UNE TRANSACTION
-// ===========================================
+        if(item.amount>=0){
 
-function searchTransaction(keyword){
-
-    keyword = keyword.toLowerCase();
-
-    return transactions.filter(function(transaction){
-
-        return (
-
-            transaction.type.toLowerCase().includes(keyword) ||
-
-            transaction.description.toLowerCase().includes(keyword)
-
-        );
-
-    });
-
-}
-
-// ===========================================
-// EXPORT DU RELEVÉ
-// ===========================================
-
-function exportStatement(){
-
-    const data = JSON.stringify(transactions,null,2);
-
-    const blob = new Blob([data],{
-
-        type:"application/json"
-
-    });
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-
-    link.href = url;
-
-    link.download = "releve-transactions.json";
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-
-}
-
-// ===========================================
-// DERNIÈRE CONNEXION
-// ===========================================
-
-function saveLastLogin(){
-
-    const login = getCurrentDateTime();
-
-    localStorage.setItem(
-
-        "lastLogin",
-
-        login
-
-    );
-
-}
-
-function getLastLogin(){
-
-    return localStorage.getItem("lastLogin") || "Première connexion";
-
-}
-
-// ===========================================
-// SAUVEGARDE DE LA SESSION
-// ===========================================
-
-saveLastLogin();
-// ===========================================
-// MESSAGES D'ACCUEIL
-// ===========================================
-
-function showWelcomeMessage(){
-
-    const hour = new Date().getHours();
-
-    let message = "Bienvenue";
-
-    if(hour < 12){
-
-        message = "Bonjour";
-
-    }else if(hour < 18){
-
-        message = "Bon après-midi";
-
-    }else{
-
-        message = "Bonsoir";
-
-    }
-
-    const title = document.querySelector("header h1");
-
-    if(title){
-
-        title.textContent = message + ", " + currentUser.name;
-
-    }
-
-}
-
-showWelcomeMessage();
-
-// ===========================================
-// DERNIÈRE MISE À JOUR
-// ===========================================
-
-function updateLastRefresh(){
-
-    const now = new Date();
-
-    console.log(
-
-        "Dernière mise à jour : " +
-
-        now.toLocaleTimeString("fr-CA")
-
-    );
-
-}
-
-setInterval(updateLastRefresh,60000);
-
-// ===========================================
-// SESSION
-// ===========================================
-
-function keepSessionAlive(){
-
-    localStorage.setItem(
-
-        "session",
-
-        Date.now()
-
-    );
-
-}
-
-setInterval(keepSessionAlive,30000);
-
-// ===========================================
-// DÉCONNEXION AUTOMATIQUE
-// ===========================================
-
-let inactivityTimer;
-
-function resetInactivityTimer(){
-
-    clearTimeout(inactivityTimer);
-
-    inactivityTimer = setTimeout(function(){
-
-        alert("Votre session a expiré.");
-
-        logout();
-
-    },15 * 60 * 1000);
-
-}
-
-document.addEventListener("mousemove",resetInactivityTimer);
-document.addEventListener("keydown",resetInactivityTimer);
-document.addEventListener("click",resetInactivityTimer);
-
-resetInactivityTimer();
-// ===========================================
-// BOUTONS D'ACTIONS RAPIDES
-// ===========================================
-
-function openTransfer(){
-
-    window.location.href = "transfer.html";
-
-}
-
-function openTransactions(){
-
-    window.location.href = "transactions.html";
-
-}
-
-function openProfile(){
-
-    window.location.href = "profile.html";
-
-}
-
-function openSettings(){
-
-    window.location.href = "settings.html";
-
-}
-
-// ===========================================
-// VÉRIFICATION DE L'ÉTAT DU COMPTE
-// ===========================================
-
-function checkAccountStatus(){
-
-    if(currentUser.status){
-
-        if(currentUser.status.toLowerCase() === "blocked"){
-
-            alert("Votre compte est actuellement bloqué.");
-
-            logout();
-
-            return;
-
-        }
-
-    }
-
-}
-
-checkAccountStatus();
-
-// ===========================================
-// SAUVEGARDE AUTOMATIQUE
-// ===========================================
-
-function saveCurrentUser(){
-
-    localStorage.setItem(
-
-        "currentUser",
-
-        JSON.stringify(currentUser)
-
-    );
-
-}
-
-setInterval(saveCurrentUser,10000);
-
-// ===========================================
-// MISE À JOUR DE L'HEURE
-// ===========================================
-
-function updateClock(){
-
-    const now = new Date();
-
-    const clock = document.getElementById("currentTime");
-
-    if(clock){
-
-        clock.textContent = now.toLocaleTimeString("fr-CA");
-
-    }
-
-}
-
-setInterval(updateClock,1000);
-
-updateClock();
-// ===========================================
-// DÉCONNEXION
-// ===========================================
-
-function logout(){
-
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("session");
-
-    window.location.href = "login.html";
-
-}
-
-// ===========================================
-// RAFRAÎCHISSEMENT DES DONNÉES
-// ===========================================
-
-function refreshDashboard(){
-
-    loadUser();
-
-    loadTransactions();
-
-    updateDashboard();
-
-    updateCard();
-
-    updateNotifications();
-
-    updateSummary();
-
-}
-
-setInterval(refreshDashboard,30000);
-
-// ===========================================
-// STATISTIQUES
-// ===========================================
-
-function getStatistics(){
-
-    const totalTransactions = transactions.length;
-
-    let credits = 0;
-
-    let debits = 0;
-
-    transactions.forEach(function(transaction){
-
-        if(transaction.amount >= 0){
-
-            credits++;
+            income+=item.amount;
 
         }else{
 
-            debits++;
+            expense+=Math.abs(item.amount);
 
         }
 
     });
 
-    console.log({
+    document.getElementById("monthlyIncome").textContent=
 
-        client: currentUser.name,
+        formatMoney(income);
 
-        compte: currentUser.account,
+    document.getElementById("monthlyExpense").textContent=
 
-        operations: totalTransactions,
+        formatMoney(expense);
 
-        credits: credits,
+    document.getElementById("savingAmount").textContent=
 
-        debits: debits,
-
-        solde: currentUser.balance
-
-    });
+        formatMoney(income-expense);
 
 }
 
-// ===========================================
-// INITIALISATION
-// ===========================================
+//====================================================
+// NOTIFICATIONS
+//====================================================
 
-window.addEventListener("load",function(){
+function showNotification(message,icon="fa-circle-check"){
 
-    refreshDashboard();
+    const container=
 
-    getStatistics();
+        document.getElementById("notificationsContainer");
+
+    if(!container) return;
+
+    container.insertAdjacentHTML(
+
+        "afterbegin",
+
+`
+
+<div class="notification">
+
+<i class="fas ${icon}"></i>
+
+<p>${message}</p>
+
+</div>
+
+`
+
+    );
+
+}
+
+//====================================================
+// RECHARGER MON COMPTE
+//====================================================
+
+function openRecharge(){
+
+    document.getElementById("rechargeModal").style.display="flex";
+
+}
+
+function closeRecharge(){
+
+    document.getElementById("rechargeModal").style.display="none";
+
+}
+
+window.onclick=function(e){
+
+    const modal=document.getElementById("rechargeModal");
+
+    if(e.target===modal){
+
+        closeRecharge();
+
+    }
+
+};
+//====================================================
+// SERVICES VERROUILLÉS
+//====================================================
+
+function serviceLocked(){
+
+    alert(
+
+`Ce service n'est pas encore activé.
+
+Veuillez contacter votre administrateur.`
+
+    );
+
+}
+
+//====================================================
+// FORMULAIRE RECHARGE
+//====================================================
+
+const rechargeForm=document.getElementById("rechargeForm");
+
+if(rechargeForm){
+
+rechargeForm.addEventListener("submit",submitRecharge);
+
+}
+
+async function submitRecharge(e){
+
+e.preventDefault();
+
+const amount=
+Number(document.getElementById("depositAmount").value);
+
+const operator=
+document.getElementById("mobileOperator").value;
+
+const phone=
+document.getElementById("phoneNumber").value.trim();
+
+if(amount<=0){
+
+alert("Montant invalide.");
+
+return;
+
+}
+
+if(operator===""){
+
+alert("Choisissez un opérateur.");
+
+return;
+
+}
+
+if(phone===""){
+
+alert("Entrez votre numéro.");
+
+return;
+
+}
+
+//==========================================
+// SEBPAY
+//==========================================
+
+const payload={
+
+amount:amount,
+
+operator:operator,
+
+phone:phone,
+
+customerId:currentUser.id,
+
+accountNumber:currentUser.account,
+
+customerName:currentUser.name
+
+};
+
+//================================================
+// ICI TU CONNECTERAS TON API SEBPAY
+//================================================
+
+// Exemple :
+
+/*
+
+const response=await fetch("/api/sebpay/deposit",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(payload)
 
 });
 
-// ===========================================
-// FIN DU FICHIER
-// ===========================================
+const result=await response.json();
+
+if(result.success){
+
+...
+
+}
+
+*/
+
+//================================================
+// DEMO
+//================================================
+
+alert(
+
+"Demande de recharge envoyée.\n\n" +
+
+"Montant : "+amount+" CAD"
+
+);
+
+addTransaction(
+
+"Recharge",
+
+"Demande SebPay",
+
+amount
+
+);
+
+showNotification(
+
+"Nouvelle demande de recharge envoyée.",
+
+"fa-wallet"
+
+);
+
+closeRecharge();
+
+rechargeForm.reset();
+
+}
+
+//====================================================
+// RAFRAÎCHISSEMENT AUTOMATIQUE
+//====================================================
+
+function refreshDashboard(){
+
+loadUser();
+
+refreshBalance(currentUser.balance);
+
+displayTransactions();
+
+updateSummary();
+
+}
+
+setInterval(refreshDashboard,10000);
+
+//====================================================
+// SYNCHRONISATION
+//====================================================
+
+window.addEventListener("storage",function(){
+
+loadUser();
+
+displayTransactions();
+
+refreshBalance(currentUser.balance);
+
+updateSummary();
+
+});
+
+//====================================================
+// SAUVEGARDE
+//====================================================
+
+function saveCurrentUser(){
+
+localStorage.setItem(
+
+"currentUser",
+
+JSON.stringify(currentUser)
+
+);
+
+}
+
+setInterval(saveCurrentUser,5000);
+
+//====================================================
+// DERNIÈRE CONNEXION
+//====================================================
+
+const now=new Date();
+
+document.getElementById("lastConnection").textContent=
+
+now.toLocaleString("fr-CA");
+
+//====================================================
+// DÉCONNEXION
+//====================================================
+
+function logout(){
+
+localStorage.removeItem("currentUser");
+
+localStorage.removeItem("isLoggedIn");
+
+window.location.href="login.html";
+
+}
+
+//====================================================
+// STATISTIQUES
+//====================================================
+
+function getStatistics(){
+
+console.log({
+
+client:currentUser.name,
+
+compte:currentUser.account,
+
+solde:currentUser.balance,
+
+operations:transactions.length
+
+});
+
+}
+
+getStatistics();
+
+//====================================================
+// FIN
+//====================================================
