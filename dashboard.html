@@ -1,290 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dashboard | RBC Demo Bank</title>
+<title>Royal Banking | Dashboard</title>
 
 <link rel="stylesheet" href="css/dashboard.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
 <body>
 
+<!-- ===========================
+SIDEBAR
+============================ -->
+
 <div class="sidebar">
 
-    <div class="logo">
+<div class="logo">
 
-        <i class="fa-solid fa-building-columns"></i>
+<h2>ROYAL BANK</h2>
 
-        <h2>RBC Demo Bank</h2>
-
-    </div>
-
-    <ul>
-
-        <li class="active">
-
-            <a href="dashboard.html">
-
-                <i class="fa-solid fa-house"></i>
-
-                Dashboard
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="accounts.html">
-
-                <i class="fa-solid fa-wallet"></i>
-
-                Accounts
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="transfer.html">
-
-                <i class="fa-solid fa-paper-plane"></i>
-
-                Transfer
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="cards.html">
-
-                <i class="fa-solid fa-credit-card"></i>
-
-                Cards
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="history.html">
-
-                <i class="fa-solid fa-clock-rotate-left"></i>
-
-                History
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="loan.html">
-
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-
-                Loans
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="profile.html">
-
-                <i class="fa-solid fa-user"></i>
-
-                Profile
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="admin.html">
-
-                <i class="fa-solid fa-user-shield"></i>
-
-                Admin
-
-            </a>
-
-        </li>
-
-    </ul>
+<p>Digital Banking</p>
 
 </div>
+
+<ul>
+
+<li class="active">
+<a href="#">
+<i class="fas fa-house"></i>
+<span>Accueil</span>
+</a>
+</li>
+
+<li>
+<a href="#" onclick="openRecharge();return false;">
+<i class="fas fa-wallet"></i>
+<span>Recharger mon compte</span>
+</a>
+</li>
+
+<li>
+<a href="#" onclick="serviceLocked();return false;">
+<i class="fas fa-paper-plane"></i>
+<span>Transfert</span>
+</a>
+</li>
+
+<li>
+<a href="#" onclick="serviceLocked();return false;">
+<i class="fas fa-money-bill-transfer"></i>
+<span>Paiement</span>
+</a>
+</li>
+
+<li>
+<a href="#" onclick="serviceLocked();return false;">
+<i class="fas fa-money-bill-wave"></i>
+<span>Retrait</span>
+</a>
+</li>
+
+<li>
+<a href="transactions.html">
+<i class="fas fa-clock-rotate-left"></i>
+<span>Historique</span>
+</a>
+</li>
+
+<li>
+<a href="profile.html">
+<i class="fas fa-user"></i>
+<span>Mon profil</span>
+</a>
+</li>
+
+<li>
+<a href="settings.html">
+<i class="fas fa-gear"></i>
+<span>Paramètres</span>
+</a>
+</li>
+
+<li>
+<a href="#" onclick="logout()">
+<i class="fas fa-right-from-bracket"></i>
+<span>Déconnexion</span>
+</a>
+</li>
+
+</ul>
+
+</div>
+
+<!-- ===========================
+MAIN
+============================ -->
 
 <div class="main">
 
 <header>
 
-<div class="search-box">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-<input
-type="text"
-placeholder="Search transaction...">
-
-</div>
-
-<div class="top-right">
-
-<button class="notification">
-
-<i class="fa-solid fa-bell"></i>
-
-<span>3</span>
-
-</button>
-
-<button id="darkMode">
-
-<i class="fa-solid fa-moon"></i>
-
-</button>
-
-<div class="profile">
-
-<img src="assets/img/avatar.png">
-
 <div>
 
-<h4 id="clientName">
+<h1 id="welcomeTitle">
 
-John Smith
+Bonjour
 
-</h4>
+</h1>
 
-<p>
+<p id="welcomeName">
 
-Premium Client
+Bienvenue sur votre espace bancaire sécurisé.
 
 </p>
 
 </div>
 
+<div class="header-icons">
+
+<i class="fas fa-bell"></i>
+
+<i class="fas fa-envelope"></i>
+
+<div class="online-status">
+
+<i class="fas fa-circle"></i>
+
+En ligne
+
 </div>
+
+<img src="assets/avatar.png" class="avatar">
 
 </div>
 
 </header>
 
-<section class="welcome">
+<!-- ===========================
+CARTE BANCAIRE
+============================ -->
 
-<h1>
+<section class="bank-card-section">
 
-Welcome Back,
+<div class="bank-card">
 
-<span id="welcomeName">
+<div class="card-top">
 
-John Smith
+<div>
 
-</span>
+<h3>ROYAL BANK</h3>
 
-</h1>
+<p>Debit Card</p>
 
-<p>
+</div>
 
-Manage your finances securely.
+<div>
 
-</p>
-
-</section>
-
-<section class="balance-area">
-
-<div class="balance-card">
-
-<h3>Total Balance</h3>
-
-<h1>
-
-$
-
-<span id="balance">
-
-25,480.75
-
-</span>
-
-CAD
-
-</h1>
-
-<div class="actions">
-
-<button>
-
-<i class="fa-solid fa-plus"></i>
-
-Deposit
-
-</button>
-
-<button>
-
-<i class="fa-solid fa-paper-plane"></i>
-
-Transfer
-
-</button>
-
-<button>
-
-<i class="fa-solid fa-money-bill-wave"></i>
-
-Withdraw
-
-</button>
+<i class="fas fa-wifi"></i>
 
 </div>
 
 </div>
 
-<div class="credit-card">
+<div class="card-chip">
 
-<div class="chip"></div>
+<i class="fas fa-microchip"></i>
 
-<h2>RBC DEMO VISA</h2>
+</div>
 
-<h3 id="cardNumber">
+<div class="card-number">
 
-**** **** **** 3456
+<span id="cardNumber">
 
-</h3>
+**** **** **** 4587
+
+</span>
+
+</div>
 
 <div class="card-bottom">
 
 <div>
 
-<small>Card Holder</small>
+<small>TITULAIRE</small>
 
-<h4>
+<h4 id="cardHolder">
 
-John Smith
+CLIENT
 
 </h4>
 
@@ -292,489 +202,946 @@ John Smith
 
 <div>
 
-<small>Expires</small>
+<small>EXPIRE</small>
 
 <h4>
 
-09/30
+08/31
 
 </h4>
 
 </div>
 
+<div>
+
+<i class="fab fa-cc-visa visa-logo"></i>
+
+</div>
+
 </div>
 
 </div>
 
 </section>
-<section class="dashboard-grid">
 
-    <!-- QUICK ACTIONS -->
+<!-- ===========================
+SOLDE
+============================ -->
 
-    <div class="card quick-actions">
+<section class="cards">
 
-        <div class="card-header">
+<div class="card balance">
 
-            <h2>Quick Actions</h2>
+<h3>
 
-        </div>
+Solde disponible
 
-        <div class="action-grid">
+</h3>
 
-            <a href="transfer.html" class="action-box">
+<div class="balance-row">
 
-                <i class="fa-solid fa-paper-plane"></i>
+<h2 id="balance">
 
-                <span>Transfer</span>
+$0.00
 
-            </a>
+</h2>
 
-            <a href="accounts.html" class="action-box">
+<button id="toggleBalance">
 
-                <i class="fa-solid fa-wallet"></i>
+<i class="fas fa-eye"></i>
 
-                <span>Accounts</span>
+</button>
 
-            </a>
+</div>
 
-            <a href="cards.html" class="action-box">
+<p>
 
-                <i class="fa-solid fa-credit-card"></i>
+Compte courant CAD
 
-                <span>Cards</span>
+</p>
 
-            </a>
+</div>
 
-            <a href="loan.html" class="action-box">
+<div class="card">
 
-                <i class="fa-solid fa-hand-holding-dollar"></i>
+<h3>
 
-                <span>Loan</span>
+Compte bancaire
 
-            </a>
+</h3>
 
-            <a href="history.html" class="action-box">
+<h2 id="accountNumber">
 
-                <i class="fa-solid fa-clock-rotate-left"></i>
+--------
 
-                <span>History</span>
+</h2>
 
-            </a>
+</div>
 
-            <a href="profile.html" class="action-box">
+<div class="card">
 
-                <i class="fa-solid fa-user"></i>
+<h3>
 
-                <span>Profile</span>
+ID Client
 
-            </a>
+</h3>
 
-        </div>
+<h2 id="clientId">
 
-    </div>
+------
 
-    <!-- ACCOUNTS -->
+</h2>
 
-    <div class="card accounts-card">
+</div>
 
-        <div class="card-header">
+<div class="card">
 
-            <h2>Accounts</h2>
+<h3>
 
-        </div>
+Statut
 
-        <div class="account-item">
+</h3>
 
-            <div>
+<h2 class="status active">
 
-                <h4>Checking Account</h4>
+ACTIF
 
-                <small>•••• 4589</small>
+</h2>
 
-            </div>
-
-            <strong>$18,560.40</strong>
-
-        </div>
-
-        <div class="account-item">
-
-            <div>
-
-                <h4>Savings Account</h4>
-
-                <small>•••• 8975</small>
-
-            </div>
-
-            <strong>$6,920.35</strong>
-
-        </div>
-
-        <div class="account-item">
-
-            <div>
-
-                <h4>USD Account</h4>
-
-                <small>•••• 3374</small>
-
-            </div>
-
-            <strong>$2,180.00</strong>
-
-        </div>
-
-    </div>
-
-    <!-- RECENT TRANSACTIONS -->
-
-    <div class="card transactions">
-
-        <div class="card-header">
-
-            <h2>Recent Transactions</h2>
-
-            <a href="history.html">
-
-                View All
-
-            </a>
-
-        </div>
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>Date</th>
-
-                    <th>Description</th>
-
-                    <th>Status</th>
-
-                    <th>Amount</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody id="recentTransactions">
-
-                <tr>
-
-                    <td>16 Jul</td>
-
-                    <td>Salary Deposit</td>
-
-                    <td>
-
-                        <span class="success">
-
-                            Completed
-
-                        </span>
-
-                    </td>
-
-                    <td class="plus">
-
-                        +$3,500.00
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>15 Jul</td>
-
-                    <td>Amazon Purchase</td>
-
-                    <td>
-
-                        <span class="pending">
-
-                            Pending
-
-                        </span>
-
-                    </td>
-
-                    <td class="minus">
-
-                        -$189.50
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>14 Jul</td>
-
-                    <td>Electric Bill</td>
-
-                    <td>
-
-                        <span class="success">
-
-                            Paid
-
-                        </span>
-
-                    </td>
-
-                    <td class="minus">
-
-                        -$124.90
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-           <!-- FINANCIAL OVERVIEW -->
-
-    <div class="card statistics">
-
-        <div class="card-header">
-
-            <h2>Financial Overview</h2>
-
-        </div>
-
-        <div class="stats-grid">
-
-            <div class="stat-box">
-
-                <i class="fa-solid fa-arrow-trend-up"></i>
-
-                <h3>$52,860</h3>
-
-                <p>Total Income</p>
-
-            </div>
-
-            <div class="stat-box">
-
-                <i class="fa-solid fa-arrow-trend-down"></i>
-
-                <h3>$18,940</h3>
-
-                <p>Total Expenses</p>
-
-            </div>
-
-            <div class="stat-box">
-
-                <i class="fa-solid fa-piggy-bank"></i>
-
-                <h3>$33,920</h3>
-
-                <p>Total Savings</p>
-
-            </div>
-
-            <div class="stat-box">
-
-                <i class="fa-solid fa-chart-line"></i>
-
-                <h3>+12.6%</h3>
-
-                <p>Growth</p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- NOTIFICATIONS -->
-
-    <div class="card notifications">
-
-        <div class="card-header">
-
-            <h2>Notifications</h2>
-
-        </div>
-
-        <ul>
-
-            <li>
-
-                <i class="fa-solid fa-circle-check"></i>
-
-                Salary deposited successfully.
-
-            </li>
-
-            <li>
-
-                <i class="fa-solid fa-credit-card"></i>
-
-                Your Visa card expires in 2 months.
-
-            </li>
-
-            <li>
-
-                <i class="fa-solid fa-bell"></i>
-
-                A new e-Statement is available.
-
-            </li>
-
-            <li>
-
-                <i class="fa-solid fa-shield-halved"></i>
-
-                Security check completed successfully.
-
-            </li>
-
-        </ul>
-
-    </div>
-
-    <!-- SPENDING CHART -->
-
-    <div class="card chart-card">
-
-        <div class="card-header">
-
-            <h2>Monthly Spending</h2>
-
-        </div>
-
-        <canvas id="expenseChart"></canvas>
-
-    </div>
-
-    <!-- EXCHANGE RATES -->
-
-    <div class="card exchange">
-
-        <div class="card-header">
-
-            <h2>Exchange Rates</h2>
-
-        </div>
-
-        <div class="rate">
-
-            <span>USD</span>
-
-            <strong>1.36 CAD</strong>
-
-        </div>
-
-        <div class="rate">
-
-            <span>EUR</span>
-
-            <strong>1.58 CAD</strong>
-
-        </div>
-
-        <div class="rate">
-
-            <span>GBP</span>
-
-            <strong>1.83 CAD</strong>
-
-        </div>
-
-        <div class="rate">
-
-            <span>XOF</span>
-
-            <strong>0.0023 CAD</strong>
-
-        </div>
-
-    </div>
+</div>
 
 </section>
-            <footer class="dashboard-footer">
+<!-- ===========================
+ACTIONS RAPIDES
+============================ -->
 
-    <p>
+<section class="quick-actions">
 
-        © 2026 RBC Demo Bank
+<div class="action-card recharge">
 
-        | Secure Digital Banking
+<i class="fas fa-wallet"></i>
 
-        | All Rights Reserved
+<h3>Recharger mon compte</h3>
 
-    </p>
+<p>
+
+Ajoutez de l'argent sur votre compte via SebPay.
+
+</p>
+
+<button onclick="openRecharge()">
+
+Recharger maintenant
+
+</button>
+
+</div>
+
+<div class="action-card locked">
+
+<i class="fas fa-paper-plane"></i>
+
+<h3>Envoyer de l'argent</h3>
+
+<p>
+
+Effectuer un transfert vers un autre compte.
+
+</p>
+
+<button onclick="serviceLocked()">
+
+Service verrouillé
+
+</button>
+
+</div>
+
+<div class="action-card locked">
+
+<i class="fas fa-credit-card"></i>
+
+<h3>Paiement</h3>
+
+<p>
+
+Paiement de factures et achats.
+
+</p>
+
+<button onclick="serviceLocked()">
+
+Service verrouillé
+
+</button>
+
+</div>
+
+<div class="action-card locked">
+
+<i class="fas fa-money-bill-wave"></i>
+
+<h3>Retrait</h3>
+
+<p>
+
+Retirer de l'argent depuis votre compte.
+
+</p>
+
+<button onclick="serviceLocked()">
+
+Service verrouillé
+
+</button>
+
+</div>
+
+</section>
+
+<!-- ===========================
+INFORMATIONS DU COMPTE
+============================ -->
+
+<section class="account-overview">
+
+<div class="overview-card">
+
+<h2>
+
+Informations personnelles
+
+</h2>
+
+<table class="account-table">
+
+<tr>
+
+<td>Nom complet</td>
+
+<td id="clientName">-</td>
+
+</tr>
+
+<tr>
+
+<td>Numéro de compte</td>
+
+<td id="clientAccount">-</td>
+
+</tr>
+
+<tr>
+
+<td>Type de compte</td>
+
+<td>Compte Premium</td>
+
+</tr>
+
+<tr>
+
+<td>Devise</td>
+
+<td>CAD ($)</td>
+
+</tr>
+
+<tr>
+
+<td>Pays</td>
+
+<td>Canada</td>
+
+</tr>
+
+<tr>
+
+<td>Statut</td>
+
+<td>
+
+<span class="status active">
+
+Compte vérifié
+
+</span>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="overview-card">
+
+<h2>
+
+Centre de notifications
+
+</h2>
+
+<div id="notificationsContainer">
+
+<div class="notification">
+
+<i class="fas fa-circle-check"></i>
+
+<p>
+
+Bienvenue sur votre espace bancaire.
+
+</p>
+
+</div>
+
+<div class="notification">
+
+<i class="fas fa-wallet"></i>
+
+<p>
+
+Vous pouvez recharger votre compte via SebPay.
+
+</p>
+
+</div>
+
+<div class="notification">
+
+<i class="fas fa-shield-halved"></i>
+
+<p>
+
+Votre compte est entièrement sécurisé.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+TRANSACTIONS
+============================ -->
+
+<section class="transactions-section">
+
+<div class="section-header">
+
+<h2>
+
+Dernières opérations
+
+</h2>
+
+<a href="transactions.html" class="view-all">
+
+Voir tout
+
+</a>
+
+</div>
+
+<table class="transactions-table">
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+
+<th>Type</th>
+
+<th>Description</th>
+
+<th>Montant</th>
+
+<th>Statut</th>
+
+</tr>
+
+</thead>
+
+<tbody id="transactionsTable">
+
+<!-- dashboard.js remplira automatiquement -->
+
+</tbody>
+
+</table>
+
+</section>
+
+<!-- ===========================
+RÉSUMÉ FINANCIER
+============================ -->
+
+<section class="finance-summary">
+
+<div class="summary-card income">
+
+<div class="icon">
+
+<i class="fas fa-arrow-down"></i>
+
+</div>
+
+<div>
+
+<h4>Entrées</h4>
+
+<h2 id="monthlyIncome">
+
+0.00 $
+
+</h2>
+
+</div>
+
+</div>
+
+<div class="summary-card expense">
+
+<div class="icon">
+
+<i class="fas fa-arrow-up"></i>
+
+</div>
+
+<div>
+
+<h4>Sorties</h4>
+
+<h2 id="monthlyExpense">
+
+0.00 $
+
+</h2>
+
+</div>
+
+</div>
+
+<div class="summary-card saving">
+
+<div class="icon">
+
+<i class="fas fa-piggy-bank"></i>
+
+</div>
+
+<div>
+
+<h4>Solde restant</h4>
+
+<h2 id="savingAmount">
+
+0.00 $
+
+</h2>
+
+</div>
+
+</div>
+
+</section>
+<!-- ===========================
+SERVICES BANCAIRES
+=========================== -->
+
+<section class="services">
+
+<h2>Services bancaires</h2>
+
+<div class="services-grid">
+
+<div class="service-card">
+
+<i class="fas fa-wallet"></i>
+
+<h3>Recharge SebPay</h3>
+
+<p>Déposer de l'argent instantanément sur votre compte.</p>
+
+<button class="service-btn" onclick="openRecharge()">
+
+Recharger
+
+</button>
+
+</div>
+
+<div class="service-card disabled">
+
+<i class="fas fa-paper-plane"></i>
+
+<h3>Virement</h3>
+
+<p>Envoyer de l'argent vers un autre compte bancaire.</p>
+
+<button class="service-btn disabled"
+onclick="serviceLocked()">
+
+Bientôt disponible
+
+</button>
+
+</div>
+
+<div class="service-card disabled">
+
+<i class="fas fa-credit-card"></i>
+
+<h3>Paiement</h3>
+
+<p>Payer vos achats et vos factures.</p>
+
+<button class="service-btn disabled"
+onclick="serviceLocked()">
+
+Bientôt disponible
+
+</button>
+
+</div>
+
+<div class="service-card disabled">
+
+<i class="fas fa-money-bill-wave"></i>
+
+<h3>Retrait</h3>
+
+<p>Retirer votre argent.</p>
+
+<button class="service-btn disabled"
+onclick="serviceLocked()">
+
+Bientôt disponible
+
+</button>
+
+</div>
+
+<div class="service-card disabled">
+
+<i class="fas fa-piggy-bank"></i>
+
+<h3>Épargne</h3>
+
+<p>Créer un plan d'épargne automatique.</p>
+
+<button class="service-btn disabled"
+onclick="serviceLocked()">
+
+Bientôt disponible
+
+</button>
+
+</div>
+
+<div class="service-card disabled">
+
+<i class="fas fa-chart-line"></i>
+
+<h3>Investissement</h3>
+
+<p>Investissez directement depuis votre compte.</p>
+
+<button class="service-btn disabled"
+onclick="serviceLocked()">
+
+Bientôt disponible
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+ACTIVITÉ
+=========================== -->
+
+<section class="activity-section">
+
+<div class="section-header">
+
+<h2>Activité récente</h2>
+
+<span class="badge-online">
+
+<i class="fas fa-circle"></i>
+
+Compte sécurisé
+
+</span>
+
+</div>
+
+<div class="timeline" id="activityTimeline">
+
+<div class="timeline-item">
+
+<div class="timeline-icon">
+
+<i class="fas fa-right-to-bracket"></i>
+
+</div>
+
+<div class="timeline-content">
+
+<h4>Connexion réussie</h4>
+
+<p>
+
+Bienvenue sur votre espace bancaire.
+
+</p>
+
+<small id="lastLogin">
+
+Aujourd'hui
+
+</small>
+
+</div>
+
+</div>
+
+<div class="timeline-item">
+
+<div class="timeline-icon">
+
+<i class="fas fa-wallet"></i>
+
+</div>
+
+<div class="timeline-content">
+
+<h4>Recharge SebPay</h4>
+
+<p>
+
+Aucune recharge disponible.
+
+</p>
+
+<small>
+
+En attente
+
+</small>
+
+</div>
+
+</div>
+
+<div class="timeline-item">
+
+<div class="timeline-icon">
+
+<i class="fas fa-shield-halved"></i>
+
+</div>
+
+<div class="timeline-content">
+
+<h4>Sécurité</h4>
+
+<p>
+
+Votre compte est protégé.
+
+</p>
+
+<small>
+
+Protection active
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+ASSISTANCE
+=========================== -->
+
+<section class="support-section">
+
+<div class="support-card">
+
+<h2>
+
+Besoin d'aide ?
+
+</h2>
+
+<p>
+
+Notre service clientèle est disponible 24h/24 et 7j/7.
+
+</p>
+
+<div class="support-actions">
+
+<button>
+
+<i class="fas fa-comments"></i>
+
+Chat
+
+</button>
+
+<button>
+
+<i class="fas fa-phone"></i>
+
+Téléphone
+
+</button>
+
+<button>
+
+<i class="fas fa-envelope"></i>
+
+Email
+
+</button>
+
+</div>
+
+</div>
+
+<div class="support-card">
+
+<h2>
+
+Informations
+
+</h2>
+
+<table class="info-table">
+
+<tr>
+
+<td>ID Client</td>
+
+<td id="clientInfoId">----------</td>
+
+</tr>
+
+<tr>
+
+<td>Agence</td>
+
+<td>Montréal</td>
+
+</tr>
+
+<tr>
+
+<td>Type</td>
+
+<td>Compte Premium</td>
+
+</tr>
+
+<tr>
+
+<td>Statut</td>
+
+<td>
+
+<span class="status active">
+
+Actif
+
+</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Dernière connexion</td>
+
+<td id="lastConnection">
+
+Aujourd'hui
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+</section>
+<!-- ===========================
+MODAL RECHARGEMENT SEBPAY
+=========================== -->
+
+<div id="rechargeModal" class="modal">
+
+    <div class="modal-content">
+
+        <span class="close" onclick="closeRecharge()">&times;</span>
+
+        <h2>Recharger mon compte</h2>
+
+        <p>
+            Choisissez votre opérateur Mobile Money puis saisissez le montant.
+        </p>
+
+        <form id="rechargeForm">
+
+            <div class="form-group">
+
+                <label>Montant</label>
+
+                <input
+                    type="number"
+                    id="depositAmount"
+                    placeholder="Montant"
+                    min="1"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Opérateur</label>
+
+                <select id="mobileOperator" required>
+
+                    <option value="">Sélectionner</option>
+
+                    <option value="MTN_BENIN">
+                        MTN Benin
+                    </option>
+
+                    <option value="MOOV_BENIN">
+                        Moov Africa Benin
+                    </option>
+
+                    <option value="MTN_CI">
+                        MTN Côte d'Ivoire
+                    </option>
+
+                    <option value="ORANGE_CI">
+                        Orange Côte d'Ivoire
+                    </option>
+
+                    <option value="TOGOCEL">
+                        Togocel
+                    </option>
+
+                    <option value="MOOV_TOGO">
+                        Moov Togo
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Téléphone</label>
+
+                <input
+                    type="tel"
+                    id="phoneNumber"
+                    placeholder="229XXXXXXXX"
+                    required>
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn-primary">
+
+                Continuer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+FOOTER
+=========================== -->
+
+<footer class="dashboard-footer">
+
+    <div>
+
+        <strong>ROYAL BANK</strong>
+
+        <p>
+
+            © 2026 Royal Bank.
+
+            Tous droits réservés.
+
+        </p>
+
+    </div>
+
+    <div class="footer-links">
+
+        <a href="#">
+
+            Conditions
+
+        </a>
+
+        <a href="#">
+
+            Confidentialité
+
+        </a>
+
+        <a href="#">
+
+            Sécurité
+
+        </a>
+
+        <a href="#">
+
+            Contact
+
+        </a>
+
+    </div>
 
 </footer>
 
 </div>
 
-<!-- Floating Quick Menu -->
-
-<div class="floating-menu">
-
-    <a href="transfer.html" title="Transfer">
-
-        <i class="fa-solid fa-paper-plane"></i>
-
-    </a>
-
-    <a href="accounts.html" title="Accounts">
-
-        <i class="fa-solid fa-wallet"></i>
-
-    </a>
-
-    <a href="cards.html" title="Cards">
-
-        <i class="fa-solid fa-credit-card"></i>
-
-    </a>
-
-    <a href="loan.html" title="Loan">
-
-        <i class="fa-solid fa-hand-holding-dollar"></i>
-
-    </a>
-
-</div>
-
-<!-- Loading Screen -->
-
-<div id="loader">
-
-    <div class="spinner"></div>
-
-    <h3>Loading Dashboard...</h3>
-
-</div>
-
-<!-- Notification Popup -->
-
-<div id="notificationPopup" class="popup">
-
-    <i class="fa-solid fa-circle-check"></i>
-
-    <span id="popupMessage">
-
-        Welcome back.
-
-    </span>
-
-</div>
-
-<!-- Charts -->
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- Dashboard -->
+<!-- ===========================
+SCRIPTS
+=========================== -->
 
 <script src="js/dashboard.js"></script>
 
