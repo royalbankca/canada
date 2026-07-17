@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>RBC Demo Bank | Dépôt Mobile Money</title>
+<title>Virement | Demo Bank</title>
 
 <link rel="stylesheet" href="css/transfer.css">
 
@@ -22,52 +22,82 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <div class="logo">
 
-<h2>RBC DEMO BANK</h2>
+<h2>DEMO BANK</h2>
 
 </div>
 
 <ul>
 
 <li>
+
 <a href="dashboard.html">
+
 <i class="fas fa-home"></i>
+
 <span>Accueil</span>
+
 </a>
+
 </li>
 
 <li class="active">
+
 <a href="transfer.html">
-<i class="fas fa-wallet"></i>
-<span>Dépôt Mobile Money</span>
+
+<i class="fas fa-paper-plane"></i>
+
+<span>Virement</span>
+
 </a>
+
 </li>
 
 <li>
+
 <a href="transactions.html">
-<i class="fas fa-clock-rotate-left"></i>
+
+<i class="fas fa-receipt"></i>
+
 <span>Transactions</span>
+
 </a>
+
 </li>
 
 <li>
+
 <a href="profile.html">
+
 <i class="fas fa-user"></i>
-<span>Mon Profil</span>
+
+<span>Mon profil</span>
+
 </a>
+
 </li>
 
 <li>
+
 <a href="settings.html">
+
 <i class="fas fa-gear"></i>
+
 <span>Paramètres</span>
+
 </a>
+
 </li>
 
 <li>
+
 <a href="#" onclick="logout()">
+
 <i class="fas fa-right-from-bracket"></i>
+
 <span>Déconnexion</span>
+
 </a>
+
 </li>
 
 </ul>
@@ -80,47 +110,43 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <div>
 
-<h1>Dépôt Mobile Money</h1>
+<h1>Effectuer un virement</h1>
 
 <p>
 
-Rechargez votre compte RBC Demo Bank via SebPay.
+Transférez des fonds rapidement et en toute sécurité.
 
 </p>
 
 </div>
 
-<div class="balance-card">
+<div class="balance-box">
 
 <span>Solde disponible</span>
 
-<h2 id="availableBalance">
-
-0.00 $
-
-</h2>
+<h2 id="availableBalance">$0.00</h2>
 
 </div>
 
 </header>
 
-<section class="deposit-container">
+<section class="transfer-container">
 
-<div class="deposit-form">
+<div class="transfer-card">
 
 <h2>
 
-<i class="fas fa-wallet"></i>
+<i class="fas fa-paper-plane"></i>
 
-Nouveau dépôt
+Nouveau virement
 
 </h2>
 
-<form id="depositForm">
+<form id="transferForm">
 
 <div class="form-group">
 
-<label>Compte RBC</label>
+<label>Compte émetteur</label>
 
 <input
 type="text"
@@ -131,52 +157,62 @@ readonly>
 
 <div class="form-group">
 
-<label>Pays</label>
-
-<select id="country">
-
-<option value="BJ">🇧🇯 Bénin</option>
-<option value="BF">🇧🇫 Burkina Faso</option>
-<option value="CM">🇨🇲 Cameroun</option>
-<option value="CG">🇨🇬 Congo</option>
-<option value="CI">🇨🇮 Côte d'Ivoire</option>
-<option value="GA">🇬🇦 Gabon</option>
-<option value="GH">🇬🇭 Ghana</option>
-<option value="GM">🇬🇲 Gambie</option>
-<option value="GN">🇬🇳 Guinée</option>
-<option value="GW">🇬🇼 Guinée-Bissau</option>
-<option value="ML">🇲🇱 Mali</option>
-<option value="NE">🇳🇪 Niger</option>
-<option value="NG">🇳🇬 Nigeria</option>
-<option value="CD">🇨🇩 RDC</option>
-<option value="SN">🇸🇳 Sénégal</option>
-<option value="TD">🇹🇩 Tchad</option>
-<option value="TG">🇹🇬 Togo</option>
-
-</select>
-
-</div>
-
-<div class="form-group">
-
-<label>Opérateur</label>
-
-<select id="operator">
-
-<option>Chargement...</option>
-
-</select>
-
-</div>
-
-<div class="form-group">
-
-<label>Numéro Mobile Money</label>
+<label>Nom du bénéficiaire</label>
 
 <input
-type="tel"
-id="phone"
-placeholder="229XXXXXXXX">
+type="text"
+id="beneficiaryName"
+placeholder="Nom complet"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Numéro du compte bénéficiaire</label>
+
+<input
+type="text"
+id="beneficiaryAccount"
+placeholder="CA000000000000"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Banque du bénéficiaire</label>
+
+<select id="bank">
+
+<option value="">Sélectionner</option>
+
+<option>Demo Bank</option>
+
+<option>Banque Nationale</option>
+
+<option>Banque Internationale</option>
+
+<option>Autre Banque</option>
+
+</select>
+
+</div>
+<div class="form-group">
+
+<label>Devise</label>
+
+<select id="currency">
+
+<option value="CAD">Dollar Canadien (CAD)</option>
+
+<option value="USD">Dollar Américain (USD)</option>
+
+<option value="EUR">Euro (EUR)</option>
+
+<option value="GBP">Livre Sterling (GBP)</option>
+
+</select>
 
 </div>
 
@@ -187,45 +223,54 @@ placeholder="229XXXXXXXX">
 <input
 type="number"
 id="amount"
-placeholder="1000">
+placeholder="0.00"
+min="1"
+step="0.01"
+required>
 
 </div>
 
-<div
-class="form-group"
-id="otpContainer"
-style="display:none;">
+<div class="form-group">
 
-<label>Code OTP</label>
+<label>Motif du virement</label>
+
+<textarea
+id="reason"
+rows="4"
+placeholder="Exemple : Paiement facture, Loyer, Cadeau..."
+></textarea>
+
+</div>
+
+<div class="form-group">
+
+<label>Code d'accès</label>
 
 <input
-type="text"
-id="otp"
-placeholder="OTP">
+type="password"
+id="accessCode"
+placeholder="Entrez votre code d'accès"
+required>
 
 </div>
 
 <div class="buttons">
 
 <button
-type="button"
-id="payButton"
-class="btn-primary">
+type="reset"
+class="btn-cancel">
 
-<i class="fas fa-wallet"></i>
-
-Déposer
+Annuler
 
 </button>
 
 <button
-type="button"
-id="statusButton"
-class="btn-secondary">
+type="submit"
+class="btn-transfer">
 
-<i class="fas fa-rotate"></i>
+<i class="fas fa-paper-plane"></i>
 
-Actualiser
+Envoyer le virement
 
 </button>
 
@@ -235,31 +280,31 @@ Actualiser
 
 </div>
 
-<div class="deposit-summary">
+<div class="summary-card">
 
 <h2>
 
-<i class="fas fa-chart-line"></i>
+<i class="fas fa-circle-info"></i>
 
 Résumé
 
 </h2>
 
-<div class="summary-row">
+<div class="summary-item">
 
-<span>Compte</span>
+<span>Compte émetteur</span>
 
 <strong id="summaryAccount">
 
----------
+--------
 
 </strong>
 
 </div>
 
-<div class="summary-row">
+<div class="summary-item">
 
-<span>Solde</span>
+<span>Solde disponible</span>
 
 <strong id="summaryBalance">
 
@@ -269,49 +314,25 @@ Résumé
 
 </div>
 
-<div class="summary-row">
+<div class="summary-item">
 
-<span>Référence</span>
+<span>Frais de transaction</span>
 
-<strong id="depositReference">
+<strong>
 
----------
-
-</strong>
-
-</div>
-
-<div class="summary-row">
-
-<span>Statut</span>
-
-<strong id="depositStatus">
-
-En attente
+0.00 $
 
 </strong>
 
 </div>
 
-<div class="summary-row">
+<div class="summary-item total">
 
-<span>Montant</span>
+<span>Montant à débiter</span>
 
-<strong id="depositAmount">
+<strong id="summaryTotal">
 
-0.00
-
-</strong>
-
-</div>
-
-<div class="summary-row total">
-
-<span>Résultat</span>
-
-<strong id="depositResult">
-
-Aucun dépôt
+0.00 $
 
 </strong>
 
@@ -320,243 +341,169 @@ Aucun dépôt
 </div>
 
 </section>
-<section class="details-container">
+<section class="transfer-info">
 
-<div class="details-card">
-
-<h2>
-
-<i class="fas fa-mobile-screen-button"></i>
-
-Informations SebPay
-
-</h2>
-
-<div class="detail-row">
-
-<span>Référence</span>
-
-<strong id="lastReference">
-
----------
-
-</strong>
-
-</div>
-
-<div class="detail-row">
-
-<span>ID Transaction</span>
-
-<strong id="lastTransactionId">
-
----------
-
-</strong>
-
-</div>
-
-<div class="detail-row">
-
-<span>Statut</span>
-
-<strong id="lastStatus">
-
-En attente
-
-</strong>
-
-</div>
-
-<div class="detail-row">
-
-<span>Message</span>
-
-<strong id="lastMessage">
-
----------
-
-</strong>
-
-</div>
-
-<div class="detail-row">
-
-<span>Pays</span>
-
-<strong id="lastCountry">
-
----------
-
-</strong>
-
-</div>
-
-<div class="detail-row">
-
-<span>Opérateur</span>
-
-<strong id="lastOperator">
-
----------
-
-</strong>
-
-</div>
-
-<div class="detail-row">
-
-<span>Téléphone</span>
-
-<strong id="lastPhone">
-
----------
-
-</strong>
-
-</div>
-
-</div>
-
-<div class="details-card">
+<div class="info-card">
 
 <h2>
 
-<i class="fas fa-chart-column"></i>
+<i class="fas fa-shield-halved"></i>
 
-État du dépôt
+Sécurité
 
 </h2>
 
-<div class="detail-row">
+<ul>
 
-<span>Montant demandé</span>
+<li>
 
-<strong id="requestedAmount">
+<i class="fas fa-check-circle"></i>
 
-0.00
+Toutes les transactions sont sécurisées.
 
-</strong>
+</li>
 
-</div>
+<li>
 
-<div class="detail-row">
+<i class="fas fa-check-circle"></i>
 
-<span>Montant reçu</span>
+Vos données sont chiffrées.
 
-<strong id="receivedAmount">
+</li>
 
-0.00
+<li>
 
-</strong>
+<i class="fas fa-check-circle"></i>
 
-</div>
+Une confirmation sera demandée avant l'envoi.
 
-<div class="detail-row">
+</li>
 
-<span>Devise</span>
+<li>
 
-<strong id="receivedCurrency">
+<i class="fas fa-check-circle"></i>
 
----------
+Un reçu sera généré automatiquement.
 
-</strong>
+</li>
 
-</div>
-
-<div class="detail-row">
-
-<span>Date de création</span>
-
-<strong id="createdAt">
-
----------
-
-</strong>
+</ul>
 
 </div>
 
-<div class="detail-row">
+<div class="info-card">
 
-<span>Dernière mise à jour</span>
+<h2>
 
-<strong id="updatedAt">
+<i class="fas fa-clock"></i>
 
----------
+Délais de traitement
 
-</strong>
+</h2>
 
-</div>
+<table class="delay-table">
 
-<div class="detail-row total">
+<tr>
 
-<span>Résultat</span>
+<td>Demo Bank</td>
 
-<strong id="paymentResult">
+<td>Immédiat</td>
 
-Aucun dépôt
+</tr>
 
-</strong>
+<tr>
 
-</div>
+<td>Banques nationales</td>
 
-<button
+<td>Quelques minutes</td>
 
-type="button"
+</tr>
 
-class="btn-primary"
+<tr>
 
-id="refreshStatus">
+<td>Banques internationales</td>
 
-<i class="fas fa-arrows-rotate"></i>
+<td>1 à 3 jours ouvrables</td>
 
-Actualiser le statut
+</tr>
 
-</button>
+</table>
 
 </div>
 
 </section>
 
-<section class="history-container">
+<section class="beneficiaries">
 
-<div class="history-card">
+<div class="section-title">
 
 <h2>
 
-<i class="fas fa-clock-rotate-left"></i>
+<i class="fas fa-users"></i>
 
-Historique des dépôts
+Bénéficiaires enregistrés
 
 </h2>
 
-<table>
+</div>
+
+<table class="beneficiary-table">
 
 <thead>
 
 <tr>
 
-<th>Référence</th>
+<th>Nom</th>
 
-<th>Montant</th>
+<th>Compte</th>
 
-<th>Opérateur</th>
+<th>Banque</th>
 
-<th>Statut</th>
-
-<th>Date</th>
+<th>Action</th>
 
 </tr>
 
 </thead>
 
-<tbody id="depositHistory">
+<tbody id="beneficiaryTable">
 
 <tr>
 
-<td colspan="5">
+<td>Jean Dupont</td>
 
-Aucun dépôt disponible.
+<td>CA785412369874</td>
+
+<td>Demo Bank</td>
+
+<td>
+
+<button
+class="btn-select">
+
+Sélectionner
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Marie Tremblay</td>
+
+<td>CA456987123654</td>
+
+<td>Banque Nationale</td>
+
+<td>
+
+<button
+class="btn-select">
+
+Sélectionner
+
+</button>
 
 </td>
 
@@ -566,92 +513,229 @@ Aucun dépôt disponible.
 
 </table>
 
-<div class="history-buttons">
+</section>
+<section class="limits-section">
 
-<button
+<div class="limit-card">
 
-type="button"
+<h2>
 
-id="reloadHistory"
+<i class="fas fa-chart-line"></i>
 
-class="btn-primary">
+Limites de virement
 
-<i class="fas fa-rotate"></i>
+</h2>
 
-Actualiser
+<div class="limit-item">
 
-</button>
+<span>Limite quotidienne</span>
 
-<button
+<strong>25 000.00 $</strong>
 
-type="button"
+</div>
 
-id="clearHistory"
+<div class="limit-item">
 
-class="btn-secondary">
+<span>Montant déjà utilisé aujourd'hui</span>
 
-<i class="fas fa-trash"></i>
+<strong id="usedToday">
 
-Vider
+0.00 $
 
-</button>
+</strong>
+
+</div>
+
+<div class="limit-item">
+
+<span>Montant restant</span>
+
+<strong id="remainingLimit">
+
+25 000.00 $
+
+</strong>
+
+</div>
+
+</div>
+
+<div class="limit-card">
+
+<h2>
+
+<i class="fas fa-file-invoice"></i>
+
+Informations
+
+</h2>
+
+<p>
+
+Avant de confirmer votre virement, vérifiez soigneusement les informations du bénéficiaire. Une fois exécutée, une transaction ne peut généralement pas être annulée.
+
+</p>
+
+<div class="tips">
+
+<div>
+
+<i class="fas fa-circle-check"></i>
+
+Vérifiez le numéro de compte.
+
+</div>
+
+<div>
+
+<i class="fas fa-circle-check"></i>
+
+Confirmez le nom du bénéficiaire.
+
+</div>
+
+<div>
+
+<i class="fas fa-circle-check"></i>
+
+Assurez-vous que le montant est correct.
+
+</div>
 
 </div>
 
 </div>
 
 </section>
-<section class="confirmation-container">
+
+<section class="history-preview">
+
+<div class="section-title">
+
+<h2>
+
+<i class="fas fa-clock-rotate-left"></i>
+
+Derniers virements
+
+</h2>
+
+</div>
+
+<table class="history-table">
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+
+<th>Bénéficiaire</th>
+
+<th>Montant</th>
+
+<th>Statut</th>
+
+</tr>
+
+</thead>
+
+<tbody id="transferHistory">
+
+<tr>
+
+<td>15/07/2026</td>
+
+<td>Jean Dupont</td>
+
+<td>-250.00 $</td>
+
+<td>
+
+<span class="status success">
+
+Complété
+
+</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>13/07/2026</td>
+
+<td>Marie Tremblay</td>
+
+<td>-120.00 $</td>
+
+<td>
+
+<span class="status success">
+
+Complété
+
+</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</section>
+<section class="confirmation-section">
 
 <div class="confirmation-card">
 
 <h2>
 
-<i class="fas fa-circle-check"></i>
+<i class="fas fa-circle-question"></i>
 
-Confirmation du dépôt
+Confirmation du virement
 
 </h2>
+
+<p>
+
+Avant de confirmer, vérifiez les informations ci-dessous.
+
+</p>
 
 <table class="confirmation-table">
 
 <tr>
 
-<td>Compte RBC</td>
+<td>Compte émetteur</td>
 
-<td id="confirmAccount">---------</td>
-
-</tr>
-
-<tr>
-
-<td>Pays</td>
-
-<td id="confirmCountry">---------</td>
+<td id="confirmSender">----------</td>
 
 </tr>
 
 <tr>
 
-<td>Opérateur</td>
+<td>Bénéficiaire</td>
 
-<td id="confirmOperator">---------</td>
-
-</tr>
-
-<tr>
-
-<td>Numéro</td>
-
-<td id="confirmPhone">---------</td>
+<td id="confirmBeneficiary">----------</td>
 
 </tr>
 
 <tr>
 
-<td>Montant</td>
+<td>Compte bénéficiaire</td>
 
-<td id="confirmAmount">0.00</td>
+<td id="confirmAccount">----------</td>
+
+</tr>
+
+<tr>
+
+<td>Banque</td>
+
+<td id="confirmBank">----------</td>
 
 </tr>
 
@@ -659,23 +743,23 @@ Confirmation du dépôt
 
 <td>Devise</td>
 
-<td id="confirmCurrency">---------</td>
+<td id="confirmCurrency">CAD</td>
 
 </tr>
 
 <tr>
 
-<td>Référence</td>
+<td>Montant</td>
 
-<td id="confirmReference">---------</td>
+<td id="confirmAmount">0.00 $</td>
 
 </tr>
 
 <tr>
 
-<td>Statut</td>
+<td>Motif</td>
 
-<td id="confirmStatus">En attente</td>
+<td id="confirmReason">----------</td>
 
 </tr>
 
@@ -685,10 +769,8 @@ Confirmation du dépôt
 
 <button
 type="button"
-id="previewButton"
-class="btn-secondary">
-
-<i class="fas fa-eye"></i>
+class="btn-secondary"
+onclick="previewTransfer()">
 
 Prévisualiser
 
@@ -696,12 +778,10 @@ Prévisualiser
 
 <button
 type="button"
-id="confirmButton"
-class="btn-primary">
+class="btn-primary"
+onclick="confirmTransfer()">
 
-<i class="fas fa-check"></i>
-
-Confirmer
+Confirmer le virement
 
 </button>
 
@@ -715,7 +795,7 @@ Confirmer
 
 <i class="fas fa-receipt"></i>
 
-Reçu
+Reçu de transaction
 
 </h2>
 
@@ -723,7 +803,7 @@ Reçu
 
 <p>
 
-Aucun reçu disponible.
+Le reçu sera généré automatiquement après la confirmation du virement.
 
 </p>
 
@@ -731,8 +811,8 @@ Aucun reçu disponible.
 
 <button
 type="button"
-id="downloadReceipt"
-class="btn-primary">
+class="btn-download"
+onclick="downloadReceipt()">
 
 <i class="fas fa-download"></i>
 
@@ -743,283 +823,240 @@ Télécharger le reçu
 </div>
 
 </section>
+<section class="favorites-section">
 
-<section class="dashboard-container">
-
-<div class="dashboard-card">
-
-<h2>
-
-<i class="fas fa-wallet"></i>
-
-Portefeuille
-
-</h2>
-
-<div class="dashboard-row">
-
-<span>Solde</span>
-
-<strong id="walletBalance">
-
-0.00 $
-
-</strong>
-
-</div>
-
-<div class="dashboard-row">
-
-<span>Total dépôts</span>
-
-<strong id="totalDeposits">
-
-0.00 $
-
-</strong>
-
-</div>
-
-<div class="dashboard-row">
-
-<span>Nombre de dépôts</span>
-
-<strong id="depositCount">
-
-0
-
-</strong>
-
-</div>
-
-<div class="dashboard-row">
-
-<span>Dernière synchronisation</span>
-
-<strong id="lastSync">
-
-Jamais
-
-</strong>
-
-</div>
-
-</div>
-
-<div class="dashboard-card">
+<div class="section-title">
 
 <h2>
 
-<i class="fas fa-chart-pie"></i>
+<i class="fas fa-star"></i>
 
-Statistiques
-
-</h2>
-
-<div class="dashboard-row">
-
-<span>Réussis</span>
-
-<strong id="successCount">
-
-0
-
-</strong>
-
-</div>
-
-<div class="dashboard-row">
-
-<span>Échoués</span>
-
-<strong id="failedCount">
-
-0
-
-</strong>
-
-</div>
-
-<div class="dashboard-row">
-
-<span>Dernier dépôt</span>
-
-<strong id="lastDepositAmount">
-
-0.00 $
-
-</strong>
-
-</div>
-
-<div class="dashboard-row">
-
-<span>Dernier statut</span>
-
-<strong id="lastDepositStatus">
-
-Aucun
-
-</strong>
-
-</div>
-
-</div>
-
-</section>
-<section class="activity-container">
-
-<div class="activity-card">
-
-<h2>
-
-<i class="fas fa-clock"></i>
-
-Activité récente
+Favoris
 
 </h2>
 
-<table>
+</div>
 
-<thead>
+<div class="favorites-grid">
 
-<tr>
+<div class="favorite-card">
 
-<th>Heure</th>
+<i class="fas fa-user-circle"></i>
 
-<th>Référence</th>
+<h3>Jean Dupont</h3>
 
-<th>Action</th>
-
-<th>Montant</th>
-
-<th>Statut</th>
-
-</tr>
-
-</thead>
-
-<tbody id="activityHistory">
-
-<tr>
-
-<td colspan="5">
-
-Aucune activité.
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
+<p>Demo Bank</p>
 
 <button
 type="button"
-id="refreshActivity"
-class="btn-primary">
+onclick="selectFavorite('Jean Dupont','CA785412369874','Demo Bank')">
 
-<i class="fas fa-arrows-rotate"></i>
-
-Actualiser
+Utiliser
 
 </button>
 
 </div>
 
-</section>
+<div class="favorite-card">
 
-<section class="support-container">
+<i class="fas fa-user-circle"></i>
 
-<div class="support-card">
+<h3>Marie Tremblay</h3>
 
-<h2>
-
-<i class="fas fa-bell"></i>
-
-Notifications
-
-</h2>
-
-<div id="notifications">
-
-<p>
-
-Aucune notification.
-
-</p>
-
-</div>
-
-</div>
-
-<div class="support-card">
-
-<h2>
-
-<i class="fas fa-shield-halved"></i>
-
-Sécurité
-
-</h2>
-
-<ul>
-
-<li>Connexion sécurisée</li>
-
-<li>Transactions chiffrées</li>
-
-<li>Validation SebPay</li>
-
-<li>Protection contre les doublons</li>
-
-</ul>
-
-</div>
-
-<div class="support-card">
-
-<h2>
-
-<i class="fas fa-headset"></i>
-
-Support
-
-</h2>
-
-<p>
-
-Notre assistance est disponible 24h/24.
-
-</p>
+<p>Banque Nationale</p>
 
 <button
 type="button"
-id="contactSupport"
-class="btn-primary">
+onclick="selectFavorite('Marie Tremblay','CA456987123654','Banque Nationale')">
 
-<i class="fas fa-headset"></i>
-
-Contacter le support
+Utiliser
 
 </button>
 
 </div>
 
+<div class="favorite-card">
+
+<i class="fas fa-user-circle"></i>
+
+<h3>Entreprise ABC</h3>
+
+<p>Banque Internationale</p>
+
+<button
+type="button"
+onclick="selectFavorite('Entreprise ABC','CA963258741258','Banque Internationale')">
+
+Utiliser
+
+</button>
+
+</div>
+
+</div>
+
 </section>
 
-<footer>
+<section class="security-notice">
+
+<div class="notice-card">
+
+<i class="fas fa-lock"></i>
 
 <div>
 
-<strong>RBC DEMO BANK</strong>
+<h3>Protection des virements</h3>
 
 <p>
 
-© 2026 RBC Demo Bank. Tous droits réservés.
+Les virements sont protégés par le chiffrement des données et une vérification de votre code d'accès avant validation.
 
 </p>
+
+</div>
+
+</div>
+
+<div class="notice-card">
+
+<i class="fas fa-triangle-exclamation"></i>
+
+<div>
+
+<h3>Attention</h3>
+
+<p>
+
+Assurez-vous que les informations du bénéficiaire sont exactes avant de confirmer votre transaction.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+<section class="faq-section">
+
+<div class="faq-card">
+
+<h2>
+
+<i class="fas fa-circle-question"></i>
+
+Questions fréquentes
+
+</h2>
+
+<div class="faq-item">
+
+<h4>Quand le bénéficiaire recevra-t-il le virement ?</h4>
+
+<p>
+
+Les virements internes sont généralement instantanés. Les virements vers d'autres banques peuvent prendre de quelques minutes à plusieurs jours ouvrables selon l'établissement.
+
+</p>
+
+</div>
+
+<div class="faq-item">
+
+<h4>Puis-je annuler un virement ?</h4>
+
+<p>
+
+Un virement déjà exécuté ne peut généralement pas être annulé. Vérifiez toujours les informations avant de confirmer.
+
+</p>
+
+</div>
+
+<div class="faq-item">
+
+<h4>Y a-t-il des frais ?</h4>
+
+<p>
+
+Les virements internes sont gratuits. Certains virements internationaux peuvent entraîner des frais selon les conditions applicables.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="contact-card">
+
+<h2>
+
+<i class="fas fa-headset"></i>
+
+Besoin d'aide ?
+
+</h2>
+
+<p>
+
+Notre service client est disponible pour vous accompagner dans vos opérations bancaires.
+
+</p>
+
+<div class="contact-buttons">
+
+<button type="button">
+
+<i class="fas fa-phone"></i>
+
+Appeler
+
+</button>
+
+<button type="button">
+
+<i class="fas fa-comments"></i>
+
+Discuter
+
+</button>
+
+<button type="button">
+
+<i class="fas fa-envelope"></i>
+
+Envoyer un message
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<footer class="transfer-footer">
+
+<div>
+
+<strong>Demo Bank</strong>
+
+<p>
+
+© 2026 Demo Bank. Tous droits réservés.
+
+</p>
+
+</div>
+
+<div class="footer-links">
+
+<a href="#">Confidentialité</a>
+
+<a href="#">Conditions d'utilisation</a>
+
+<a href="#">Sécurité</a>
+
+<a href="#">Contact</a>
 
 </div>
 
@@ -1028,16 +1065,46 @@ Contacter le support
 </div>
 
 <script src="js/transfer.js"></script>
-
 <script>
 
 function logout(){
 
-localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("session");
 
-window.location.href="login.html";
+    window.location.href="login.html";
 
 }
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    const user=JSON.parse(localStorage.getItem("currentUser"));
+
+    if(!user){
+
+        window.location.href="login.html";
+        return;
+
+    }
+
+    document.getElementById("senderAccount").value=user.account;
+    document.getElementById("availableBalance").textContent="$ "+Number(user.balance).toLocaleString("en-CA",{
+
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+
+    });
+
+    document.getElementById("summaryAccount").textContent=user.account;
+
+    document.getElementById("summaryBalance").textContent="$ "+Number(user.balance).toLocaleString("en-CA",{
+
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+
+    });
+
+});
 
 </script>
 
