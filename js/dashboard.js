@@ -1,7 +1,6 @@
 //====================================================
 // ROYAL BANK
 // dashboard.js
-// Version SebPay
 //====================================================
 
 let currentUser = null;
@@ -15,28 +14,25 @@ let balanceVisible = true;
 document.addEventListener("DOMContentLoaded", () => {
 
     loadUser();
-
     loadTransactions();
-
     updateDashboard();
-
     updateSummary();
-
     initializeEvents();
 
 });
 
 //====================================================
-// CHARGER LE CLIENT
+// CHARGER UTILISATEUR
 //====================================================
 
-function loadUser(){
+function
+    function loadUser(){
 
     const data = localStorage.getItem("currentUser");
 
     if(!data){
 
-        window.location.href="login.html";
+        window.location.href = "login.html";
 
         return;
 
@@ -47,7 +43,7 @@ function loadUser(){
 }
 
 //====================================================
-// TABLEAU DE BORD
+// MISE A JOUR TABLEAU DE BORD
 //====================================================
 
 function updateDashboard(){
@@ -84,7 +80,7 @@ function updateDashboard(){
 }
 
 //====================================================
-// FORMAT CARTE
+// FORMAT NUMERO CARTE
 //====================================================
 
 function formatCard(number){
@@ -100,7 +96,7 @@ function formatCard(number){
 }
 
 //====================================================
-// SOLDE
+// AFFICHAGE SOLDE
 //====================================================
 
 function refreshBalance(balance){
@@ -121,10 +117,6 @@ function refreshBalance(balance){
 
 }
 
-//====================================================
-// FORMAT ARGENT
-//====================================================
-
 function formatMoney(amount){
 
     return Number(amount).toLocaleString(
@@ -143,10 +135,6 @@ function formatMoney(amount){
 
 }
 
-//====================================================
-// MASQUER / AFFICHER LE SOLDE
-//====================================================
-
 function toggleBalance(){
 
     balanceVisible = !balanceVisible;
@@ -158,27 +146,21 @@ function toggleBalance(){
 
     if(balanceVisible){
 
-        icon.className="fas fa-eye";
+        icon.className = "fas fa-eye";
 
     }else{
 
-        icon.className="fas fa-eye-slash";
+        icon.className = "fas fa-eye-slash";
 
     }
 
 }
 
-//====================================================
-// EVENEMENTS
-//====================================================
-
 function initializeEvents(){
 
     document
-
-    .getElementById("toggleBalance")
-
-    .addEventListener("click",toggleBalance);
+        .getElementById("toggleBalance")
+        .addEventListener("click",toggleBalance);
 
 }
 //====================================================
@@ -287,22 +269,22 @@ ${transaction.status}
 }
 
 //====================================================
-// AJOUTER TRANSACTION
+// AJOUTER UNE TRANSACTION
 //====================================================
 
-function addTransaction(type,description,amount){
+function addTransaction(type,description,amount,status="Complété"){
 
     const transaction = {
 
         date:new Date().toLocaleDateString("fr-CA"),
 
-        type:type,
+        type,
 
-        description:description,
+        description,
 
         amount:Number(amount),
 
-        status:"Complété"
+        status
 
     };
 
@@ -321,7 +303,6 @@ function addTransaction(type,description,amount){
     updateSummary();
 
 }
-
 //====================================================
 // RÉSUMÉ FINANCIER
 //====================================================
@@ -347,16 +328,13 @@ function updateSummary(){
     });
 
     document.getElementById("monthlyIncome").textContent =
-
         formatMoney(income);
 
     document.getElementById("monthlyExpense").textContent =
-
         formatMoney(expense);
 
     document.getElementById("savingAmount").textContent =
-
-        formatMoney(income-expense);
+        formatMoney(income - expense);
 
 }
 
@@ -367,7 +345,6 @@ function updateSummary(){
 function showNotification(message,icon="fa-circle-check"){
 
     const container =
-
         document.getElementById("notificationsContainer");
 
     if(!container) return;
@@ -376,7 +353,7 @@ function showNotification(message,icon="fa-circle-check"){
 
         "afterbegin",
 
-`
+        `
 
 <div class="notification">
 
@@ -391,27 +368,28 @@ function showNotification(message,icon="fa-circle-check"){
     );
 
 }
+
 //====================================================
-// RECHARGER MON COMPTE
+// RECHARGE
 //====================================================
 
 function openRecharge(){
 
-    document.getElementById("rechargeModal").style.display = "flex";
+    document.getElementById("rechargeModal").style.display="flex";
 
 }
 
 function closeRecharge(){
 
-    document.getElementById("rechargeModal").style.display = "none";
+    document.getElementById("rechargeModal").style.display="none";
 
 }
 
-window.onclick = function(e){
+window.onclick=function(e){
 
-    const modal = document.getElementById("rechargeModal");
+    const modal=document.getElementById("rechargeModal");
 
-    if(e.target === modal){
+    if(e.target===modal){
 
         closeRecharge();
 
@@ -419,45 +397,35 @@ window.onclick = function(e){
 
 };
 
-//====================================================
-// SERVICES VERROUILLÉS
-//====================================================
-
-function serviceLocked(){
-
-    alert(
-`Ce service n'est pas encore activé.
-
-Veuillez contacter votre administrateur.`
-    );
-
-}
-
-//====================================================
-// FORMULAIRE RECHARGE
-//====================================================
-
-const rechargeForm = document.getElementById("rechargeForm");
+const rechargeForm=document.getElementById("rechargeForm");
 
 if(rechargeForm){
 
-    rechargeForm.addEventListener("submit", submitRecharge);
+    rechargeForm.addEventListener("submit",submitRecharge);
 
 }
-
 //====================================================
-// ENVOI DE LA RECHARGE A SEBPAY
+// ENVOI RECHARGE SEBPAY
 //====================================================
 
 async function submitRecharge(e){
 
     e.preventDefault();
 
-    const amount = Number(document.getElementById("depositAmount").value);
+    const amount =
+        Number(document.getElementById("depositAmount").value);
 
-    const operator = document.getElementById("mobileOperator").value;
+    const operator =
+        document.getElementById("mobileOperator").value;
 
-    const phone = document.getElementById("phoneNumber").value.trim();
+    const phone =
+        document.getElementById("phoneNumber").value.trim();
+
+    const otpField =
+        document.getElementById("otpCode");
+
+    const otp_code =
+        otpField ? otpField.value.trim() : "";
 
     if(amount <= 0){
 
@@ -469,7 +437,7 @@ async function submitRecharge(e){
 
     if(operator === ""){
 
-        alert("Choisissez un opérateur.");
+        alert("Sélectionnez un opérateur.");
 
         return;
 
@@ -477,7 +445,7 @@ async function submitRecharge(e){
 
     if(phone === ""){
 
-        alert("Entrez votre numéro Mobile Money.");
+        alert("Numéro Mobile Money obligatoire.");
 
         return;
 
@@ -494,6 +462,12 @@ async function submitRecharge(e){
         country:"BJ"
 
     };
+
+    if(otp_code !== ""){
+
+        payload.otp_code = otp_code;
+
+    }
 
     try{
 
@@ -513,21 +487,31 @@ async function submitRecharge(e){
 
         const result = await response.json();
 
-        console.log(result);
-
         if(!response.ok){
 
-            alert(result.message || "Erreur du serveur.");
+            alert(result.message || "Erreur serveur.");
 
             return;
 
         }
 
-        if(result.success === false){
+        if(!result.success){
 
-            alert(result.message || "Paiement refusé.");
+            alert(result.message || "Transaction refusée.");
 
             return;
+
+        }
+
+        if(result.data && result.data.provider_link){
+
+            window.open(
+
+                result.data.provider_link,
+
+                "_blank"
+
+            );
 
         }
 
@@ -537,13 +521,15 @@ async function submitRecharge(e){
 
             "Recharge Mobile Money",
 
-            amount
+            amount,
+
+            result.data?.status || "En attente"
 
         );
 
         showNotification(
 
-            "Votre demande de recharge a été envoyée.",
+            result.message || "Recharge envoyée.",
 
             "fa-wallet"
 
@@ -553,11 +539,7 @@ async function submitRecharge(e){
 
         closeRecharge();
 
-        alert("Votre demande a été envoyée avec succès.");
-
-    }
-
-    catch(error){
+    }catch(error){
 
         console.error(error);
 
@@ -585,14 +567,14 @@ function refreshDashboard(){
 setInterval(refreshDashboard,10000);
 
 //====================================================
-// SYNCHRONISATION ENTRE ONGLETS
+// SYNCHRONISATION
 //====================================================
 
-window.addEventListener("storage",function(){
+window.addEventListener("storage",()=>{
 
     loadUser();
 
-    displayTransactions();
+    loadTransactions();
 
     refreshBalance(currentUser.balance);
 
@@ -601,7 +583,7 @@ window.addEventListener("storage",function(){
 });
 
 //====================================================
-// SAUVEGARDE AUTOMATIQUE
+// SAUVEGARDE UTILISATEUR
 //====================================================
 
 function saveCurrentUser(){
@@ -622,15 +604,13 @@ setInterval(saveCurrentUser,5000);
 // DERNIERE CONNEXION
 //====================================================
 
-const now = new Date();
-
 const lastConnection =
     document.getElementById("lastConnection");
 
 if(lastConnection){
 
     lastConnection.textContent =
-        now.toLocaleString("fr-CA");
+        new Date().toLocaleString("fr-CA");
 
 }
 
@@ -656,11 +636,11 @@ function getStatistics(){
 
     console.log({
 
-        client:currentUser.name,
+        client:currentUser?.name,
 
-        compte:currentUser.account,
+        compte:currentUser?.account,
 
-        solde:currentUser.balance,
+        solde:currentUser?.balance,
 
         operations:transactions.length
 
