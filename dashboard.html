@@ -1,1 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBC - Tableau de bord</title>
 
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+background:#eef3f8;
+}
+
+header{
+background:#0055A5;
+color:white;
+padding:20px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+header h2{
+font-size:28px;
+}
+
+header button{
+background:#FFD200;
+color:#003087;
+border:none;
+padding:12px 20px;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.container{
+max-width:1200px;
+margin:40px auto;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+margin-bottom:20px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.balance{
+font-size:42px;
+color:#0055A5;
+font-weight:bold;
+margin-top:10px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+table th,
+table td{
+padding:15px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+table th{
+background:#0055A5;
+color:white;
+}
+
+.credit{
+color:green;
+font-weight:bold;
+}
+
+.debit{
+color:red;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h2>RBC Royal Bank</h2>
+
+<button onclick="logout()">Déconnexion</button>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h3>Bienvenue</h3>
+
+<h2 id="clientName"></h2>
+
+<p>ID Client :
+<strong id="clientID"></strong></p>
+
+<p>Compte :
+<strong id="accountNumber"></strong></p>
+
+</div>
+
+<div class="card">
+
+<h3>Solde disponible</h3>
+
+<div class="balance">
+
+$ <span id="balance"></span>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Dernières transactions</h3>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+
+<th>Description</th>
+
+<th>Montant</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>16/07/2026</td>
+
+<td>Dépôt</td>
+
+<td class="credit">+ 5 000 $</td>
+
+</tr>
+
+<tr>
+
+<td>15/07/2026</td>
+
+<td>Paiement Internet</td>
+
+<td class="debit">- 120 $</td>
+
+</tr>
+
+<tr>
+
+<td>13/07/2026</td>
+
+<td>Salaire</td>
+
+<td class="credit">+ 3 200 $</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+document.getElementById("clientName").innerHTML =
+localStorage.getItem("clientName");
+
+document.getElementById("clientID").innerHTML =
+localStorage.getItem("clientID");
+
+document.getElementById("accountNumber").innerHTML =
+localStorage.getItem("accountNumber");
+
+document.getElementById("balance").innerHTML =
+localStorage.getItem("balance");
+
+function logout(){
+
+localStorage.clear();
+
+window.location.href="login.html";
+
+}
+
+</script>
+
+</body>
+</html>
