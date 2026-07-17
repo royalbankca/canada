@@ -15,9 +15,9 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_KEY = process.env.SEBPAY_PUBLIC_KEY;
 const SECRET_KEY = process.env.SEBPAY_SECRET_KEY;
 
-// ==========================================
+//==================================================
 // DEPOT MOBILE MONEY
-// ==========================================
+//==================================================
 
 app.post("/api/sebpay/deposit", async (req, res) => {
 
@@ -38,6 +38,7 @@ app.post("/api/sebpay/deposit", async (req, res) => {
             return res.status(400).json({
 
                 success: false,
+
                 message: "Informations manquantes."
 
             });
@@ -105,8 +106,6 @@ app.post("/api/sebpay/deposit", async (req, res) => {
 
     } catch (error) {
 
-        console.error("Erreur SebPay");
-
         console.error(error.response?.data || error.message);
 
         return res.status(500).json({
@@ -114,9 +113,7 @@ app.post("/api/sebpay/deposit", async (req, res) => {
             success: false,
 
             message:
-
                 error.response?.data?.message ||
-
                 "Erreur de communication avec SebPay"
 
         });
@@ -125,16 +122,16 @@ app.post("/api/sebpay/deposit", async (req, res) => {
 
 });
 
-// ==========================================
-// RECUPERER LE STATUT D'UNE TRANSACTION
-// ==========================================
+//==================================================
+// STATUT TRANSACTION
+//==================================================
 
 app.get("/api/sebpay/status/:reference", async (req, res) => {
 
     try {
-                const { reference } = req.params;
 
-        const response = await axios.get(
+        const { reference } = req.params;
+                const response = await axios.get(
 
             `https://newapi.sebpay.bj/api/v1/collections/${reference}`,
 
@@ -164,8 +161,6 @@ app.get("/api/sebpay/status/:reference", async (req, res) => {
 
     } catch (error) {
 
-        console.error("Erreur récupération statut");
-
         console.error(error.response?.data || error.message);
 
         return res.status(500).json({
@@ -182,13 +177,13 @@ app.get("/api/sebpay/status/:reference", async (req, res) => {
 
 });
 
-// ==========================================
+//==================================================
 // CALLBACK SEBPAY
-// ==========================================
+//==================================================
 
 app.post("/api/sebpay/callback", (req, res) => {
 
-    console.log("Notification SebPay reçue");
+    console.log("Notification SebPay");
 
     console.log(req.body);
 
@@ -200,9 +195,9 @@ app.post("/api/sebpay/callback", (req, res) => {
 
 });
 
-// ==========================================
+//==================================================
 // TEST API
-// ==========================================
+//==================================================
 
 app.get("/", (req, res) => {
 
@@ -210,12 +205,12 @@ app.get("/", (req, res) => {
 
 });
 
-// ==========================================
-// LANCEMENT DU SERVEUR
-// ==========================================
+//==================================================
+// DEMARRAGE SERVEUR
+//==================================================
 
 app.listen(PORT, () => {
 
-    console.log(`Serveur démarré sur le port ${PORT}`);
+    console.log(`Serveur lancé sur le port ${PORT}`);
 
 });
