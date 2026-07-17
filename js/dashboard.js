@@ -1,652 +1,1343 @@
-//====================================================
-// ROYAL BANK
-// dashboard.js
-//====================================================
+/*==================================================
+ROYAL BANK
+DASHBOARD.CSS
+==================================================*/
 
-let currentUser = null;
-let transactions = [];
-let balanceVisible = true;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
 
-//====================================================
-// INITIALISATION
-//====================================================
+body{
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    loadUser();
-    loadTransactions();
-    updateDashboard();
-    updateSummary();
-    initializeEvents();
-
-function loadUser(){
-
-    const data = localStorage.getItem("currentUser");
-
-    if(!data){
-
-        window.location.href = "login.html";
-
-        return;
-
-    }
-
-    currentUser = JSON.parse(data);
+background:#eef3f9;
+color:#1d3557;
+display:flex;
 
 }
 
-    currentUser = JSON.parse(data);
+/*======================================
+SIDEBAR
+======================================*/
+
+.sidebar{
+
+position:fixed;
+left:0;
+top:0;
+width:270px;
+height:100vh;
+background:#004990;
+color:#fff;
+overflow:auto;
 
 }
 
-//====================================================
-// MISE A JOUR TABLEAU DE BORD
-//====================================================
+.logo{
 
-function updateDashboard(){
-
-    document.getElementById("welcomeTitle").textContent =
-        "Bonjour " + currentUser.name;
-
-    document.getElementById("welcomeName").textContent =
-        "Bienvenue sur votre espace bancaire sécurisé.";
-
-    document.getElementById("clientName").textContent =
-        currentUser.name;
-
-    document.getElementById("cardHolder").textContent =
-        currentUser.name.toUpperCase();
-
-    document.getElementById("clientAccount").textContent =
-        currentUser.account;
-
-    document.getElementById("accountNumber").textContent =
-        currentUser.account;
-
-    document.getElementById("clientId").textContent =
-        currentUser.id;
-
-    document.getElementById("clientInfoId").textContent =
-        currentUser.id;
-
-    document.getElementById("cardNumber").textContent =
-        formatCard(currentUser.account);
-
-    refreshBalance(currentUser.balance);
+padding:30px;
+background:#00386d;
+text-align:center;
 
 }
 
-//====================================================
-// FORMAT NUMERO CARTE
-//====================================================
+.logo h2{
 
-function formatCard(number){
-
-    if(!number){
-
-        return "**** **** **** ****";
-
-    }
-
-    return number.replace(/(.{4})/g,"$1 ").trim();
+font-size:28px;
+margin-bottom:5px;
+letter-spacing:1px;
 
 }
 
-//====================================================
-// AFFICHAGE SOLDE
-//====================================================
+.logo p{
 
-function refreshBalance(balance){
-
-    currentUser.balance = Number(balance);
-
-    if(balanceVisible){
-
-        document.getElementById("balance").textContent =
-            formatMoney(balance);
-
-    }else{
-
-        document.getElementById("balance").textContent =
-            "********";
-
-    }
+opacity:.8;
+font-size:14px;
 
 }
 
-function formatMoney(amount){
+.sidebar ul{
 
-    return Number(amount).toLocaleString(
-
-        "en-CA",
-
-        {
-
-            style:"currency",
-
-            currency:"CAD"
-
-        }
-
-    );
+list-style:none;
 
 }
 
-function toggleBalance(){
+.sidebar li{
 
-    balanceVisible = !balanceVisible;
-
-    refreshBalance(currentUser.balance);
-
-    const icon =
-        document.querySelector("#toggleBalance i");
-
-    if(balanceVisible){
-
-        icon.className = "fas fa-eye";
-
-    }else{
-
-        icon.className = "fas fa-eye-slash";
-
-    }
+border-bottom:1px solid rgba(255,255,255,.08);
 
 }
 
-function initializeEvents(){
+.sidebar li a{
 
-    document
-        .getElementById("toggleBalance")
-        .addEventListener("click",toggleBalance);
-
-}
-//====================================================
-// TRANSACTIONS
-//====================================================
-
-function loadTransactions(){
-
-    const data = localStorage.getItem("transactions");
-
-    if(data){
-
-        transactions = JSON.parse(data);
-
-    }else{
-
-        transactions = [];
-
-    }
-
-    displayTransactions();
+display:flex;
+align-items:center;
+gap:15px;
+padding:18px 25px;
+color:#fff;
+text-decoration:none;
+transition:.3s;
 
 }
 
-//====================================================
-// AFFICHAGE DES TRANSACTIONS
-//====================================================
+.sidebar li:hover{
 
-function displayTransactions(){
-
-    const table =
-        document.getElementById("transactionsTable");
-
-    if(!table) return;
-
-    table.innerHTML = "";
-
-    if(transactions.length === 0){
-
-        table.innerHTML = `
-
-<tr>
-
-<td colspan="5" style="text-align:center;padding:30px;">
-
-Aucune transaction disponible.
-
-</td>
-
-</tr>
-
-`;
-
-        return;
-
-    }
-
-    transactions.forEach(transaction=>{
-
-        const amountClass =
-            transaction.amount >= 0
-            ? "credit"
-            : "debit";
-
-        const sign =
-            transaction.amount >= 0
-            ? "+"
-            : "-";
-
-        table.innerHTML += `
-
-<tr>
-
-<td>${transaction.date}</td>
-
-<td>${transaction.type}</td>
-
-<td>${transaction.description}</td>
-
-<td class="${amountClass}">
-
-${sign} ${Math.abs(transaction.amount).toLocaleString("en-CA",{
-
-minimumFractionDigits:2
-
-})} $
-
-</td>
-
-<td>
-
-<span class="status active">
-
-${transaction.status}
-
-</span>
-
-</td>
-
-</tr>
-
-`;
-
-    });
+background:#0062b8;
 
 }
 
-//====================================================
-// AJOUTER UNE TRANSACTION
-//====================================================
+.sidebar li.active{
 
-function addTransaction(type,description,amount,status="Complété"){
-
-    const transaction = {
-
-        date:new Date().toLocaleDateString("fr-CA"),
-
-        type,
-
-        description,
-
-        amount:Number(amount),
-
-        status
-
-    };
-
-    transactions.unshift(transaction);
-
-    localStorage.setItem(
-
-        "transactions",
-
-        JSON.stringify(transactions)
-
-    );
-
-    displayTransactions();
-
-    updateSummary();
-
-}
-//====================================================
-// RÉSUMÉ FINANCIER
-//====================================================
-
-function updateSummary(){
-
-    let income = 0;
-
-    let expense = 0;
-
-    transactions.forEach(item=>{
-
-        if(item.amount >= 0){
-
-            income += item.amount;
-
-        }else{
-
-            expense += Math.abs(item.amount);
-
-        }
-
-    });
-
-    document.getElementById("monthlyIncome").textContent =
-        formatMoney(income);
-
-    document.getElementById("monthlyExpense").textContent =
-        formatMoney(expense);
-
-    document.getElementById("savingAmount").textContent =
-        formatMoney(income - expense);
+background:#0072d1;
 
 }
 
-//====================================================
-// NOTIFICATIONS
-//====================================================
+.sidebar i{
 
-function showNotification(message,icon="fa-circle-check"){
-
-    const container =
-        document.getElementById("notificationsContainer");
-
-    if(!container) return;
-
-    container.insertAdjacentHTML(
-
-        "afterbegin",
-
-        `
-
-<div class="notification">
-
-<i class="fas ${icon}"></i>
-
-<p>${message}</p>
-
-</div>
-
-`
-
-    );
+width:24px;
+text-align:center;
 
 }
 
-//====================================================
-// RECHARGE
-//====================================================
+/*======================================
+MAIN
+======================================*/
 
-function openRecharge(){
+.main{
 
-    document.getElementById("rechargeModal").style.display="flex";
-
-}
-
-function closeRecharge(){
-
-    document.getElementById("rechargeModal").style.display="none";
+margin-left:270px;
+padding:35px;
+width:calc(100% - 270px);
 
 }
 
-window.onclick=function(e){
+header{
 
-    const modal=document.getElementById("rechargeModal");
-
-    if(e.target===modal){
-
-        closeRecharge();
-
-    }
-
-};
-
-const rechargeForm=document.getElementById("rechargeForm");
-
-if(rechargeForm){
-
-    rechargeForm.addEventListener("submit",submitRecharge);
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:35px;
 
 }
-//====================================================
-// ENVOI RECHARGE SEBPAY
-//====================================================
 
-async function submitRecharge(e){
+header h1{
 
-    e.preventDefault();
-
-    const amount =
-        Number(document.getElementById("depositAmount").value);
-
-    const operator =
-        document.getElementById("mobileOperator").value;
-
-    const phone =
-        document.getElementById("phoneNumber").value.trim();
-
-    const otpField =
-        document.getElementById("otpCode");
-
-    const otp_code =
-        otpField ? otpField.value.trim() : "";
-
-    if(amount <= 0){
-
-        alert("Montant invalide.");
-
-        return;
-
-    }
-
-    if(operator === ""){
-
-        alert("Sélectionnez un opérateur.");
-
-        return;
-
-    }
-
-    if(phone === ""){
-
-        alert("Numéro Mobile Money obligatoire.");
-
-        return;
-
-    }
-
-    const payload = {
-
-        amount,
-
-        operator,
-
-        phone,
-
-        country:"BJ"
-
-    };
-
-    if(otp_code !== ""){
-
-        payload.otp_code = otp_code;
-
-    }
-
-    try{
-
-        const response = await fetch("/api/sebpay/deposit",{
-
-            method:"POST",
-
-            headers:{
-
-                "Content-Type":"application/json"
-
-            },
-
-            body:JSON.stringify(payload)
-
-        });
-
-        const result = await response.json();
-
-        if(!response.ok){
-
-            alert(result.message || "Erreur serveur.");
-
-            return;
-
-        }
-
-        if(!result.success){
-
-            alert(result.message || "Transaction refusée.");
-
-            return;
-
-        }
-
-        if(result.data && result.data.provider_link){
-
-            window.open(
-
-                result.data.provider_link,
-
-                "_blank"
-
-            );
-
-        }
-
-        addTransaction(
-
-            "Recharge",
-
-            "Recharge Mobile Money",
-
-            amount,
-
-            result.data?.status || "En attente"
-
-        );
-
-        showNotification(
-
-            result.message || "Recharge envoyée.",
-
-            "fa-wallet"
-
-        );
-
-        rechargeForm.reset();
-
-        closeRecharge();
-
-    }catch(error){
-
-        console.error(error);
-
-        alert("Impossible de contacter le serveur.");
-
-    }
-
-}
-//====================================================
-// RAFRAICHISSEMENT AUTOMATIQUE
-//====================================================
-
-function refreshDashboard(){
-
-    loadUser();
-
-    refreshBalance(currentUser.balance);
-
-    displayTransactions();
-
-    updateSummary();
+font-size:34px;
+margin-bottom:8px;
 
 }
 
-setInterval(refreshDashboard,10000);
+header p{
 
-//====================================================
-// SYNCHRONISATION
-//====================================================
-
-window.addEventListener("storage",()=>{
-
-    loadUser();
-
-    loadTransactions();
-
-    refreshBalance(currentUser.balance);
-
-    updateSummary();
-
-});
-
-//====================================================
-// SAUVEGARDE UTILISATEUR
-//====================================================
-
-function saveCurrentUser(){
-
-    localStorage.setItem(
-
-        "currentUser",
-
-        JSON.stringify(currentUser)
-
-    );
+color:#666;
 
 }
 
-setInterval(saveCurrentUser,5000);
+.header-icons{
 
-//====================================================
-// DERNIERE CONNEXION
-//====================================================
-
-const lastConnection =
-    document.getElementById("lastConnection");
-
-if(lastConnection){
-
-    lastConnection.textContent =
-        new Date().toLocaleString("fr-CA");
+display:flex;
+align-items:center;
+gap:20px;
 
 }
 
-//====================================================
-// DECONNEXION
-//====================================================
+.header-icons i{
 
-function logout(){
-
-    localStorage.removeItem("currentUser");
-
-    localStorage.removeItem("isLoggedIn");
-
-    window.location.href = "login.html";
+font-size:22px;
+cursor:pointer;
+color:#0057a3;
 
 }
 
-//====================================================
-// STATISTIQUES
-//====================================================
+.avatar{
 
-function getStatistics(){
-
-    console.log({
-
-        client:currentUser?.name,
-
-        compte:currentUser?.account,
-
-        solde:currentUser?.balance,
-
-        operations:transactions.length
-
-    });
+width:52px;
+height:52px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid white;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
 
 }
 
-getStatistics();
+.online-status{
 
-//====================================================
-// FIN DU FICHIER
-//====================================================
+display:flex;
+align-items:center;
+gap:8px;
+font-size:14px;
+font-weight:bold;
+color:#15b54b;
+
+}
+
+.online-status i{
+
+font-size:10px;
+
+}
+
+/*======================================
+CARTE BANCAIRE
+======================================*/
+
+.bank-card-section{
+
+margin-bottom:35px;
+
+}
+
+.bank-card{
+
+width:460px;
+max-width:100%;
+height:250px;
+padding:30px;
+border-radius:22px;
+
+background:linear-gradient(
+135deg,
+#003d7a,
+#005bb8,
+#007ee5);
+
+color:white;
+
+box-shadow:0 20px 40px rgba(0,0,0,.25);
+
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+
+}
+
+.card-top{
+
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+
+}
+
+.card-top h3{
+
+font-size:28px;
+
+}
+
+.card-top p{
+
+opacity:.8;
+margin-top:4px;
+
+}
+
+.card-chip{
+
+font-size:38px;
+margin-top:10px;
+
+}
+
+.card-number{
+
+font-size:30px;
+letter-spacing:4px;
+font-weight:bold;
+
+}
+
+.card-bottom{
+
+display:flex;
+justify-content:space-between;
+align-items:flex-end;
+
+}
+
+.card-bottom small{
+
+display:block;
+font-size:11px;
+opacity:.7;
+
+}
+
+.card-bottom h4{
+
+margin-top:5px;
+font-size:18px;
+
+}
+
+.visa-logo{
+
+font-size:42px;
+
+}
+
+/*======================================
+CARDS
+======================================*/
+
+.cards{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-bottom:35px;
+
+}
+
+.card{
+
+background:#fff;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.balance{
+
+background:linear-gradient(
+135deg,
+#004990,
+#0072d1);
+
+color:white;
+
+}
+
+.balance-row{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:15px 0;
+
+}
+
+.balance-row button{
+
+width:42px;
+height:42px;
+border:none;
+border-radius:50%;
+cursor:pointer;
+background:white;
+color:#004990;
+font-size:18px;
+
+}
+
+.card h2{
+
+font-size:30px;
+
+}
+
+.status{
+
+padding:8px 18px;
+display:inline-block;
+border-radius:25px;
+font-size:14px;
+font-weight:bold;
+
+}
+
+.status.active{
+
+background:#dff6e5;
+color:#0b8f45;
+
+}
+/*======================================
+ACTIONS RAPIDES
+======================================*/
+
+.quick-actions{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-bottom:35px;
+
+}
+
+.action-card{
+
+background:#fff;
+padding:25px;
+border-radius:18px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+transition:.3s;
+
+}
+
+.action-card:hover{
+
+transform:translateY(-6px);
+
+}
+
+.action-card i{
+
+font-size:45px;
+margin-bottom:20px;
+color:#0057a3;
+
+}
+
+.action-card h3{
+
+margin-bottom:12px;
+font-size:19px;
+
+}
+
+.action-card p{
+
+color:#666;
+font-size:14px;
+line-height:1.6;
+margin-bottom:20px;
+
+}
+
+.action-card button{
+
+padding:13px 24px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+transition:.3s;
+
+}
+
+.action-card.recharge button{
+
+background:#0b8f45;
+color:white;
+
+}
+
+.action-card.recharge button:hover{
+
+background:#08763a;
+
+}
+
+.action-card.locked button{
+
+background:#d9d9d9;
+color:#555;
+
+}
+
+.action-card.locked button:hover{
+
+background:#c9c9c9;
+
+}
+
+/*======================================
+INFORMATIONS DU COMPTE
+======================================*/
+
+.account-overview{
+
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:25px;
+margin-bottom:35px;
+
+}
+
+.overview-card{
+
+background:#fff;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.overview-card h2{
+
+margin-bottom:20px;
+font-size:22px;
+color:#003f78;
+
+}
+
+.account-table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+.account-table tr{
+
+border-bottom:1px solid #edf2f7;
+
+}
+
+.account-table td{
+
+padding:14px 8px;
+
+}
+
+.account-table td:first-child{
+
+font-weight:600;
+width:40%;
+color:#555;
+
+}
+
+/*======================================
+NOTIFICATIONS
+======================================*/
+
+.notification{
+
+display:flex;
+gap:15px;
+padding:16px 0;
+border-bottom:1px solid #edf2f7;
+
+}
+
+.notification:last-child{
+
+border-bottom:none;
+
+}
+
+.notification i{
+
+font-size:20px;
+color:#0072d1;
+margin-top:3px;
+
+}
+
+.notification p{
+
+font-size:14px;
+line-height:1.6;
+color:#555;
+
+}
+
+/*======================================
+TRANSACTIONS
+======================================*/
+
+.transactions-section{
+
+background:#fff;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+margin-bottom:35px;
+
+}
+
+.section-header{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+
+}
+
+.section-header h2{
+
+font-size:22px;
+color:#003f78;
+
+}
+
+.view-all{
+
+text-decoration:none;
+font-weight:bold;
+color:#0057a3;
+
+}
+
+.transactions-table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+.transactions-table th{
+
+background:#eef3f9;
+padding:16px;
+text-align:left;
+
+}
+
+.transactions-table td{
+
+padding:16px;
+border-bottom:1px solid #edf2f7;
+
+}
+
+.credit{
+
+color:#0b8f45;
+font-weight:bold;
+
+}
+
+.debit{
+
+color:#d62828;
+font-weight:bold;
+
+}
+
+/*======================================
+RÉSUMÉ FINANCIER
+======================================*/
+
+.finance-summary{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:35px;
+
+}
+
+.summary-card{
+
+display:flex;
+align-items:center;
+gap:18px;
+background:#fff;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.summary-card .icon{
+
+width:65px;
+height:65px;
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:50%;
+font-size:25px;
+
+}
+
+.summary-card.income .icon{
+
+background:#dff6e5;
+color:#0b8f45;
+
+}
+
+.summary-card.expense .icon{
+
+background:#ffe4e4;
+color:#d62828;
+
+}
+
+.summary-card.saving .icon{
+
+background:#e5f2ff;
+color:#0057a3;
+
+}
+
+.summary-card h4{
+
+color:#666;
+margin-bottom:8px;
+
+}
+
+.summary-card h2{
+
+font-size:28px;
+
+}
+/*======================================
+SERVICES BANCAIRES
+======================================*/
+
+.services{
+
+margin-bottom:35px;
+
+}
+
+.services h2{
+
+font-size:24px;
+color:#003f78;
+margin-bottom:20px;
+
+}
+
+.services-grid{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+
+}
+
+.service-card{
+
+background:#fff;
+padding:25px;
+border-radius:18px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+transition:.3s;
+
+}
+
+.service-card:hover{
+
+transform:translateY(-6px);
+
+}
+
+.service-card i{
+
+font-size:42px;
+margin-bottom:18px;
+color:#0057a3;
+
+}
+
+.service-card h3{
+
+margin-bottom:12px;
+
+}
+
+.service-card p{
+
+font-size:14px;
+color:#666;
+line-height:1.6;
+margin-bottom:20px;
+
+}
+
+.service-btn{
+
+padding:12px 22px;
+border:none;
+border-radius:8px;
+background:#0057a3;
+color:#fff;
+cursor:pointer;
+transition:.3s;
+
+}
+
+.service-btn:hover{
+
+background:#003f78;
+
+}
+
+.service-card.disabled{
+
+opacity:.85;
+
+}
+
+.service-card.disabled .service-btn{
+
+background:#c7c7c7;
+color:#555;
+cursor:not-allowed;
+
+}
+
+/*======================================
+ACTIVITÉ
+======================================*/
+
+.activity-section{
+
+margin-bottom:35px;
+
+}
+
+.badge-online{
+
+display:flex;
+align-items:center;
+gap:8px;
+font-weight:bold;
+font-size:14px;
+color:#0b8f45;
+
+}
+
+.badge-online i{
+
+font-size:10px;
+
+}
+
+.timeline{
+
+background:#fff;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.timeline-item{
+
+display:flex;
+gap:20px;
+padding:20px 0;
+border-bottom:1px solid #edf2f7;
+
+}
+
+.timeline-item:last-child{
+
+border-bottom:none;
+
+}
+
+.timeline-icon{
+
+width:55px;
+height:55px;
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:50%;
+background:#e9f3ff;
+color:#0057a3;
+font-size:22px;
+flex-shrink:0;
+
+}
+
+.timeline-content h4{
+
+margin-bottom:8px;
+
+}
+
+.timeline-content p{
+
+color:#666;
+line-height:1.6;
+margin-bottom:6px;
+
+}
+
+.timeline-content small{
+
+color:#999;
+
+}
+
+/*======================================
+ASSISTANCE
+======================================*/
+
+.support-section{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+margin-bottom:35px;
+
+}
+
+.support-card{
+
+background:#fff;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.support-card h2{
+
+font-size:22px;
+margin-bottom:18px;
+color:#003f78;
+
+}
+
+.support-card p{
+
+line-height:1.7;
+color:#666;
+margin-bottom:20px;
+
+}
+
+.support-actions{
+
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+
+}
+
+.support-actions button{
+
+padding:12px 18px;
+border:none;
+border-radius:8px;
+background:#0057a3;
+color:white;
+cursor:pointer;
+transition:.3s;
+
+}
+
+.support-actions button:hover{
+
+background:#003f78;
+
+}
+
+.info-table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+.info-table tr{
+
+border-bottom:1px solid #edf2f7;
+
+}
+
+.info-table td{
+
+padding:14px 8px;
+
+}
+
+.info-table td:first-child{
+
+font-weight:bold;
+width:45%;
+color:#555;
+
+}
+/*======================================
+MODAL RECHARGEMENT
+======================================*/
+
+.modal{
+
+display:none;
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.45);
+justify-content:center;
+align-items:center;
+z-index:9999;
+
+}
+
+.modal-content{
+
+width:480px;
+max-width:95%;
+background:#fff;
+border-radius:20px;
+padding:30px;
+position:relative;
+animation:fadeIn .35s;
+
+}
+
+.close{
+
+position:absolute;
+right:20px;
+top:15px;
+font-size:30px;
+cursor:pointer;
+color:#777;
+
+}
+
+.close:hover{
+
+color:#d62828;
+
+}
+
+.modal-content h2{
+
+margin-bottom:12px;
+color:#003f78;
+
+}
+
+.modal-content p{
+
+color:#666;
+margin-bottom:25px;
+
+}
+
+.form-group{
+
+margin-bottom:20px;
+
+}
+
+.form-group label{
+
+display:block;
+margin-bottom:8px;
+font-weight:bold;
+color:#1d3557;
+
+}
+
+.form-group input,
+.form-group select{
+
+width:100%;
+padding:14px;
+border:1px solid #d8dce5;
+border-radius:10px;
+font-size:15px;
+outline:none;
+transition:.3s;
+
+}
+
+.form-group input:focus,
+.form-group select:focus{
+
+border-color:#0057a3;
+box-shadow:0 0 0 3px rgba(0,87,163,.12);
+
+}
+
+.btn-primary{
+
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+background:#0057a3;
+color:#fff;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+
+}
+
+.btn-primary:hover{
+
+background:#003f78;
+
+}
+
+/*======================================
+FOOTER
+======================================*/
+
+.dashboard-footer{
+
+margin-top:40px;
+padding:30px 0;
+border-top:1px solid #dfe6ee;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:20px;
+
+}
+
+.dashboard-footer strong{
+
+font-size:20px;
+color:#003f78;
+
+}
+
+.dashboard-footer p{
+
+margin-top:6px;
+color:#666;
+
+}
+
+.footer-links{
+
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+
+}
+
+.footer-links a{
+
+text-decoration:none;
+font-weight:bold;
+color:#0057a3;
+
+}
+
+.footer-links a:hover{
+
+color:#003f78;
+
+}
+
+/*======================================
+ANIMATIONS
+======================================*/
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+.card,
+.bank-card,
+.action-card,
+.summary-card,
+.overview-card,
+.transactions-section,
+.service-card,
+.support-card,
+.timeline,
+.modal-content{
+
+animation:fadeIn .45s ease;
+
+}
+
+/*======================================
+RESPONSIVE
+======================================*/
+
+@media(max-width:1400px){
+
+.cards,
+.quick-actions,
+.finance-summary{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+.services-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:992px){
+
+.sidebar{
+
+width:90px;
+
+}
+
+.logo h2,
+.logo p,
+.sidebar span{
+
+display:none;
+
+}
+
+.main{
+
+margin-left:90px;
+width:calc(100% - 90px);
+
+}
+
+.account-overview,
+.support-section{
+
+grid-template-columns:1fr;
+
+}
+
+.bank-card{
+
+width:100%;
+
+}
+
+}
+
+@media(max-width:768px){
+
+header{
+
+flex-direction:column;
+align-items:flex-start;
+gap:20px;
+
+}
+
+.cards,
+.quick-actions,
+.finance-summary,
+.services-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.transactions-section{
+
+overflow:auto;
+
+}
+
+.transactions-table{
+
+min-width:850px;
+
+}
+
+.dashboard-footer{
+
+flex-direction:column;
+align-items:flex-start;
+
+}
+
+.support-actions{
+
+flex-direction:column;
+
+}
+
+.support-actions button{
+
+width:100%;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.main{
+
+padding:20px;
+
+}
+
+header h1{
+
+font-size:26px;
+
+}
+
+.card,
+.action-card,
+.summary-card,
+.overview-card,
+.support-card{
+
+padding:18px;
+
+}
+
+.card-number{
+
+font-size:22px;
+letter-spacing:2px;
+
+}
+
+.timeline-item{
+
+flex-direction:column;
+
+}
+
+.timeline-icon{
+
+margin-bottom:10px;
+
+}
+
+.balance-row{
+
+flex-direction:column;
+align-items:flex-start;
+gap:15px;
+
+}
+
+.bank-card{
+
+padding:20px;
+height:auto;
+
+}
+
+}
+
+/*======================================
+FIN
+======================================*/
