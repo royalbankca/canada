@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dépôt Mobile Money | RBC Demo Bank</title>
+<title>RBC Demo Bank | Dépôt Mobile Money</title>
 
 <link rel="stylesheet" href="css/transfer.css">
 
@@ -29,75 +29,45 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 <ul>
 
 <li>
-
 <a href="dashboard.html">
-
 <i class="fas fa-home"></i>
-
 <span>Accueil</span>
-
 </a>
-
 </li>
 
 <li class="active">
-
 <a href="transfer.html">
-
 <i class="fas fa-wallet"></i>
-
 <span>Dépôt Mobile Money</span>
-
 </a>
-
 </li>
 
 <li>
-
 <a href="transactions.html">
-
-<i class="fas fa-receipt"></i>
-
+<i class="fas fa-clock-rotate-left"></i>
 <span>Transactions</span>
-
 </a>
-
 </li>
 
 <li>
-
 <a href="profile.html">
-
 <i class="fas fa-user"></i>
-
 <span>Mon Profil</span>
-
 </a>
-
 </li>
 
 <li>
-
 <a href="settings.html">
-
 <i class="fas fa-gear"></i>
-
 <span>Paramètres</span>
-
 </a>
-
 </li>
 
 <li>
-
 <a href="#" onclick="logout()">
-
 <i class="fas fa-right-from-bracket"></i>
-
 <span>Déconnexion</span>
-
 </a>
-
 </li>
 
 </ul>
@@ -114,31 +84,35 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <p>
 
-Approvisionnez votre compte RBC via SebPay.
+Rechargez votre compte RBC Demo Bank via SebPay.
 
 </p>
 
 </div>
 
-<div class="balance-box">
+<div class="balance-card">
 
 <span>Solde disponible</span>
 
-<h2 id="availableBalance">$0.00</h2>
+<h2 id="availableBalance">
+
+0.00 $
+
+</h2>
 
 </div>
 
 </header>
 
-<section class="transfer-container">
+<section class="deposit-container">
 
-<div class="transfer-card">
+<div class="deposit-form">
 
 <h2>
 
 <i class="fas fa-wallet"></i>
 
-Dépôt via Mobile Money
+Nouveau dépôt
 
 </h2>
 
@@ -167,8 +141,8 @@ readonly>
 <option value="CG">🇨🇬 Congo</option>
 <option value="CI">🇨🇮 Côte d'Ivoire</option>
 <option value="GA">🇬🇦 Gabon</option>
-<option value="GM">🇬🇲 Gambie</option>
 <option value="GH">🇬🇭 Ghana</option>
+<option value="GM">🇬🇲 Gambie</option>
 <option value="GN">🇬🇳 Guinée</option>
 <option value="GW">🇬🇼 Guinée-Bissau</option>
 <option value="ML">🇲🇱 Mali</option>
@@ -185,7 +159,7 @@ readonly>
 
 <div class="form-group">
 
-<label>Opérateur Mobile Money</label>
+<label>Opérateur</label>
 
 <select id="operator">
 
@@ -200,14 +174,9 @@ readonly>
 <label>Numéro Mobile Money</label>
 
 <input
-
 type="tel"
-
 id="phone"
-
-placeholder="2290100000000"
-
-required>
+placeholder="229XXXXXXXX">
 
 </div>
 
@@ -216,63 +185,47 @@ required>
 <label>Montant</label>
 
 <input
-
 type="number"
-
 id="amount"
-
-placeholder="1000"
-
-min="100"
-
-required>
+placeholder="1000">
 
 </div>
 
 <div
-id="otpContainer"
 class="form-group"
+id="otpContainer"
 style="display:none;">
 
 <label>Code OTP</label>
 
 <input
-
 type="text"
-
 id="otp"
-
-placeholder="Code OTP">
+placeholder="OTP">
 
 </div>
 
 <div class="buttons">
 
 <button
-
 type="button"
-
 id="payButton"
-
-class="btn-transfer">
+class="btn-primary">
 
 <i class="fas fa-wallet"></i>
 
-Déposer maintenant
+Déposer
 
 </button>
 
 <button
-
 type="button"
-
 id="statusButton"
-
-class="btn-cancel">
+class="btn-secondary">
 
 <i class="fas fa-rotate"></i>
 
-Vérifier le paiement
+Actualiser
 
 </button>
 
@@ -282,17 +235,17 @@ Vérifier le paiement
 
 </div>
 
-<div class="summary-card">
+<div class="deposit-summary">
 
 <h2>
 
 <i class="fas fa-chart-line"></i>
 
-Résumé du dépôt
+Résumé
 
 </h2>
 
-<div class="summary-item">
+<div class="summary-row">
 
 <span>Compte</span>
 
@@ -304,9 +257,9 @@ Résumé du dépôt
 
 </div>
 
-<div class="summary-item">
+<div class="summary-row">
 
-<span>Solde actuel</span>
+<span>Solde</span>
 
 <strong id="summaryBalance">
 
@@ -316,7 +269,7 @@ Résumé du dépôt
 
 </div>
 
-<div class="summary-item">
+<div class="summary-row">
 
 <span>Référence</span>
 
@@ -328,7 +281,7 @@ Résumé du dépôt
 
 </div>
 
-<div class="summary-item">
+<div class="summary-row">
 
 <span>Statut</span>
 
@@ -340,7 +293,7 @@ En attente
 
 </div>
 
-<div class="summary-item">
+<div class="summary-row">
 
 <span>Montant</span>
 
@@ -352,7 +305,7 @@ En attente
 
 </div>
 
-<div class="summary-item total">
+<div class="summary-row total">
 
 <span>Résultat</span>
 
@@ -367,9 +320,9 @@ Aucun dépôt
 </div>
 
 </section>
-<section class="transfer-info">
+<section class="details-container">
 
-<div class="info-card">
+<div class="details-card">
 
 <h2>
 
@@ -379,7 +332,7 @@ Informations SebPay
 
 </h2>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Référence</span>
 
@@ -391,7 +344,7 @@ Informations SebPay
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>ID Transaction</span>
 
@@ -403,7 +356,7 @@ Informations SebPay
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Statut</span>
 
@@ -415,9 +368,9 @@ En attente
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
-<span>Message API</span>
+<span>Message</span>
 
 <strong id="lastMessage">
 
@@ -427,7 +380,7 @@ En attente
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Pays</span>
 
@@ -439,7 +392,7 @@ En attente
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Opérateur</span>
 
@@ -451,7 +404,7 @@ En attente
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Téléphone</span>
 
@@ -465,17 +418,17 @@ En attente
 
 </div>
 
-<div class="info-card">
+<div class="details-card">
 
 <h2>
 
-<i class="fas fa-chart-simple"></i>
+<i class="fas fa-chart-column"></i>
 
 État du dépôt
 
 </h2>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Montant demandé</span>
 
@@ -487,9 +440,9 @@ En attente
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
-<span>Montant validé</span>
+<span>Montant reçu</span>
 
 <strong id="receivedAmount">
 
@@ -499,19 +452,19 @@ En attente
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Devise</span>
 
 <strong id="receivedCurrency">
 
-XOF
+---------
 
 </strong>
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Date de création</span>
 
@@ -523,7 +476,7 @@ XOF
 
 </div>
 
-<div class="summary-item">
+<div class="detail-row">
 
 <span>Dernière mise à jour</span>
 
@@ -535,31 +488,27 @@ XOF
 
 </div>
 
-<div class="summary-item total">
+<div class="detail-row total">
 
 <span>Résultat</span>
 
 <strong id="paymentResult">
 
-Aucun dépôt effectué
+Aucun dépôt
 
 </strong>
 
 </div>
 
-<div style="margin-top:20px;">
-
 <button
 
 type="button"
 
-class="btn-transfer"
+class="btn-primary"
 
-style="width:100%;"
+id="refreshStatus">
 
-onclick="checkCollectionStatus()">
-
-<i class="fas fa-rotate"></i>
+<i class="fas fa-arrows-rotate"></i>
 
 Actualiser le statut
 
@@ -567,24 +516,21 @@ Actualiser le statut
 
 </div>
 
-</div>
-
 </section>
-<section class="deposit-history">
 
-<div class="section-title">
+<section class="history-container">
+
+<div class="history-card">
 
 <h2>
 
 <i class="fas fa-clock-rotate-left"></i>
 
-Historique des dépôts Mobile Money
+Historique des dépôts
 
 </h2>
 
-</div>
-
-<table class="history-table">
+<table>
 
 <thead>
 
@@ -592,11 +538,9 @@ Historique des dépôts Mobile Money
 
 <th>Référence</th>
 
-<th>Opérateur</th>
-
-<th>Téléphone</th>
-
 <th>Montant</th>
+
+<th>Opérateur</th>
 
 <th>Statut</th>
 
@@ -610,7 +554,7 @@ Historique des dépôts Mobile Money
 
 <tr>
 
-<td colspan="6" style="text-align:center;">
+<td colspan="5">
 
 Aucun dépôt disponible.
 
@@ -622,17 +566,17 @@ Aucun dépôt disponible.
 
 </table>
 
-<div class="history-actions">
+<div class="history-buttons">
 
 <button
 
 type="button"
 
-class="btn-transfer"
+id="reloadHistory"
 
-onclick="loadDepositHistory()">
+class="btn-primary">
 
-<i class="fas fa-arrows-rotate"></i>
+<i class="fas fa-rotate"></i>
 
 Actualiser
 
@@ -642,34 +586,179 @@ Actualiser
 
 type="button"
 
-class="btn-cancel"
+id="clearHistory"
 
-onclick="clearDepositHistory()">
+class="btn-secondary">
 
 <i class="fas fa-trash"></i>
 
-Vider l'historique
+Vider
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+<section class="confirmation-container">
+
+<div class="confirmation-card">
+
+<h2>
+
+<i class="fas fa-circle-check"></i>
+
+Confirmation du dépôt
+
+</h2>
+
+<table class="confirmation-table">
+
+<tr>
+
+<td>Compte RBC</td>
+
+<td id="confirmAccount">---------</td>
+
+</tr>
+
+<tr>
+
+<td>Pays</td>
+
+<td id="confirmCountry">---------</td>
+
+</tr>
+
+<tr>
+
+<td>Opérateur</td>
+
+<td id="confirmOperator">---------</td>
+
+</tr>
+
+<tr>
+
+<td>Numéro</td>
+
+<td id="confirmPhone">---------</td>
+
+</tr>
+
+<tr>
+
+<td>Montant</td>
+
+<td id="confirmAmount">0.00</td>
+
+</tr>
+
+<tr>
+
+<td>Devise</td>
+
+<td id="confirmCurrency">---------</td>
+
+</tr>
+
+<tr>
+
+<td>Référence</td>
+
+<td id="confirmReference">---------</td>
+
+</tr>
+
+<tr>
+
+<td>Statut</td>
+
+<td id="confirmStatus">En attente</td>
+
+</tr>
+
+</table>
+
+<div class="confirmation-buttons">
+
+<button
+type="button"
+id="previewButton"
+class="btn-secondary">
+
+<i class="fas fa-eye"></i>
+
+Prévisualiser
+
+</button>
+
+<button
+type="button"
+id="confirmButton"
+class="btn-primary">
+
+<i class="fas fa-check"></i>
+
+Confirmer
+
+</button>
+
+</div>
+
+</div>
+
+<div class="receipt-card">
+
+<h2>
+
+<i class="fas fa-receipt"></i>
+
+Reçu
+
+</h2>
+
+<div id="receiptContent">
+
+<p>
+
+Aucun reçu disponible.
+
+</p>
+
+</div>
+
+<button
+type="button"
+id="downloadReceipt"
+class="btn-primary">
+
+<i class="fas fa-download"></i>
+
+Télécharger le reçu
 
 </button>
 
 </div>
 
 </section>
-<section class="wallet-section">
 
-<div class="wallet-card">
+<section class="dashboard-container">
+
+<div class="dashboard-card">
 
 <h2>
 
 <i class="fas fa-wallet"></i>
 
-Portefeuille RBC
+Portefeuille
 
 </h2>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
-<span>Solde actuel</span>
+<span>Solde</span>
 
 <strong id="walletBalance">
 
@@ -679,9 +768,9 @@ Portefeuille RBC
 
 </div>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
-<span>Total des dépôts</span>
+<span>Total dépôts</span>
 
 <strong id="totalDeposits">
 
@@ -691,7 +780,7 @@ Portefeuille RBC
 
 </div>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
 <span>Nombre de dépôts</span>
 
@@ -703,7 +792,7 @@ Portefeuille RBC
 
 </div>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
 <span>Dernière synchronisation</span>
 
@@ -717,19 +806,19 @@ Jamais
 
 </div>
 
-<div class="wallet-card">
+<div class="dashboard-card">
 
 <h2>
 
-<i class="fas fa-chart-column"></i>
+<i class="fas fa-chart-pie"></i>
 
 Statistiques
 
 </h2>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
-<span>Dépôts réussis</span>
+<span>Réussis</span>
 
 <strong id="successCount">
 
@@ -739,9 +828,9 @@ Statistiques
 
 </div>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
-<span>Dépôts échoués</span>
+<span>Échoués</span>
 
 <strong id="failedCount">
 
@@ -751,9 +840,9 @@ Statistiques
 
 </div>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
-<span>Dernier montant</span>
+<span>Dernier dépôt</span>
 
 <strong id="lastDepositAmount">
 
@@ -763,7 +852,7 @@ Statistiques
 
 </div>
 
-<div class="wallet-item">
+<div class="dashboard-row">
 
 <span>Dernier statut</span>
 
@@ -778,9 +867,9 @@ Aucun
 </div>
 
 </section>
-<section class="activity-section">
+<section class="activity-container">
 
-<div class="section-title">
+<div class="activity-card">
 
 <h2>
 
@@ -790,9 +879,7 @@ Activité récente
 
 </h2>
 
-</div>
-
-<table class="history-table">
+<table>
 
 <thead>
 
@@ -816,9 +903,9 @@ Activité récente
 
 <tr>
 
-<td colspan="5" style="text-align:center;">
+<td colspan="5">
 
-Aucune activité récente.
+Aucune activité.
 
 </td>
 
@@ -828,217 +915,24 @@ Aucune activité récente.
 
 </table>
 
-<div class="activity-actions">
-
 <button
-
 type="button"
+id="refreshActivity"
+class="btn-primary">
 
-class="btn-transfer"
+<i class="fas fa-arrows-rotate"></i>
 
-onclick="loadActivityHistory()">
-
-<i class="fas fa-rotate"></i>
-
-Actualiser l'activité
+Actualiser
 
 </button>
 
 </div>
 
 </section>
-<section class="confirmation-section">
 
-<div class="confirmation-card">
+<section class="support-container">
 
-<h2>
-
-<i class="fas fa-circle-check"></i>
-
-Confirmation du dépôt
-
-</h2>
-
-<p>
-
-Vérifiez les informations avant d'envoyer votre demande de dépôt.
-
-</p>
-
-<table class="confirmation-table">
-
-<tr>
-
-<td>Compte RBC</td>
-
-<td id="confirmAccount">
-
----------
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Pays</td>
-
-<td id="confirmCountry">
-
----------
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Opérateur</td>
-
-<td id="confirmOperator">
-
----------
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Numéro Mobile Money</td>
-
-<td id="confirmPhone">
-
----------
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Montant</td>
-
-<td id="confirmDepositAmount">
-
-0.00
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Devise</td>
-
-<td id="confirmCurrency">
-
-XOF
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Référence</td>
-
-<td id="confirmReference">
-
----------
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Statut</td>
-
-<td id="confirmStatus">
-
-En attente
-
-</td>
-
-</tr>
-
-</table>
-
-<div class="confirmation-buttons">
-
-<button
-
-type="button"
-
-class="btn-secondary"
-
-onclick="previewDeposit()">
-
-<i class="fas fa-eye"></i>
-
-Prévisualiser
-
-</button>
-
-<button
-
-type="button"
-
-class="btn-primary"
-
-onclick="createCollection()">
-
-<i class="fas fa-wallet"></i>
-
-Confirmer le dépôt
-
-</button>
-
-</div>
-
-</div>
-
-<div class="receipt-card">
-
-<h2>
-
-<i class="fas fa-receipt"></i>
-
-Reçu SebPay
-
-</h2>
-
-<div id="receiptContent">
-
-<p>
-
-Le reçu du dépôt apparaîtra ici après la confirmation du paiement.
-
-</p>
-
-</div>
-
-<button
-
-type="button"
-
-class="btn-download"
-
-onclick="downloadReceipt()">
-
-<i class="fas fa-download"></i>
-
-Télécharger le reçu
-
-</button>
-
-</div>
-
-</section>
-<section class="dashboard-section">
-
-<div class="dashboard-card">
+<div class="support-card">
 
 <h2>
 
@@ -1050,13 +944,17 @@ Notifications
 
 <div id="notifications">
 
-<p>Aucune notification.</p>
+<p>
+
+Aucune notification.
+
+</p>
 
 </div>
 
 </div>
 
-<div class="dashboard-card">
+<div class="support-card">
 
 <h2>
 
@@ -1068,19 +966,19 @@ Sécurité
 
 <ul>
 
-<li>✔ Toutes les transactions sont chiffrées.</li>
+<li>Connexion sécurisée</li>
 
-<li>✔ Vérification via SebPay.</li>
+<li>Transactions chiffrées</li>
 
-<li>✔ Protection contre les doubles paiements.</li>
+<li>Validation SebPay</li>
 
-<li>✔ Historique sécurisé.</li>
+<li>Protection contre les doublons</li>
 
 </ul>
 
 </div>
 
-<div class="dashboard-card">
+<div class="support-card">
 
 <h2>
 
@@ -1092,11 +990,14 @@ Support
 
 <p>
 
-Pour toute difficulté concernant votre dépôt Mobile Money, contactez notre assistance.
+Notre assistance est disponible 24h/24.
 
 </p>
 
-<button class="btn-transfer">
+<button
+type="button"
+id="contactSupport"
+class="btn-primary">
 
 <i class="fas fa-headset"></i>
 
@@ -1108,7 +1009,7 @@ Contacter le support
 
 </section>
 
-<footer class="transfer-footer">
+<footer>
 
 <div>
 
@@ -1116,21 +1017,9 @@ Contacter le support
 
 <p>
 
-© 2026 RBC Demo Bank - Tous droits réservés.
+© 2026 RBC Demo Bank. Tous droits réservés.
 
 </p>
-
-</div>
-
-<div class="footer-links">
-
-<a href="#">Confidentialité</a>
-
-<a href="#">Conditions</a>
-
-<a href="#">Sécurité</a>
-
-<a href="#">Support</a>
 
 </div>
 
@@ -1144,49 +1033,11 @@ Contacter le support
 
 function logout(){
 
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("session");
+localStorage.removeItem("currentUser");
 
-    window.location.href="login.html";
+window.location.href="login.html";
 
 }
-
-document.addEventListener("DOMContentLoaded",function(){
-
-    const user = JSON.parse(localStorage.getItem("currentUser"));
-
-    if(!user){
-
-        window.location.href="login.html";
-
-        return;
-
-    }
-
-    document.getElementById("senderAccount").value = user.account;
-
-    document.getElementById("availableBalance").textContent =
-    "$ " + Number(user.balance).toLocaleString("en-CA",{
-
-        minimumFractionDigits:2,
-
-        maximumFractionDigits:2
-
-    });
-
-    document.getElementById("summaryAccount").textContent =
-    user.account;
-
-    document.getElementById("summaryBalance").textContent =
-    "$ " + Number(user.balance).toLocaleString("en-CA",{
-
-        minimumFractionDigits:2,
-
-        maximumFractionDigits:2
-
-    });
-
-});
 
 </script>
 
