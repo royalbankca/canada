@@ -1,220 +1,216 @@
-//====================================================
-// ROYAL BANK
+// ==========================================
 // dashboard.js
-//====================================================
+// PARTIE 1
+// ==========================================
 
 let currentUser = null;
-let transactions = [];
-let balanceVisible = true;
-
-//====================================================
-// INITIALISATION
-//====================================================
+let clients = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    loadUser();
+    checkSession();
 
-    loadTransactions();
+    loadClients();
 
-    updateDashboard();
+    loadCurrentUser();
 
-    updateSummary();
+    refreshDashboard();
 
-    initializeEvents();
+    setInterval(refreshDashboard,3000);
 
 });
 
-//====================================================
-// CHARGER LE CLIENT
-//====================================================
+// ==========================================
+// VERIFIER SESSION
+// ==========================================
 
-function loadUser(){
+function checkSession(){
 
-    const data = localStorage.getItem("currentUser");
+    const logged = localStorage.getItem("isLoggedIn");
 
-    if(!data){
+    const role = localStorage.getItem("role");
+
+    if(logged !== "true" || role !== "client"){
+
+        window.location.href = "login.html";
+
+    }
+
+}
+
+// ==========================================
+// CHARGER CLIENTS
+// ==========================================
+
+function loadClients(){
+
+    clients = JSON.parse(
+
+        localStorage.getItem("clients")
+
+    ) || [];
+
+}
+
+// ==========================================
+// CHARGER UTILISATEUR
+// ==========================================
+
+function loadCurrentUser(){
+
+    const session = JSON.parse(
+
+        localStorage.getItem("currentUser")
+
+    );
+
+    if(!session){
 
         window.location.href="login.html";
+
         return;
 
     }
 
-    currentUser = JSON.parse(data);
+    currentUser = clients.find(
 
-}
+        c => c.id === session.id
 
-//====================================================
-// TABLEAU DE BORD
-//====================================================
+    );
 
-function updateDashboard(){
+    if(!currentUser){
 
-    document.getElementById("welcomeTitle").textContent =
-        "Bonjour " + currentUser.name;
+        window.location.href="login.html";
 
-    document.getElementById("welcomeName").textContent =
-        "Bienvenue sur votre espace bancaire sécurisé.";
-
-    document.getElementById("clientName").textContent =
-        currentUser.name;
-
-    document.getElementById("cardHolder").textContent =
-        currentUser.name.toUpperCase();
-
-    document.getElementById("clientAccount").textContent =
-        currentUser.account;
-
-    document.getElementById("accountNumber").textContent =
-        currentUser.account;
-
-    document.getElementById("clientId").textContent =
-        currentUser.id;
-
-    document.getElementById("clientInfoId").textContent =
-        currentUser.id;
-
-    document.getElementById("cardNumber").textContent =
-        formatCard(currentUser.account);
-
-    refreshBalance(currentUser.balance);
-
-}
-
-//====================================================
-// FORMAT CARTE
-//====================================================
-
-function formatCard(number){
-
-    if(!number) return "**** **** **** ****";
-
-    return number.replace(/(.{4})/g,"$1 ").trim();
-
-}
-
-//====================================================
-// SOLDE
-//====================================================
-
-function refreshBalance(balance){
-
-    currentUser.balance = Number(balance);
-
-    if(balanceVisible){
-
-        document.getElementById("balance").textContent =
-            formatMoney(balance);
-
-    }else{
-
-        document.getElementById("balance").textContent =
-            "********";
+        return;
 
     }
 
-}
+    localStorage.setItem(
 
-//====================================================
-// FORMAT ARGENT
-//====================================================
+        "currentUser",
 
-function formatMoney(amount){
-
-    return Number(amount).toLocaleString(
-
-        "en-CA",
-
-        {
-
-            style:"currency",
-
-            currency:"CAD"
-
-        }
+        JSON.stringify(currentUser)
 
     );
 
 }
 
-//====================================================
-// AFFICHER / MASQUER LE SOLDE
-//====================================================
+// ==========================================
+// RAFRAICHIR TABLEAU DE BORD
+// ==========================================
 
-function toggleBalance(){
+function refreshDashboard(){
 
-    balanceVisible = !balanceVisible;
+    loadClients();
 
-    refreshBalance(currentUser.balance);
+    loadCurrentUser();
 
-    const icon =
-        document.querySelector("#toggleBalance i");
+    updateProfile();
 
-    if(balanceVisible){
+    updateBalance();
 
-        icon.className="fas fa-eye";
+    loadTransactions();
 
-    }else{
+    loadNotifications();
 
-        icon.className="fas fa-eye-slash";
+}
+
+// ==========================================
+// PROFIL CLIENT
+// ==========================================
+
+function updateProfile(){
+
+    const name = document.getElementById("clientName");
+
+    if(name){
+
+        name.innerHTML = currentUser.name;
+
+    }
+
+    const account = document.getElementById("accountNumber");
+
+    if(account){
+
+        account.innerHTML = currentUser.account;
+
+    }
+
+    const client = document.getElementById("clientID");
+
+    if(client){
+
+        client.innerHTML = currentUser.id;
+
+    }
+
+}
+// ==========================================
+// dashboard.js
+// PARTIE 2
+// ==========================================
+
+// ==========================================
+// AFFICHAGE DU SOLDE
+// ==========================================
+
+function updateBalance(){
+
+    const balance = document.getElementById("balance");
+
+    if(balance){
+
+        balance.innerHTML =
+
+            "$ " +
+
+            Number(currentUser.balance).toLocaleString(
+
+                "en-CA",
+
+                {
+
+                    minimumFractionDigits:2,
+
+                    maximumFractionDigits:2
+
+                }
+
+            );
 
     }
 
 }
 
-//====================================================
-// EVENEMENTS
-//====================================================
-
-function initializeEvents(){
-
-    document
-    .getElementById("toggleBalance")
-    .addEventListener("click",toggleBalance);
-
-}
-//====================================================
-// TRANSACTIONS
-//====================================================
+// ==========================================
+// CHARGER LES TRANSACTIONS
+// ==========================================
 
 function loadTransactions(){
 
-    const data = localStorage.getItem("transactions");
-
-    if(data){
-
-        transactions = JSON.parse(data);
-
-    }else{
-
-        transactions = [];
-
-    }
-
-    displayTransactions();
-
-}
-
-//====================================================
-// AFFICHAGE DES TRANSACTIONS
-//====================================================
-
-function displayTransactions(){
-
-    const table =
-        document.getElementById("transactionsTable");
+    const table = document.getElementById("transactionTable");
 
     if(!table) return;
 
-    table.innerHTML="";
+    table.innerHTML = "";
 
-    if(transactions.length===0){
+    if(
 
-        table.innerHTML=`
+        !currentUser.transactions ||
+
+        currentUser.transactions.length===0
+
+    ){
+
+        table.innerHTML =
+
+        `
 
 <tr>
 
-<td colspan="5" style="text-align:center;padding:30px;">
+<td colspan="5" style="text-align:center">
 
 Aucune transaction disponible.
 
@@ -228,17 +224,7 @@ Aucune transaction disponible.
 
     }
 
-    transactions.forEach(transaction=>{
-
-        const amountClass =
-            transaction.amount>=0
-            ? "credit"
-            : "debit";
-
-        const sign =
-            transaction.amount>=0
-            ? "+"
-            : "-";
+    currentUser.transactions.forEach(transaction=>{
 
         table.innerHTML += `
 
@@ -250,25 +236,25 @@ Aucune transaction disponible.
 
 <td>${transaction.description}</td>
 
-<td class="${amountClass}">
-
-${sign} ${Math.abs(transaction.amount).toLocaleString("en-CA",{
-
-minimumFractionDigits:2
-
-})} $
-
-</td>
-
 <td>
 
-<span class="status active">
+$ ${Number(transaction.amount).toLocaleString(
 
-${transaction.status}
+"en-CA",
 
-</span>
+{
+
+minimumFractionDigits:2,
+
+maximumFractionDigits:2
+
+}
+
+)}
 
 </td>
+
+<td>${transaction.status}</td>
 
 </tr>
 
@@ -278,390 +264,266 @@ ${transaction.status}
 
 }
 
-//====================================================
-// AJOUTER TRANSACTION
-//====================================================
+// ==========================================
+// DERNIERE TRANSACTION
+// ==========================================
 
-function addTransaction(type,description,amount){
+function getLastTransaction(){
 
-    const transaction={
+    if(
 
-        date:new Date().toLocaleDateString("fr-CA"),
+        !currentUser.transactions ||
 
-        type:type,
+        currentUser.transactions.length===0
 
-        description:description,
+    ){
 
-        amount:Number(amount),
-
-        status:"Complété"
-
-    };
-
-    transactions.unshift(transaction);
-
-    localStorage.setItem(
-
-        "transactions",
-
-        JSON.stringify(transactions)
-
-    );
-
-    displayTransactions();
-
-    updateSummary();
-
-}
-
-//====================================================
-// RESUME FINANCIER
-//====================================================
-
-function updateSummary(){
-
-    let income=0;
-
-    let expense=0;
-
-    transactions.forEach(item=>{
-
-        if(item.amount>=0){
-
-            income+=item.amount;
-
-        }else{
-
-            expense+=Math.abs(item.amount);
-
-        }
-
-    });
-
-    document.getElementById("monthlyIncome").textContent=
-
-        formatMoney(income);
-
-    document.getElementById("monthlyExpense").textContent=
-
-        formatMoney(expense);
-
-    document.getElementById("savingAmount").textContent=
-
-        formatMoney(income-expense);
-
-}
-
-//====================================================
-// NOTIFICATIONS
-//====================================================
-
-function showNotification(message,icon="fa-circle-check"){
-
-    const container=
-
-        document.getElementById("notificationsContainer");
-
-    if(!container) return;
-
-    container.insertAdjacentHTML(
-
-        "afterbegin",
-
-`
-
-<div class="notification">
-
-<i class="fas ${icon}"></i>
-
-<p>${message}</p>
-
-</div>
-
-`
-
-    );
-
-}
-
-//====================================================
-// RECHARGER MON COMPTE
-//====================================================
-
-function openRecharge(){
-
-    document.getElementById("rechargeModal").style.display="flex";
-
-}
-
-function closeRecharge(){
-
-    document.getElementById("rechargeModal").style.display="none";
-
-}
-
-window.onclick=function(e){
-
-    const modal=document.getElementById("rechargeModal");
-
-    if(e.target===modal){
-
-        closeRecharge();
+        return null;
 
     }
 
-};
-//====================================================
-// SERVICES VERROUILLÉS
-//====================================================
+    return currentUser.transactions[0];
 
-function serviceLocked(){
+}
+
+// ==========================================
+// CARTE DERNIERE OPERATION
+// ==========================================
+
+function updateLastTransactionCard(){
+
+    const card = document.getElementById("lastTransaction");
+
+    if(!card) return;
+
+    const last = getLastTransaction();
+
+    if(!last){
+
+        card.innerHTML =
+
+        "Aucune opération.";
+
+        return;
+
+    }
+
+    card.innerHTML =
+
+        last.type +
+
+        " - $" +
+
+        Number(last.amount).toLocaleString(
+
+            "en-CA"
+
+        );
+
+}
+// ==========================================
+// dashboard.js
+// PARTIE 3
+// ==========================================
+
+// ==========================================
+// CHARGER LES NOTIFICATIONS
+// ==========================================
+
+function loadNotifications(){
+
+    const list = document.getElementById("notificationList");
+
+    if(!list) return;
+
+    list.innerHTML = "";
+
+    if(
+
+        !currentUser.notifications ||
+
+        currentUser.notifications.length===0
+
+    ){
+
+        list.innerHTML =
+
+        "<li>Aucune notification.</li>";
+
+        return;
+
+    }
+
+    currentUser.notifications.forEach(notification=>{
+
+        list.innerHTML += `
+
+<li>
+
+<strong>${notification.date}</strong>
+
+<br>
+
+${notification.message}
+
+</li>
+
+`;
+
+    });
+
+}
+
+// ==========================================
+// DEMANDES DE DEPOT
+// ==========================================
+
+function sendDepositRequest(
+
+    amount,
+
+    operator,
+
+    phone
+
+){
+
+    let requests =
+
+        JSON.parse(
+
+            localStorage.getItem(
+
+                "depositRequests"
+
+            )
+
+        ) || [];
+
+    requests.push({
+
+        clientId:currentUser.id,
+
+        clientName:currentUser.name,
+
+        amount:Number(amount),
+
+        operator:operator,
+
+        phone:phone,
+
+        date:new Date().toLocaleString("fr-CA"),
+
+        status:"En attente"
+
+    });
+
+    localStorage.setItem(
+
+        "depositRequests",
+
+        JSON.stringify(requests)
+
+    );
 
     alert(
 
-`Ce service n'est pas encore activé.
-
-Veuillez contacter votre administrateur.`
+        "Votre demande de dépôt a été envoyée."
 
     );
 
 }
 
-//====================================================
-// FORMULAIRE RECHARGE
-//====================================================
+// ==========================================
+// FORMULAIRE DEPOT
+// ==========================================
 
-const rechargeForm=document.getElementById("rechargeForm");
+function submitDeposit(){
 
-if(rechargeForm){
+    const amount =
 
-rechargeForm.addEventListener("submit",submitRecharge);
+        document.getElementById("depositAmount").value;
 
-}
+    const operator =
 
-async function submitRecharge(e){
+        document.getElementById("depositOperator").value;
 
-e.preventDefault();
+    const phone =
 
-const amount=
-Number(document.getElementById("depositAmount").value);
+        document.getElementById("depositPhone").value;
 
-const operator=
-document.getElementById("mobileOperator").value;
+    if(
 
-const phone=
-document.getElementById("phoneNumber").value.trim();
+        amount==="" ||
 
-if(amount<=0){
+        Number(amount)<=0
 
-alert("Montant invalide.");
+    ){
 
-return;
+        alert("Montant invalide.");
 
-}
+        return;
 
-if(operator===""){
+    }
 
-alert("Choisissez un opérateur.");
+    sendDepositRequest(
 
-return;
+        amount,
 
-}
+        operator,
 
-if(phone===""){
+        phone
 
-alert("Entrez votre numéro.");
+    );
 
-return;
+    document.getElementById(
 
-}
+        "depositAmount"
 
-//==========================================
-// SEBPAY
-//==========================================
+    ).value="";
 
-const payload={
+    document.getElementById(
 
-amount:amount,
+        "depositPhone"
 
-operator:operator,
-
-phone:phone,
-
-customerId:currentUser.id,
-
-accountNumber:currentUser.account,
-
-customerName:currentUser.name
-
-};
-
-//================================================
-// ICI TU CONNECTERAS TON API SEBPAY
-//================================================
-
-// Exemple :
-
-/*
-
-const response=await fetch("/api/sebpay/deposit",{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify(payload)
-
-});
-
-const result=await response.json();
-
-if(result.success){
-
-...
+    ).value="";
 
 }
 
-*/
-
-//================================================
-// DEMO
-//================================================
-
-alert(
-
-"Demande de recharge envoyée.\n\n" +
-
-"Montant : "+amount+" CAD"
-
-);
-
-addTransaction(
-
-"Recharge",
-
-"Demande SebPay",
-
-amount
-
-);
-
-showNotification(
-
-"Nouvelle demande de recharge envoyée.",
-
-"fa-wallet"
-
-);
-
-closeRecharge();
-
-rechargeForm.reset();
-
-}
-
-//====================================================
-// RAFRAÎCHISSEMENT AUTOMATIQUE
-//====================================================
-
-function refreshDashboard(){
-
-loadUser();
-
-refreshBalance(currentUser.balance);
-
-displayTransactions();
-
-updateSummary();
-
-}
-
-setInterval(refreshDashboard,10000);
-
-//====================================================
-// SYNCHRONISATION
-//====================================================
-
-window.addEventListener("storage",function(){
-
-loadUser();
-
-displayTransactions();
-
-refreshBalance(currentUser.balance);
-
-updateSummary();
-
-});
-
-//====================================================
-// SAUVEGARDE
-//====================================================
-
-function saveCurrentUser(){
-
-localStorage.setItem(
-
-"currentUser",
-
-JSON.stringify(currentUser)
-
-);
-
-}
-
-setInterval(saveCurrentUser,5000);
-
-//====================================================
-// DERNIÈRE CONNEXION
-//====================================================
-
-const now=new Date();
-
-document.getElementById("lastConnection").textContent=
-
-now.toLocaleString("fr-CA");
-
-//====================================================
-// DÉCONNEXION
-//====================================================
+// ==========================================
+// DECONNEXION
+// ==========================================
 
 function logout(){
 
-localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentUser");
 
-localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("role");
 
-window.location.href="login.html";
+    localStorage.removeItem("isLoggedIn");
+
+    window.location.href="login.html";
 
 }
 
-//====================================================
-// STATISTIQUES
-//====================================================
+// ==========================================
+// SYNCHRONISATION
+// ==========================================
 
-function getStatistics(){
+window.addEventListener("storage",()=>{
 
-console.log({
-
-client:currentUser.name,
-
-compte:currentUser.account,
-
-solde:currentUser.balance,
-
-operations:transactions.length
+    refreshDashboard();
 
 });
 
-}
+setInterval(()=>{
 
-getStatistics();
+    refreshDashboard();
 
-//====================================================
-// FIN
-//====================================================
+    updateLastTransactionCard();
+
+},5000);
+
+// ==========================================
+// FIN dashboard.js
+// ==========================================
