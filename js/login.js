@@ -1,236 +1,339 @@
-// =======================================
-// RBC BANK LOGIN
+//==========================================
+// RBC DEMO BANK
 // login.js
-// VERSION COMPLETE
-// =======================================
+//==========================================
 
-document.addEventListener("DOMContentLoaded", () => {
+const loginForm = document.getElementById("loginForm");
+const togglePassword = document.getElementById("togglePassword");
+const password = document.getElementById("password");
+const username = document.getElementById("username");
+const cardNumber = document.getElementById("cardNumber");
+const remember = document.getElementById("remember");
 
-    initializeClients();
+//==========================================
+// PASSWORD
+//==========================================
 
-    const form = document.getElementById("loginForm");
+togglePassword.addEventListener("click", () => {
 
-    if(!form) return;
+    if(password.type==="password"){
 
-    form.addEventListener("submit", login);
+        password.type="text";
+
+        togglePassword.innerHTML='<i class="fa-solid fa-eye-slash"></i>';
+
+    }else{
+
+        password.type="password";
+
+        togglePassword.innerHTML='<i class="fa-solid fa-eye"></i>';
+
+    }
 
 });
 
-// =======================================
-// INITIALISER LES CLIENTS
-// =======================================
+//==========================================
+// CARD FORMAT
+//==========================================
 
-function initializeClients(){
+cardNumber.addEventListener("input",e=>{
 
-    if(localStorage.getItem("clients")) return;
+    let value=e.target.value.replace(/\D/g,'');
 
-    if(typeof loadClients==="function"){
+    value=value.substring(0,16);
 
-        loadClients();
+    value=value.replace(/(.{4})/g,"$1 ").trim();
 
-        return;
+    e.target.value=value;
+
+});
+
+//==========================================
+// REMEMBER
+//==========================================
+
+window.addEventListener("load",()=>{
+
+    if(localStorage.getItem("remember")==="true"){
+
+        username.value=localStorage.getItem("username");
+
+        cardNumber.value=localStorage.getItem("card");
+
+        remember.checked=true;
 
     }
 
-}
+});
 
-// =======================================
-// CONNEXION
-// =======================================
+//==========================================
+// LOGIN
+//==========================================
 
-function login(e){
+loginForm.addEventListener("submit",(e)=>{
 
     e.preventDefault();
 
-    const clientID=document
-        .getElementById("client")
-        .value
-        .trim();
+    const user=username.value.trim();
 
-    const access=document
-        .getElementById("access")
-        .value
-        .trim();
+    const pass=password.value.trim();
 
-    const password=document
-        .getElementById("password")
-        .value
-        .trim();
+    const card=cardNumber.value.trim();
 
-    // ===================================
-    // ADMIN
-    // ===================================
+    if(card===""){
 
-    if(
-
-        clientID.toUpperCase()=="ADMIN"
-
-        &&
-
-        access=="ADMIN"
-
-        &&
-
-        password=="ADMIN123"
-
-    ){
-
-        localStorage.setItem("role","admin");
-
-        localStorage.setItem("isLoggedIn","true");
-
-        localStorage.setItem(
-
-            "currentUser",
-
-            JSON.stringify({
-
-                id:"ADMIN",
-
-                name:"Administrator"
-
-            })
-
-        );
-
-        window.location.href="admin.html";
+        alert("Enter your card number");
 
         return;
 
     }
 
-    // ===================================
-    // CLIENTS
-    // ===================================
+    if(user===""){
 
-    const clients=
-
-        JSON.parse(
-
-            localStorage.getItem("clients")
-
-        ) || [];
-
-    const client=
-
-        clients.find(c=>
-
-            c.id===clientID
-
-            &&
-
-            c.access===access
-
-            &&
-
-            c.password===password
-
-        );
-
-    if(!client){
-
-        alert(
-
-            "Client ID, Access Code ou Password incorrect."
-
-        );
+        alert("Enter your username");
 
         return;
 
     }
 
-    localStorage.setItem(
+    if(pass===""){
 
-        "role",
+        alert("Enter your password");
 
-        "client"
+        return;
 
-    );
+    }
 
-    localStorage.setItem(
+    if(remember.checked){
 
-        "isLoggedIn",
+        localStorage.setItem("remember",true);
 
-        "true"
+        localStorage.setItem("username",user);
 
-    );
+        localStorage.setItem("card",card);
 
-    localStorage.setItem(
+    }else{
 
-        "currentUser",
+        localStorage.clear();
 
-        JSON.stringify(client)
+    }
 
-    );
+    login();
 
-    window.location.href="dashboard.html";
+});
+
+//==========================================
+// LOGIN FUNCTION
+//==========================================
+
+function login(){
+
+    const btn=document.querySelector(".login-btn");
+
+    btn.disabled=true;
+
+    btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
+
+    setTimeout(()=>{
+
+        sessionStorage.setItem("logged",true);
+
+        sessionStorage.setItem("clientName","John Smith");
+
+        sessionStorage.setItem("accountNumber","001245879");
+
+        sessionStorage.setItem("balance","25480.75");
+
+        sessionStorage.setItem("currency","CAD");
+
+        window.location.href="dashboard.html";
+
+    },1800);
+
+}
+//==========================================
+// NOTIFICATIONS
+//==========================================
+
+function showMessage(message,type="success"){
+
+    const toast=document.createElement("div");
+
+    toast.className="toast";
+
+    toast.innerHTML=`
+        <i class="fa-solid ${
+            type==="success"
+            ? "fa-circle-check"
+            : "fa-circle-xmark"
+        }"></i>
+        <span>${message}</span>
+    `;
+
+    toast.style.position="fixed";
+    toast.style.top="30px";
+    toast.style.right="30px";
+    toast.style.padding="18px 25px";
+    toast.style.borderRadius="12px";
+    toast.style.background=
+        type==="success"
+        ?"#23c16b"
+        :"#ea4335";
+
+    toast.style.color="#fff";
+    toast.style.display="flex";
+    toast.style.alignItems="center";
+    toast.style.gap="10px";
+    toast.style.fontWeight="600";
+    toast.style.zIndex="99999";
+    toast.style.boxShadow="0 15px 30px rgba(0,0,0,.2)";
+
+    document.body.appendChild(toast);
+
+    setTimeout(()=>{
+
+        toast.style.opacity="0";
+        toast.style.transform="translateY(-20px)";
+
+    },2500);
+
+    setTimeout(()=>{
+
+        toast.remove();
+
+    },3000);
 
 }
 
-// =======================================
-// DECONNEXION
-// =======================================
+//==========================================
+// ENTER KEY
+//==========================================
+
+document.addEventListener("keydown",(e)=>{
+
+    if(e.key==="Enter"){
+
+        loginForm.requestSubmit();
+
+    }
+
+});
+
+//==========================================
+// SESSION CHECK
+//==========================================
+
+if(sessionStorage.getItem("logged")==="true"){
+
+    console.log("User already authenticated.");
+
+}
+
+//==========================================
+// NETWORK STATUS
+//==========================================
+
+window.addEventListener("offline",()=>{
+
+    showMessage("No Internet Connection","error");
+
+});
+
+window.addEventListener("online",()=>{
+
+    showMessage("Connection Restored");
+
+});
+
+//==========================================
+// LOADER
+//==========================================
+
+window.addEventListener("load",()=>{
+
+    document.body.style.opacity="1";
+
+});
+
+//==========================================
+// LOGOUT
+//==========================================
 
 function logout(){
 
-    localStorage.removeItem("currentUser");
-
-    localStorage.removeItem("role");
-
-    localStorage.removeItem("isLoggedIn");
+    sessionStorage.clear();
 
     window.location.href="login.html";
 
 }
 
-// =======================================
-// SESSION
-// =======================================
+//==========================================
+// DEMO USERS
+//==========================================
 
-function isLogged(){
+const demoUsers=[
 
-    return localStorage.getItem(
+{
 
-        "isLoggedIn"
+card:"1111 2222 3333 4444",
 
-    )==="true";
+username:"john",
+
+password:"123456",
+
+name:"John Smith",
+
+balance:"25480.75",
+
+currency:"CAD"
+
+},
+
+{
+
+card:"5555 6666 7777 8888",
+
+username:"admin",
+
+password:"admin123",
+
+name:"Administrator",
+
+balance:"999999.00",
+
+currency:"CAD"
 
 }
 
-function currentUser(){
+];
 
-    return JSON.parse(
+//==========================================
+// DEMO AUTH
+//==========================================
 
-        localStorage.getItem(
+function authenticate(card,user,pass){
 
-            "currentUser"
+    return demoUsers.find(u=>
 
-        )
+        u.card===card &&
+
+        u.username===user &&
+
+        u.password===pass
 
     );
 
 }
 
-// =======================================
-// GARDE SESSION ACTIVE
-// =======================================
+//==========================================
+// FUTURE FIREBASE LOGIN
+//==========================================
 
-setInterval(()=>{
+// authenticate()
+// sera remplacé par Firebase Authentication
+// dans la version finale.
 
-    if(isLogged()){
-
-        localStorage.setItem(
-
-            "lastActivity",
-
-            Date.now()
-
-        );
-
-    }
-
-},30000);
-
-// =======================================
-// FIN LOGIN.JS
-// =======================================
+//==========================================
+// FIN DU FICHIER
+// login.js
+//==========================================
