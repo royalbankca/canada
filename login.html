@@ -2,169 +2,227 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBC Demo Bank | Secure Sign In</title>
 
-<meta charset="UTF-8">
+    <link rel="stylesheet" href="css/login.css">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<title>RBC | Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="css/login.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 
 <body>
 
-<header>
-
-<div class="logo">
-
-<h2>
-
-<span>RBC</span>
-
-Royal Bank
-
-</h2>
-
-</div>
-
-<a href="index.html">
-
-Back Home
-
-</a>
-
-</header>
+<div class="background-overlay"></div>
 
 <div class="login-container">
 
-<div class="left">
+    <div class="left-panel">
 
-<h1>
+        <div class="logo-box">
 
-Online Banking
+            <div class="logo-circle">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
 
-</h1>
+            <h1>RBC Demo Bank</h1>
 
-<p>
+            <p>Secure Digital Banking Experience</p>
 
-Access your Royal Bank online account securely.
+        </div>
 
-</p>
+        <div class="bank-image">
 
-<img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800"
-alt="bank">
+            <img src="assets/img/login-bank.png" alt="Bank">
+
+        </div>
+
+        <div class="features">
+
+            <div class="feature">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>256-bit Secure Encryption</span>
+
+            </div>
+
+            <div class="feature">
+
+                <i class="fa-solid fa-mobile-screen"></i>
+
+                <span>Mobile Banking</span>
+
+            </div>
+
+            <div class="feature">
+
+                <i class="fa-solid fa-credit-card"></i>
+
+                <span>Cards & Transfers</span>
+
+            </div>
+
+            <div class="feature">
+
+                <i class="fa-solid fa-globe"></i>
+
+                <span>International Banking</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="right-panel">
+
+        <div class="login-card">
+
+            <h2>Welcome Back</h2>
+
+            <p class="subtitle">
+                Sign in to access your secure banking dashboard.
+            </p>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+
+                    <label>Client Card Number</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-id-card"></i>
+
+                        <input
+                                type="text"
+                                id="cardNumber"
+                                placeholder="1234 5678 9012 3456"
+                                maxlength="19">
+
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>Username or Email</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <input
+                                type="text"
+                                id="username"
+                                placeholder="Enter username">
+
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>Password</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                                type="password"
+                                id="password"
+                                placeholder="Password">
+
+                        <button
+                                type="button"
+                                id="togglePassword">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="options">
+
+                    <label class="remember">
+
+                        <input type="checkbox" id="remember">
+
+                        Remember Me
+
+                    </label>
+
+                    <a href="#">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+                <button
+                        class="login-btn"
+                        type="submit">
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                    Secure Sign In
+
+                </button>
+
+            </form>
+
+            <div class="separator">
+
+                <span>or</span>
+
+            </div>
+
+            <button class="biometric-btn">
+
+                <i class="fa-solid fa-fingerprint"></i>
+
+                Sign in with Biometrics
+
+            </button>
+
+            <div class="security">
+
+                <i class="fa-solid fa-shield-check"></i>
+
+                Your session is protected by bank-grade security.
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div class="right">
+<footer>
 
-<h2>
+    <p>
 
-Sign In
+        © 2026 RBC Demo Bank
 
-</h2>
+        | Secure Online Banking
 
-<form id="loginForm">
+        | All Rights Reserved
 
-<div class="input-box">
+    </p>
 
-<label>
-
-Client Card / Client ID
-
-</label>
-
-<input
-
-type="text"
-
-id="client"
-
-placeholder="Enter Client ID"
-
-required>
-
-</div>
-
-<div class="input-box">
-
-<label>
-
-Access Code
-
-</label>
-
-<input
-
-type="password"
-
-id="access"
-
-placeholder="Access Code"
-
-required>
-
-</div>
-
-<div class="input-box">
-
-<label>
-
-Password
-
-</label>
-
-<input
-
-type="password"
-
-id="password"
-
-placeholder="Password"
-
-required>
-
-</div>
-
-<button
-type="submit">
-
-Sign In
-
-</button>
-
-</form>
-
-<div class="links">
-
-<a href="https://tally.so/r/gD1oND">
-
-Open an Account
-
-</a>
-
-<a href="#">
-
-Forgot Password ?
-
-</a>
-
-</div>
-
-</div>
-
-</div>
+</footer>
 
 <script src="js/login.js"></script>
 
