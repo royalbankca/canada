@@ -1,75 +1,68 @@
-// ======================================
+// =======================================
 // RBC BANK LOGIN
-// login.js
-// ======================================
+// Version 2
+// =======================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
-    const loginForm = document.getElementById("loginForm");
+    const form = document.getElementById("loginForm");
 
-    if (!loginForm) return;
+    if (!form) {
+        console.error("Formulaire loginForm introuvable !");
+        return;
+    }
 
-    loginForm.addEventListener("submit", function(e){
+    form.addEventListener("submit", function (e) {
 
         e.preventDefault();
 
-        const client = document.getElementById("client").value.trim();
+        const client = document.getElementById("client").value.trim().toUpperCase();
         const access = document.getElementById("access").value.trim();
         const password = document.getElementById("password").value.trim();
 
-        if(client === "" || access === "" || password === ""){
+        // =============================
+        // ADMIN
+        // =============================
 
-            alert("Please complete all required fields.");
-
-            return;
-
-        }
-
-        // ----------------------------
-        // COMPTE ADMINISTRATEUR
-        // ----------------------------
-
-        if(
+        if (
             client === "ADMIN" &&
             access === "ADMIN" &&
             password === "ADMIN123"
-        ){
+        ) {
 
-            localStorage.setItem("role","admin");
+            localStorage.setItem("role", "admin");
 
-            window.location.href="admin.html";
+            alert("Connexion Administrateur réussie.");
+
+            window.location.replace("admin.html");
 
             return;
-
         }
 
-        // ----------------------------
-        // CLIENT DE DÉMONSTRATION
-        // ----------------------------
+        // =============================
+        // CLIENT
+        // =============================
 
-        if(
+        if (
             client === "100001" &&
             access === "4587" &&
             password === "RBC2026"
-        ){
+        ) {
 
-            localStorage.setItem("role","client");
+            localStorage.setItem("role", "client");
+            localStorage.setItem("clientName", "Michael Johnson");
+            localStorage.setItem("clientID", "100001");
+            localStorage.setItem("accountNumber", "CA4587458965412");
+            localStorage.setItem("balance", "45870.00");
 
-            localStorage.setItem("clientName","Michael Johnson");
+            alert("Connexion Client réussie.");
 
-            localStorage.setItem("clientID","100001");
-
-            localStorage.setItem("accountNumber","CA4587458965412");
-
-            localStorage.setItem("balance","45870.00");
-
-            window.location.href="dashboard.html";
+            window.location.replace("dashboard.html");
 
             return;
-
         }
 
-        alert("Invalid Client ID, Access Code or Password.");
+        alert("Client ID, Access Code ou Password incorrect.");
 
     });
 
