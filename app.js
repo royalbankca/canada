@@ -15,9 +15,9 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_KEY = process.env.SEBPAY_PUBLIC_KEY;
 const SECRET_KEY = process.env.SEBPAY_SECRET_KEY;
 
-// =========================
+// ==========================================
 // DEPOT MOBILE MONEY
-// =========================
+// ==========================================
 
 app.post("/api/sebpay/deposit", async (req, res) => {
 
@@ -28,7 +28,8 @@ app.post("/api/sebpay/deposit", async (req, res) => {
             amount,
             phone,
             operator,
-            country = "BJ"
+            country = "BJ",
+            otp_code
 
         } = req.body;
 
@@ -45,28 +46,36 @@ app.post("/api/sebpay/deposit", async (req, res) => {
 
         const reference = "RB-" + Date.now();
 
+        const payload = {
+
+            amount: Number(amount),
+
+            currency: "XOF",
+
+            phone,
+
+            operator,
+
+            country,
+
+            external_reference: reference,
+
+            callback_url:
+                "https://canada-7fct.onrender.com/api/sebpay/callback"
+
+        };
+
+        if (otp_code) {
+
+            payload.otp_code = otp_code;
+
+        }
+
         const response = await axios.post(
 
             "https://newapi.sebpay.bj/api/v1/collections",
 
-            {
-
-                amount: Number(amount),
-
-                currency: "XOF",
-
-                phone,
-
-                operator,
-
-                country,
-
-                external_reference: reference,
-
-                callback_url:
-                    "https://canada-7fct.onrender.com/api/sebpay/callback"
-
-            },
+            payload,
 
             {
 
@@ -84,11 +93,19 @@ app.post("/api/sebpay/deposit", async (req, res) => {
 
         );
 
-        return res.json(response.data);
+        return res.status(200).json({
+
+            success: response.data.success,
+
+            data: response.data.data,
+
+            message: response.data.message
+
+        });
 
     } catch (error) {
 
-        console.error("Erreur SebPay :");
+        console.error("Erreur SebPay");
 
         console.error(error.response?.data || error.message);
 
@@ -98,7 +115,7 @@ app.post("/api/sebpay/deposit", async (req, res) => {
 
             message:
 
-                error.response?.data ||
+                error.response?.data?.message ||
 
                 "Erreur de communication avec SebPay"
 
@@ -108,17 +125,74 @@ app.post("/api/sebpay/deposit", async (req, res) => {
 
 });
 
-// =========================
+// ==========================================
+// RECUPERER LE STATUT D'UNE TRANSACTION
+// ==========================================
+
+app.get("/api/sebpay/status/:reference", async (req, res) => {
+
+    try {
+                const { reference } = req.params;
+
+        const response = await axios.get(
+
+            `https://newapi.sebpay.bj/api/v1/collections/${reference}`,
+
+            {
+
+                headers: {
+
+                    "X-Public-Key": PUBLIC_KEY,
+
+                    "X-Secret-Key": SECRET_KEY
+
+                }
+
+            }
+
+        );
+
+        return res.status(200).json({
+
+            success: response.data.success,
+
+            data: response.data.data,
+
+            message: response.data.message
+
+        });
+
+    } catch (error) {
+
+        console.error("Erreur récupération statut");
+
+        console.error(error.response?.data || error.message);
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                error.response?.data?.message ||
+                "Impossible de récupérer le statut."
+
+        });
+
+    }
+
+});
+
+// ==========================================
 // CALLBACK SEBPAY
-// =========================
+// ==========================================
 
 app.post("/api/sebpay/callback", (req, res) => {
 
-    console.log("Notification SebPay reçue :");
+    console.log("Notification SebPay reçue");
 
     console.log(req.body);
 
-    res.status(200).json({
+    return res.status(200).json({
 
         success: true
 
@@ -126,9 +200,9 @@ app.post("/api/sebpay/callback", (req, res) => {
 
 });
 
-// =========================
-// TEST SERVEUR
-// =========================
+// ==========================================
+// TEST API
+// ==========================================
 
 app.get("/", (req, res) => {
 
@@ -136,12 +210,12 @@ app.get("/", (req, res) => {
 
 });
 
-// =========================
-// LANCEMENT
-// =========================
+// ==========================================
+// LANCEMENT DU SERVEUR
+// ==========================================
 
 app.listen(PORT, () => {
 
-    console.log("Serveur lancé sur le port " + PORT);
+    console.log(`Serveur démarré sur le port ${PORT}`);
 
 });
