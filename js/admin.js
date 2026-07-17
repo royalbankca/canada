@@ -1,230 +1,156 @@
-// ==========================================
+// =======================================
+// RBC ADMIN PANEL
 // admin.js
-// PARTIE 1
-// ==========================================
+// =======================================
 
-let clients = [];
-let currentClient = null;
+let clients = [
 
-// ==========================================
-// INITIALISATION
-// ==========================================
+{
+id:"100001",
+name:"Michael Johnson",
+account:"CA4587458965412",
+access:"4587",
+password:"RBC2026",
+phone:"+1 514 555 1001",
+email:"michael@gmail.com",
+address:"Montreal",
+balance:45870
+},
 
-document.addEventListener("DOMContentLoaded", () => {
+{
+id:"100002",
+name:"Rose Adjoavi",
+account:"CA7745236987451",
+access:"7412",
+password:"Rose2026",
+phone:"+22897554285",
+email:"rose@gmail.com",
+address:"Lomé",
+balance:12430
+},
 
-    loadClients();
+{
+id:"100003",
+name:"Marc Koffi",
+account:"CA9987456321458",
+access:"3698",
+password:"Marc2026",
+phone:"+22990123456",
+email:"marc@gmail.com",
+address:"Cotonou",
+balance:7980
+}
 
-    renderClients();
+];
 
-    updateDashboardCards();
+function logout(){
 
-    initSearch();
+localStorage.clear();
 
-});
-
-// ==========================================
-// CHARGER LES CLIENTS
-// ==========================================
-
-function loadClients(){
-
-    const storage = localStorage.getItem("clients");
-
-    if(storage){
-
-        clients = JSON.parse(storage);
-
-        return;
-
-    }
-
-    clients = [
-
-        {
-            id:"100001",
-            name:"Michael Johnson",
-            account:"CA4587458965412",
-            access:"4587",
-            password:"RBC2026",
-            phone:"+1 4387959811",
-            email:"michael@demo.ca",
-            address:"Montreal, Quebec",
-            balance:45870.00,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100002",
-            name:"Emma Wilson",
-            account:"CA4587458965413",
-            access:"7625",
-            password:"RBC2026",
-            phone:"+1 4387959812",
-            email:"emma@demo.ca",
-            address:"Toronto",
-            balance:12840,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100003",
-            name:"Daniel Brown",
-            account:"CA4587458965414",
-            access:"3481",
-            password:"RBC2026",
-            phone:"+1 4387959813",
-            email:"daniel@demo.ca",
-            address:"Ottawa",
-            balance:8750,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100004",
-            name:"Sophia Martin",
-            account:"CA4587458965415",
-            access:"6158",
-            password:"RBC2026",
-            phone:"+1 4387959814",
-            email:"sophia@demo.ca",
-            address:"Vancouver",
-            balance:96200,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100005",
-            name:"James Taylor",
-            account:"CA4587458965416",
-            access:"9002",
-            password:"RBC2026",
-            phone:"+1 4387959815",
-            email:"james@demo.ca",
-            address:"Calgary",
-            balance:51400,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100006",
-            name:"Olivia White",
-            account:"CA4587458965417",
-            access:"7455",
-            password:"RBC2026",
-            phone:"+1 4387959816",
-            email:"olivia@demo.ca",
-            address:"Quebec",
-            balance:36500,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100007",
-            name:"William Moore",
-            account:"CA4587458965418",
-            access:"8200",
-            password:"RBC2026",
-            phone:"+1 4387959817",
-            email:"william@demo.ca",
-            address:"Laval",
-            balance:15000,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100008",
-            name:"Charlotte Lee",
-            account:"CA4587458965419",
-            access:"3318",
-            password:"RBC2026",
-            phone:"+1 4387959818",
-            email:"charlotte@demo.ca",
-            address:"Winnipeg",
-            balance:22400,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100009",
-            name:"Lucas Harris",
-            account:"CA4587458965420",
-            access:"5788",
-            password:"RBC2026",
-            phone:"+1 4387959819",
-            email:"lucas@demo.ca",
-            address:"Edmonton",
-            balance:68100,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        },
-
-        {
-            id:"100010",
-            name:"Amelia Walker",
-            account:"CA4587458965421",
-            access:"4401",
-            password:"RBC2026",
-            phone:"+1 4387959820",
-            email:"amelia@demo.ca",
-            address:"Halifax",
-            balance:102500,
-            status:"Actif",
-            transactions:[],
-            notifications:[]
-        }
-
-    ];
-
-    saveClients();
+window.location.href="login.html";
 
 }
 
-function saveClients(){
+function openCreateClient(){
 
-    localStorage.setItem(
-
-        "clients",
-
-        JSON.stringify(clients)
-
-    );
+document.getElementById("createClientModal").style.display="flex";
 
 }
-// ==========================================
-// ADMIN.JS
-// PARTIE 2
-// ==========================================
 
-function renderClients(){
+function closeCreateClient(){
 
-    const table=document.getElementById("clientTable");
+document.getElementById("createClientModal").style.display="none";
 
-    if(!table) return;
+}
 
-    table.innerHTML="";
+function closeEditClient(){
 
-    clients.forEach(client=>{
+document.getElementById("editClientModal").style.display="none";
 
-        table.innerHTML+=`
+}
 
-<tr>
+function closeViewClient(){
+
+document.getElementById("viewClientModal").style.display="none";
+
+}
+function createClient(){
+
+const fullname=document.getElementById("fullname").value.trim();
+const phone=document.getElementById("phone").value.trim();
+const email=document.getElementById("email").value.trim();
+const address=document.getElementById("address").value.trim();
+const balance=document.getElementById("balance").value.trim();
+
+if(fullname===""||phone===""||email===""){
+
+alert("Veuillez remplir tous les champs.");
+
+return;
+
+}
+
+const id=(100000+clients.length+1).toString();
+
+const account="CA"+Math.floor(Math.random()*9000000000000+1000000000000);
+
+const access=Math.floor(Math.random()*9000+1000).toString();
+
+const password="RBC"+Math.floor(Math.random()*9000+1000);
+
+const client={
+
+id:id,
+name:fullname,
+account:account,
+access:access,
+password:password,
+phone:phone,
+email:email,
+address:address,
+balance:balance
+
+};
+
+clients.push(client);
+
+addClientToTable(client);
+
+localStorage.setItem("clients",JSON.stringify(clients));
+
+alert(
+
+"Compte créé avec succès.\n\n"+
+
+"ID Client : "+id+
+
+"\nCompte : "+account+
+
+"\nCode d'accès : "+access+
+
+"\nMot de passe : "+password
+
+);
+
+document.getElementById("fullname").value="";
+document.getElementById("phone").value="";
+document.getElementById("email").value="";
+document.getElementById("address").value="";
+document.getElementById("balance").value="0";
+
+closeCreateClient();
+
+document.getElementById("totalClients").innerHTML=clients.length;
+
+}
+
+function addClientToTable(client){
+
+const table=document.getElementById("clientTable");
+
+const row=table.insertRow();
+
+row.innerHTML=`
 
 <td>${client.id}</td>
 
@@ -232,16 +158,13 @@ function renderClients(){
 
 <td>${client.account}</td>
 
-<td>$ ${Number(client.balance).toLocaleString("en-CA",{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-})}</td>
+<td>$${client.balance}</td>
 
 <td>
 
 <span class="status active">
 
-${client.status}
+Actif
 
 </span>
 
@@ -249,473 +172,328 @@ ${client.status}
 
 <td>
 
-<button class="view"
-onclick="viewClient('${client.id}')">
+<button class="edit" onclick="viewClient('${client.id}')">
 
 Voir
 
 </button>
 
-<button class="edit"
-onclick="openEditClient('${client.id}')">
+<button class="delete" onclick="deleteClient('${client.id}',this)">
 
-Modifier
+Supprimer
 
 </button>
 
 </td>
 
-</tr>
-
 `;
 
-    });
+}
+function viewClient(id){
+
+const client=clients.find(c=>c.id===id);
+
+if(!client) return;
+
+document.getElementById("infoName").innerHTML=client.name;
+document.getElementById("infoClientID").innerHTML=client.id;
+document.getElementById("infoAccount").innerHTML=client.account;
+document.getElementById("infoAccess").innerHTML=client.access;
+document.getElementById("infoPassword").innerHTML=client.password;
+document.getElementById("infoPhone").innerHTML=client.phone;
+document.getElementById("infoEmail").innerHTML=client.email;
+document.getElementById("infoAddress").innerHTML=client.address;
+document.getElementById("infoBalance").innerHTML="$"+client.balance;
+
+document.getElementById("viewClientModal").style.display="flex";
 
 }
 
-// ==========================================
-// TABLEAU DE BORD ADMIN
-// ==========================================
+function deleteClient(id,btn){
 
-function updateDashboardCards(){
+if(!confirm("Supprimer ce client ?")){
 
-    const totalClients=document.getElementById("totalClients");
-
-    if(totalClients){
-
-        totalClients.innerHTML=clients.length;
-
-    }
-
-    const active=clients.filter(c=>c.status==="Actif").length;
-
-    const activeCard=document.querySelectorAll(".card h1");
-
-    if(activeCard.length>=4){
-
-        activeCard[3].innerHTML=active;
-
-    }
+return;
 
 }
 
-// ==========================================
-// RECHERCHE CLIENT
-// ==========================================
+clients=clients.filter(c=>c.id!==id);
 
-function initSearch(){
+localStorage.setItem("clients",JSON.stringify(clients));
 
-    const input=document.getElementById("search");
+const row=btn.parentElement.parentElement;
 
-    if(!input) return;
+row.remove();
 
-    input.addEventListener("keyup",function(){
-
-        const keyword=this.value.toLowerCase();
-
-        const rows=document.querySelectorAll("#clientTable tr");
-
-        rows.forEach(row=>{
-
-            if(row.innerText.toLowerCase().includes(keyword)){
-
-                row.style.display="";
-
-            }else{
-
-                row.style.display="none";
-
-            }
-
-        });
-
-    });
+document.getElementById("totalClients").innerHTML=clients.length;
 
 }
-
-// ==========================================
-// OUVRIR MODIFICATION
-// ==========================================
 
 function openEditClient(id){
 
-    currentClient=clients.find(c=>c.id===id);
+const client=clients.find(c=>c.id===id);
 
-    if(!currentClient){
+if(!client) return;
 
-        alert("Client introuvable");
+document.getElementById("editName").value=client.name;
+document.getElementById("editAccount").value=client.account;
+document.getElementById("editClientID").value=client.id;
+document.getElementById("editAccess").value=client.access;
+document.getElementById("editPassword").value=client.password;
+document.getElementById("editBalance").value=client.balance;
 
-        return;
+document.getElementById("editClientModal").style.display="flex";
 
-    }
-
-    document.getElementById("editName").value=currentClient.name;
-
-    document.getElementById("editAccount").value=currentClient.account;
-
-    document.getElementById("editClientID").value=currentClient.id;
-
-    document.getElementById("editAccess").value=currentClient.access;
-
-    document.getElementById("editPassword").value=currentClient.password;
-
-    document.getElementById("editBalance").value=currentClient.balance;
-
-    document.getElementById("editClientModal").style.display="flex";
+window.currentClient=id;
 
 }
-// ==========================================
-// ADMIN.JS
-// PARTIE 3
-// ==========================================
-
-// ==========================================
-// ENREGISTRER LES MODIFICATIONS
-// ==========================================
 
 function saveClient(){
 
-    if(!currentClient) return;
+const id=window.currentClient;
 
-    currentClient.name =
-        document.getElementById("editName").value.trim();
+const client=clients.find(c=>c.id===id);
 
-    currentClient.account =
-        document.getElementById("editAccount").value.trim();
+if(!client){
 
-    currentClient.id =
-        document.getElementById("editClientID").value.trim();
-
-    currentClient.access =
-        document.getElementById("editAccess").value.trim();
-
-    currentClient.password =
-        document.getElementById("editPassword").value.trim();
-
-    currentClient.balance =
-        Number(document.getElementById("editBalance").value);
-
-    saveClients();
-
-    // Si le client est connecté,
-    // on met aussi sa session à jour
-
-    const user =
-        JSON.parse(localStorage.getItem("currentUser"));
-
-    if(user && user.id===currentClient.id){
-
-        localStorage.setItem(
-            "currentUser",
-            JSON.stringify(currentClient)
-        );
-
-    }
-
-    renderClients();
-
-    updateDashboardCards();
-
-    document.getElementById(
-        "editClientModal"
-    ).style.display="none";
-
-    alert("Client modifié avec succès.");
+return;
 
 }
 
-// ==========================================
-// VOIR LE PROFIL
-// ==========================================
+client.name=document.getElementById("editName").value;
+client.account=document.getElementById("editAccount").value;
+client.access=document.getElementById("editAccess").value;
+client.password=document.getElementById("editPassword").value;
+client.balance=document.getElementById("editBalance").value;
 
-function viewClient(id){
+localStorage.setItem("clients",JSON.stringify(clients));
 
-    const client =
-        clients.find(c=>c.id===id);
+alert("Client modifié avec succès.");
 
-    if(!client){
+location.reload();
 
-        alert("Client introuvable");
+}
+// =======================================
+// RECHERCHE CLIENT
+// =======================================
 
-        return;
+const search=document.getElementById("search");
 
-    }
+if(search){
 
-    document.getElementById("infoName").innerHTML =
-        client.name;
+search.addEventListener("keyup",function(){
 
-    document.getElementById("infoClientID").innerHTML =
-        client.id;
+const value=this.value.toLowerCase();
 
-    document.getElementById("infoAccount").innerHTML =
-        client.account;
+const rows=document.querySelectorAll("#clientTable tr");
 
-    document.getElementById("infoAccess").innerHTML =
-        client.access;
+rows.forEach(function(row){
 
-    document.getElementById("infoPassword").innerHTML =
-        client.password;
+const text=row.innerText.toLowerCase();
 
-    document.getElementById("infoPhone").innerHTML =
-        client.phone;
+if(text.indexOf(value)>-1){
 
-    document.getElementById("infoEmail").innerHTML =
-        client.email;
+row.style.display="";
 
-    document.getElementById("infoAddress").innerHTML =
-        client.address;
+}else{
 
-    document.getElementById("infoBalance").innerHTML =
-        "$ " +
-        Number(client.balance).toLocaleString(
-            "en-CA",
-            {
-                minimumFractionDigits:2,
-                maximumFractionDigits:2
-            }
-        );
-
-    document.getElementById(
-        "viewClientModal"
-    ).style.display="flex";
+row.style.display="none";
 
 }
 
-// ==========================================
-// AJOUTER UNE TRANSACTION
-// ==========================================
+});
 
-function addTransaction(
-
-    id,
-
-    type,
-
-    description,
-
-    amount
-
-){
-
-    const client =
-        clients.find(c=>c.id===id);
-
-    if(!client) return;
-
-    if(!client.transactions){
-
-        client.transactions=[];
-
-    }
-
-    client.transactions.unshift({
-
-        date:new Date().toLocaleDateString("fr-CA"),
-
-        type:type,
-
-        description:description,
-
-        amount:Number(amount),
-
-        status:"Complété"
-
-    });
-
-    saveClients();
-
-}
-// ==========================================
-// ADMIN.JS
-// PARTIE 4
-// ==========================================
-
-// ==========================================
-// AJOUTER UNE NOTIFICATION
-// ==========================================
-
-function addNotification(id, message){
-
-    const client = clients.find(c => c.id === id);
-
-    if(!client) return;
-
-    if(!client.notifications){
-
-        client.notifications = [];
-
-    }
-
-    client.notifications.unshift({
-
-        date: new Date().toLocaleString("fr-CA"),
-
-        message: message
-
-    });
-
-    saveClients();
+});
 
 }
 
-// ==========================================
-// MODIFIER LE SOLDE
-// ==========================================
+// =======================================
+// APPROUVER / REFUSER UNE DEMANDE
+// =======================================
 
-function updateBalance(id, amount, operation="add"){
+document.querySelectorAll(".approve").forEach(function(button){
 
-    const client = clients.find(c=>c.id===id);
+button.addEventListener("click",function(){
 
-    if(!client) return;
+const row=this.parentElement.parentElement;
 
-    amount = Number(amount);
+const badge=row.querySelector(".status");
 
-    if(operation==="add"){
+badge.className="status active";
+badge.innerHTML="Approuvé";
 
-        client.balance += amount;
+this.disabled=true;
 
-    }else{
+const reject=row.querySelector(".reject");
 
-        client.balance -= amount;
+if(reject){
 
-    }
-
-    saveClients();
-
-    // mise à jour si connecté
-
-    const user = JSON.parse(localStorage.getItem("currentUser"));
-
-    if(user && user.id===client.id){
-
-        localStorage.setItem(
-
-            "currentUser",
-
-            JSON.stringify(client)
-
-        );
-
-    }
-
-    renderClients();
+reject.disabled=true;
 
 }
 
-// ==========================================
-// DEMANDES DE DEPOT
-// ==========================================
+});
 
-function getDepositRequests(){
+});
 
-    return JSON.parse(
+document.querySelectorAll(".reject").forEach(function(button){
 
-        localStorage.getItem("depositRequests")
+button.addEventListener("click",function(){
 
-    ) || [];
+const row=this.parentElement.parentElement;
+
+const badge=row.querySelector(".status");
+
+badge.className="status blocked";
+badge.innerHTML="Refusé";
+
+this.disabled=true;
+
+const approve=row.querySelector(".approve");
+
+if(approve){
+
+approve.disabled=true;
 
 }
 
-function saveDepositRequests(list){
+});
+
+});
+
+// =======================================
+// FERMETURE MODAL
+// =======================================
+
+window.onclick=function(event){
+
+const create=document.getElementById("createClientModal");
+const edit=document.getElementById("editClientModal");
+const view=document.getElementById("viewClientModal");
+
+if(event.target===create){
+
+create.style.display="none";
+
+}
+
+if(event.target===edit){
+
+edit.style.display="none";
+
+}
+
+if(event.target===view){
+
+view.style.display="none";
+
+}
+
+};
+// =======================================
+// CHARGEMENT DES CLIENTS
+// =======================================
+
+window.addEventListener("load", function () {
+
+    const data = localStorage.getItem("clients");
+
+    if (data) {
+
+        clients = JSON.parse(data);
+
+        const table = document.getElementById("clientTable");
+
+        if (table) {
+
+            table.innerHTML = "";
+
+            clients.forEach(function (client) {
+
+                const row = table.insertRow();
+
+                row.innerHTML = `
+
+                <td>${client.id}</td>
+
+                <td>${client.name}</td>
+
+                <td>${client.account}</td>
+
+                <td>$${client.balance}</td>
+
+                <td>
+
+                    <span class="status active">
+
+                        Actif
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button class="edit"
+                        onclick="viewClient('${client.id}')">
+
+                        Voir
+
+                    </button>
+
+                    <button class="edit"
+                        onclick="openEditClient('${client.id}')">
+
+                        Modifier
+
+                    </button>
+
+                    <button class="delete"
+                        onclick="deleteClient('${client.id}',this)">
+
+                        Supprimer
+
+                    </button>
+
+                </td>
+
+                `;
+
+            });
+
+        }
+
+    }
+
+    document.getElementById("totalClients").innerHTML = clients.length;
+
+});
+
+// =======================================
+// ENREGISTREMENT AUTOMATIQUE
+// =======================================
+
+setInterval(function(){
 
     localStorage.setItem(
-
-        "depositRequests",
-
-        JSON.stringify(list)
-
+        "clients",
+        JSON.stringify(clients)
     );
+
+},1000);
+
+// =======================================
+// VÉRIFICATION ADMIN
+// =======================================
+
+if(localStorage.getItem("role")!=="admin"){
+
+    alert("Accès refusé.");
+
+    window.location.href="login.html";
 
 }
 
-// ==========================================
-// VALIDER DEPOT
-// ==========================================
-
-function approveDeposit(index){
-
-    const requests = getDepositRequests();
-
-    const request = requests[index];
-
-    if(!request) return;
-
-    updateBalance(
-
-        request.clientId,
-
-        request.amount,
-
-        "add"
-
-    );
-
-    addTransaction(
-
-        request.clientId,
-
-        "Dépôt SebPay",
-
-        request.operator,
-
-        request.amount
-
-    );
-
-    addNotification(
-
-        request.clientId,
-
-        "Votre dépôt de $" +
-
-        Number(request.amount).toLocaleString("en-CA") +
-
-        " CAD a été validé."
-
-    );
-
-    requests.splice(index,1);
-
-    saveDepositRequests(requests);
-
-    alert("Dépôt validé.");
-
-}
-
-// ==========================================
-// REFUSER DEPOT
-// ==========================================
-
-function rejectDeposit(index){
-
-    const requests = getDepositRequests();
-
-    if(!requests[index]) return;
-
-    requests.splice(index,1);
-
-    saveDepositRequests(requests);
-
-    alert("Demande supprimée.");
-
-}
-
-// ==========================================
-// RAFRAICHIR
-// ==========================================
-
-function refresh(){
-
-    loadClients();
-
-    renderClients();
-
-    updateDashboardCards();
-
-}
-
-setInterval(refresh,5000);
-
-// ==========================================
-// FIN ADMIN.JS
-// ==========================================
+// =======================================
+// FIN
+// =======================================
