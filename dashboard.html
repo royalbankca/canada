@@ -1,142 +1,348 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC - Tableau de bord</title>
 
-<style>
+<title>Dashboard | Demo Bank</title>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-}
+<link rel="stylesheet" href="css/dashboard.css">
 
-body{
-background:#eef3f8;
-}
-
-header{
-background:#0055A5;
-color:white;
-padding:20px 40px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-header h2{
-font-size:28px;
-}
-
-header button{
-background:#FFD200;
-color:#003087;
-border:none;
-padding:12px 20px;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.container{
-max-width:1200px;
-margin:40px auto;
-padding:20px;
-}
-
-.card{
-background:white;
-padding:25px;
-border-radius:12px;
-margin-bottom:20px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
-
-.balance{
-font-size:42px;
-color:#0055A5;
-font-weight:bold;
-margin-top:10px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
-
-table th,
-table td{
-padding:15px;
-border-bottom:1px solid #ddd;
-text-align:left;
-}
-
-table th{
-background:#0055A5;
-color:white;
-}
-
-.credit{
-color:green;
-font-weight:bold;
-}
-
-.debit{
-color:red;
-font-weight:bold;
-}
-
-</style>
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
 <body>
 
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>DEMO BANK</h2>
+
+</div>
+
+<ul>
+
+<li class="active">
+
+<a href="#">
+
+<i class="fas fa-home"></i>
+
+<span>Accueil</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="transfer.html">
+
+<i class="fas fa-paper-plane"></i>
+
+<span>Virement</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="transactions.html">
+
+<i class="fas fa-receipt"></i>
+
+<span>Transactions</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="profile.html">
+
+<i class="fas fa-user"></i>
+
+<span>Mon profil</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="settings.html">
+
+<i class="fas fa-cog"></i>
+
+<span>Paramètres</span>
+
+</a>
+
+</li>
+
+<li>
+
+<a href="#" onclick="logout()">
+
+<i class="fas fa-right-from-bracket"></i>
+
+<span>Déconnexion</span>
+
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
 <header>
 
-<h2>RBC Royal Bank</h2>
+<div>
 
-<button onclick="logout()">Déconnexion</button>
+<h1>Bienvenue</h1>
+
+<p id="welcomeName">Client</p>
+
+</div>
+
+<div class="header-icons">
+
+<i class="fas fa-bell"></i>
+
+<i class="fas fa-envelope"></i>
+
+<img src="assets/avatar.png" class="avatar">
+
+</div>
 
 </header>
 
-<div class="container">
+<section class="cards">
 
-<div class="card">
-
-<h3>Bienvenue</h3>
-
-<h2 id="clientName"></h2>
-
-<p>ID Client :
-<strong id="clientID"></strong></p>
-
-<p>Compte :
-<strong id="accountNumber"></strong></p>
-
-</div>
-
-<div class="card">
+<div class="card balance">
 
 <h3>Solde disponible</h3>
 
-<div class="balance">
+<h2 id="balance">$0.00</h2>
 
-$ <span id="balance"></span>
-
-</div>
+<p>Compte courant</p>
 
 </div>
 
 <div class="card">
 
-<h3>Dernières transactions</h3>
+<h3>Numéro de compte</h3>
 
-<table>
+<h2 id="accountNumber">----------</h2>
+
+</div>
+
+<div class="card">
+
+<h3>Code d'accès</h3>
+
+<h2 id="accessCode">----</h2>
+
+</div>
+
+<div class="card">
+
+<h3>Statut</h3>
+
+<h2 class="status active">
+
+ACTIF
+
+</h2>
+
+</div>
+
+</section>
+<section class="quick-actions">
+
+<div class="action-card">
+
+<i class="fas fa-paper-plane"></i>
+
+<h3>Effectuer un virement</h3>
+
+<p>Envoyer de l'argent vers un autre compte.</p>
+
+<button onclick="window.location='transfer.html'">
+
+Faire un virement
+
+</button>
+
+</div>
+
+<div class="action-card">
+
+<i class="fas fa-wallet"></i>
+
+<h3>Dépôt</h3>
+
+<p>Consulter vos dépôts récents.</p>
+
+<button>
+
+Voir
+
+</button>
+
+</div>
+
+<div class="action-card">
+
+<i class="fas fa-money-bill-wave"></i>
+
+<h3>Retrait</h3>
+
+<p>Historique de vos retraits.</p>
+
+<button>
+
+Voir
+
+</button>
+
+</div>
+
+<div class="action-card">
+
+<i class="fas fa-credit-card"></i>
+
+<h3>Carte bancaire</h3>
+
+<p>Informations de votre carte.</p>
+
+<button>
+
+Consulter
+
+</button>
+
+</div>
+
+</section>
+
+<section class="account-overview">
+
+<div class="overview-card">
+
+<h2>Informations du compte</h2>
+
+<table class="account-table">
+
+<tr>
+
+<td>Nom du titulaire</td>
+
+<td id="clientName">-</td>
+
+</tr>
+
+<tr>
+
+<td>Numéro de compte</td>
+
+<td id="clientAccount">-</td>
+
+</tr>
+
+<tr>
+
+<td>Type de compte</td>
+
+<td>Compte Courant</td>
+
+</tr>
+
+<tr>
+
+<td>Devise</td>
+
+<td>CAD ($)</td>
+
+</tr>
+
+<tr>
+
+<td>Statut</td>
+
+<td>
+
+<span class="status active">
+
+Compte actif
+
+</span>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="overview-card">
+
+<h2>Dernières notifications</h2>
+
+<div class="notification">
+
+<i class="fas fa-circle-check"></i>
+
+<p>Connexion sécurisée réussie.</p>
+
+</div>
+
+<div class="notification">
+
+<i class="fas fa-bell"></i>
+
+<p>Aucune nouvelle notification.</p>
+
+</div>
+
+<div class="notification">
+
+<i class="fas fa-shield-halved"></i>
+
+<p>Votre compte est protégé.</p>
+
+</div>
+
+</div>
+
+</section>
+<section class="transactions-section">
+
+<div class="section-header">
+
+<h2>Dernières transactions</h2>
+
+<a href="transactions.html" class="view-all">
+
+Voir tout
+
+</a>
+
+</div>
+
+<table class="transactions-table">
 
 <thead>
 
@@ -144,33 +350,61 @@ $ <span id="balance"></span>
 
 <th>Date</th>
 
+<th>Type</th>
+
 <th>Description</th>
 
 <th>Montant</th>
+
+<th>Statut</th>
 
 </tr>
 
 </thead>
 
-<tbody>
-
-<tr>
-
-<td>16/07/2026</td>
-
-<td>Dépôt</td>
-
-<td class="credit">+ 5 000 $</td>
-
-</tr>
+<tbody id="transactionsTable">
 
 <tr>
 
 <td>15/07/2026</td>
 
-<td>Paiement Internet</td>
+<td>Virement reçu</td>
 
-<td class="debit">- 120 $</td>
+<td>Salaire</td>
+
+<td class="credit">+ 2 850.00 $</td>
+
+<td>
+
+<span class="status success">
+
+Complété
+
+</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>14/07/2026</td>
+
+<td>Paiement</td>
+
+<td>Facture Internet</td>
+
+<td class="debit">- 89.99 $</td>
+
+<td>
+
+<span class="status success">
+
+Complété
+
+</span>
+
+</td>
 
 </tr>
 
@@ -178,9 +412,43 @@ $ <span id="balance"></span>
 
 <td>13/07/2026</td>
 
-<td>Salaire</td>
+<td>Retrait</td>
 
-<td class="credit">+ 3 200 $</td>
+<td>Guichet automatique</td>
+
+<td class="debit">- 300.00 $</td>
+
+<td>
+
+<span class="status success">
+
+Complété
+
+</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>12/07/2026</td>
+
+<td>Dépôt</td>
+
+<td>Dépôt bancaire</td>
+
+<td class="credit">+ 500.00 $</td>
+
+<td>
+
+<span class="status success">
+
+Complété
+
+</span>
+
+</td>
 
 </tr>
 
@@ -188,33 +456,739 @@ $ <span id="balance"></span>
 
 </table>
 
+</section>
+
+<section class="bank-card-section">
+
+<div class="bank-card">
+
+<div class="card-top">
+
+<h3>Demo Bank</h3>
+
+<i class="fas fa-wifi"></i>
+
+</div>
+
+<div class="card-number">
+
+**** **** **** <span id="cardLastDigits">4587</span>
+
+</div>
+
+<div class="card-bottom">
+
+<div>
+
+<small>Titulaire</small>
+
+<h4 id="cardHolder">
+
+CLIENT
+
+</h4>
+
+</div>
+
+<div>
+
+<small>Expire</small>
+
+<h4>
+
+12/30
+
+</h4>
+
+</div>
+
 </div>
 
 </div>
 
+</section>
+<section class="finance-summary">
+
+<div class="summary-card income">
+
+<div class="icon">
+
+<i class="fas fa-arrow-down"></i>
+
+</div>
+
+<div>
+
+<h4>Revenus du mois</h4>
+
+<h2 id="monthlyIncome">
+
++ 3 350.00 $
+
+</h2>
+
+</div>
+
+</div>
+
+<div class="summary-card expense">
+
+<div class="icon">
+
+<i class="fas fa-arrow-up"></i>
+
+</div>
+
+<div>
+
+<h4>Dépenses du mois</h4>
+
+<h2 id="monthlyExpense">
+
+- 1 245.40 $
+
+</h2>
+
+</div>
+
+</div>
+
+<div class="summary-card saving">
+
+<div class="icon">
+
+<i class="fas fa-piggy-bank"></i>
+
+</div>
+
+<div>
+
+<h4>Épargne</h4>
+
+<h2 id="savingAmount">
+
+8 750.00 $
+
+</h2>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="services">
+
+<h2>Services bancaires</h2>
+
+<div class="services-grid">
+
+<div class="service-card">
+
+<i class="fas fa-mobile-screen-button"></i>
+
+<h3>Paiement mobile</h3>
+
+<p>Payer rapidement depuis votre téléphone.</p>
+
+</div>
+
+<div class="service-card">
+
+<i class="fas fa-file-invoice-dollar"></i>
+
+<h3>Factures</h3>
+
+<p>Consultez et réglez vos factures.</p>
+
+</div>
+
+<div class="service-card">
+
+<i class="fas fa-landmark"></i>
+
+<h3>Épargne</h3>
+
+<p>Suivez vos objectifs d'épargne.</p>
+
+</div>
+
+<div class="service-card">
+
+<i class="fas fa-hand-holding-dollar"></i>
+
+<h3>Prêts</h3>
+
+<p>Découvrez les offres disponibles.</p>
+
+</div>
+
+<div class="service-card">
+
+<i class="fas fa-chart-line"></i>
+
+<h3>Investissements</h3>
+
+<p>Visualisez vos placements.</p>
+
+</div>
+
+<div class="service-card">
+
+<i class="fas fa-headset"></i>
+
+<h3>Assistance</h3>
+
+<p>Contactez votre conseiller bancaire.</p>
+
+</div>
+
+</div>
+
+</section>
+<section class="activity-section">
+
+<div class="section-header">
+
+<h2>Activité récente</h2>
+
+<span class="badge-online">
+
+<i class="fas fa-circle"></i>
+
+Compte sécurisé
+
+</span>
+
+</div>
+
+<div class="timeline">
+
+<div class="timeline-item">
+
+<div class="timeline-icon">
+
+<i class="fas fa-right-to-bracket"></i>
+
+</div>
+
+<div class="timeline-content">
+
+<h4>Connexion réussie</h4>
+
+<p>Vous vous êtes connecté avec succès à votre espace bancaire.</p>
+
+<small>Aujourd'hui - 09:45</small>
+
+</div>
+
+</div>
+
+<div class="timeline-item">
+
+<div class="timeline-icon">
+
+<i class="fas fa-paper-plane"></i>
+
+</div>
+
+<div class="timeline-content">
+
+<h4>Virement effectué</h4>
+
+<p>Un virement de 250.00 $ a été envoyé.</p>
+
+<small>Hier - 16:20</small>
+
+</div>
+
+</div>
+
+<div class="timeline-item">
+
+<div class="timeline-icon">
+
+<i class="fas fa-credit-card"></i>
+
+</div>
+
+<div class="timeline-content">
+
+<h4>Paiement par carte</h4>
+
+<p>Achat chez Supermarché.</p>
+
+<small>Hier - 13:12</small>
+
+</div>
+
+</div>
+
+<div class="timeline-item">
+
+<div class="timeline-icon">
+
+<i class="fas fa-shield-halved"></i>
+
+</div>
+
+<div class="timeline-content">
+
+<h4>Sécurité</h4>
+
+<p>Aucune activité suspecte détectée.</p>
+
+<small>Mise à jour automatique</small>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="exchange-section">
+
+<div class="exchange-card">
+
+<h2>Taux de change</h2>
+
+<table class="exchange-table">
+
+<tr>
+
+<td>USD</td>
+
+<td>1.37 CAD</td>
+
+</tr>
+
+<tr>
+
+<td>EUR</td>
+
+<td>1.58 CAD</td>
+
+</tr>
+
+<tr>
+
+<td>GBP</td>
+
+<td>1.84 CAD</td>
+
+</tr>
+
+<tr>
+
+<td>XOF</td>
+
+<td>0.0023 CAD</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="exchange-card">
+
+<h2>Conseil financier</h2>
+
+<p>
+
+Pensez à programmer une épargne automatique afin d'atteindre plus rapidement vos objectifs financiers.
+
+</p>
+
+<button>
+
+En savoir plus
+
+</button>
+
+</div>
+
+</section>
+<section class="budget-section">
+
+<div class="budget-card">
+
+<h2>Résumé du budget</h2>
+
+<div class="budget-item">
+
+<div>
+
+<h4>Budget mensuel</h4>
+
+<p>5 000.00 $</p>
+
+</div>
+
+<div class="progress">
+
+<div class="progress-bar" style="width:75%"></div>
+
+</div>
+
+</div>
+
+<div class="budget-item">
+
+<div>
+
+<h4>Dépenses</h4>
+
+<p>3 750.00 $</p>
+
+</div>
+
+<div class="progress">
+
+<div class="progress-bar danger" style="width:75%"></div>
+
+</div>
+
+</div>
+
+<div class="budget-item">
+
+<div>
+
+<h4>Épargne</h4>
+
+<p>1 250.00 $</p>
+
+</div>
+
+<div class="progress">
+
+<div class="progress-bar success" style="width:25%"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="budget-card">
+
+<h2>Objectifs financiers</h2>
+
+<ul class="goal-list">
+
+<li>
+
+<i class="fas fa-house"></i>
+
+<span>Achat immobilier</span>
+
+<strong>42%</strong>
+
+</li>
+
+<li>
+
+<i class="fas fa-car"></i>
+
+<span>Nouvelle voiture</span>
+
+<strong>68%</strong>
+
+</li>
+
+<li>
+
+<i class="fas fa-plane"></i>
+
+<span>Voyage</span>
+
+<strong>81%</strong>
+
+</li>
+
+<li>
+
+<i class="fas fa-graduation-cap"></i>
+
+<span>Formation</span>
+
+<strong>55%</strong>
+
+</li>
+
+</ul>
+
+</div>
+
+</section>
+
+<section class="security-section">
+
+<div class="security-card">
+
+<h2>Sécurité du compte</h2>
+
+<div class="security-item">
+
+<i class="fas fa-lock"></i>
+
+<div>
+
+<h4>Mot de passe</h4>
+
+<p>Dernière modification : il y a 25 jours</p>
+
+</div>
+
+</div>
+
+<div class="security-item">
+
+<i class="fas fa-mobile-alt"></i>
+
+<div>
+
+<h4>Authentification</h4>
+
+<p>Protection à deux facteurs activée</p>
+
+</div>
+
+</div>
+
+<div class="security-item">
+
+<i class="fas fa-laptop"></i>
+
+<div>
+
+<h4>Dernière connexion</h4>
+
+<p>Montréal - Windows 11</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="security-card">
+
+<h2>Actions rapides</h2>
+
+<div class="quick-buttons">
+
+<button onclick="window.location='transfer.html'">
+
+<i class="fas fa-paper-plane"></i>
+
+Nouveau virement
+
+</button>
+
+<button onclick="window.location='transactions.html'">
+
+<i class="fas fa-file-invoice"></i>
+
+Relevé bancaire
+
+</button>
+
+<button onclick="window.location='profile.html'">
+
+<i class="fas fa-user-pen"></i>
+
+Modifier mon profil
+
+</button>
+
+<button onclick="window.location='settings.html'">
+
+<i class="fas fa-gear"></i>
+
+Paramètres
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+<section class="support-section">
+
+<div class="support-card">
+
+<h2>Centre d'assistance</h2>
+
+<p>
+
+Notre équipe est disponible 24 h/24 et 7 j/7 pour répondre à vos questions concernant votre compte.
+
+</p>
+
+<div class="support-actions">
+
+<button>
+
+<i class="fas fa-comments"></i>
+
+Discuter avec un conseiller
+
+</button>
+
+<button>
+
+<i class="fas fa-phone"></i>
+
+Nous appeler
+
+</button>
+
+<button>
+
+<i class="fas fa-envelope"></i>
+
+Envoyer un message
+
+</button>
+
+</div>
+
+</div>
+
+<div class="support-card">
+
+<h2>Informations du compte</h2>
+
+<table class="info-table">
+
+<tr>
+
+<td>ID Client</td>
+
+<td id="clientId">100001</td>
+
+</tr>
+
+<tr>
+
+<td>Agence</td>
+
+<td>Montréal Centre</td>
+
+</tr>
+
+<tr>
+
+<td>Type de compte</td>
+
+<td>Compte Courant Premium</td>
+
+</tr>
+
+<tr>
+
+<td>Date d'ouverture</td>
+
+<td>12/05/2024</td>
+
+</tr>
+
+<tr>
+
+<td>Conseiller</td>
+
+<td>Sarah Wilson</td>
+
+</tr>
+
+</table>
+
+</div>
+
+</section>
+
+<footer class="dashboard-footer">
+
+<div>
+
+<strong>Demo Bank</strong>
+
+<p>
+
+© 2026 Demo Bank. Tous droits réservés.
+
+</p>
+
+</div>
+
+<div class="footer-links">
+
+<a href="#">Conditions d'utilisation</a>
+
+<a href="#">Confidentialité</a>
+
+<a href="#">Sécurité</a>
+
+<a href="#">Contact</a>
+
+</div>
+
+</footer>
+
+</div>
+
+<script src="js/dashboard.js"></script>
 <script>
-
-document.getElementById("clientName").innerHTML =
-localStorage.getItem("clientName");
-
-document.getElementById("clientID").innerHTML =
-localStorage.getItem("clientID");
-
-document.getElementById("accountNumber").innerHTML =
-localStorage.getItem("accountNumber");
-
-document.getElementById("balance").innerHTML =
-localStorage.getItem("balance");
 
 function logout(){
 
-localStorage.clear();
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("isLoggedIn");
 
-window.location.href="login.html";
+    window.location.href="login.html";
 
 }
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    const user=JSON.parse(localStorage.getItem("currentUser"));
+
+    if(!user){
+
+        window.location.href="login.html";
+        return;
+
+    }
+
+    document.getElementById("welcomeName").innerHTML=user.name||"Client";
+    document.getElementById("clientName").innerHTML=user.name||"-";
+    document.getElementById("clientAccount").innerHTML=user.account||"-";
+    document.getElementById("accountNumber").innerHTML=user.account||"-";
+    document.getElementById("accessCode").innerHTML=user.access||"----";
+    document.getElementById("balance").innerHTML="$"+Number(user.balance||0).toLocaleString("en-CA",{
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+    });
+
+    document.getElementById("cardHolder").innerHTML=(user.name||"CLIENT").toUpperCase();
+
+    document.getElementById("clientId").innerHTML=user.id||"-";
+
+    if(user.account){
+
+        document.getElementById("cardLastDigits").innerHTML=user.account.slice(-4);
+
+    }
+
+});
 
 </script>
 
 </body>
+
 </html>
