@@ -1,6 +1,5 @@
 // =======================================
 // RBC BANK LOGIN
-// Version 2
 // =======================================
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -31,11 +30,18 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
 
             localStorage.setItem("role", "admin");
+            localStorage.setItem("isLoggedIn", "true");
+
+            localStorage.setItem("currentUser", JSON.stringify({
+                id: "ADMIN",
+                name: "Administrator",
+                access: "ADMIN",
+                account: "ADMIN",
+                balance: 0
+            }));
 
             alert("Connexion Administrateur réussie.");
-
-            window.location.replace("admin.html");
-
+            window.location.href = "admin.html";
             return;
         }
 
@@ -50,15 +56,18 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
 
             localStorage.setItem("role", "client");
-            localStorage.setItem("clientName", "Michael Johnson");
-            localStorage.setItem("clientID", "100001");
-            localStorage.setItem("accountNumber", "CA4587458965412");
-            localStorage.setItem("balance", "45870.00");
+            localStorage.setItem("isLoggedIn", "true");
+
+            localStorage.setItem("currentUser", JSON.stringify({
+                id: "100001",
+                name: "Michael Johnson",
+                access: "4587",
+                account: "CA4587458965412",
+                balance: 45870.00
+            }));
 
             alert("Connexion Client réussie.");
-
-            window.location.replace("dashboard.html");
-
+            window.location.href = "dashboard.html";
             return;
         }
 
