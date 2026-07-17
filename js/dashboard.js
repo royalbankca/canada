@@ -1,741 +1,667 @@
-/*==================================================
-RBC DEMO BANK
-dashboard.js
-PARTIE 1
-==================================================*/
+//====================================================
+// ROYAL BANK
+// dashboard.js
+//====================================================
 
-"use strict";
+let currentUser = null;
+let transactions = [];
+let balanceVisible = true;
 
-/*====================================
-SESSION
-====================================*/
+//====================================================
+// INITIALISATION
+//====================================================
 
-const clientName =
-localStorage.getItem("clientName") || "John Smith";
+document.addEventListener("DOMContentLoaded", () => {
 
-const accountNumber =
-localStorage.getItem("accountNumber") || "001245879";
+    loadUser();
 
-const balance =
-parseFloat(
-localStorage.getItem("balance") || "25480.75"
-);
+    loadTransactions();
 
-const currency =
-localStorage.getItem("currency") || "CAD";
+    updateDashboard();
 
-/*====================================
-ELEMENTS
-====================================*/
+    updateSummary();
 
-const balanceElement =
-document.getElementById("totalBalance");
-
-const profileName =
-document.getElementById("profileName");
-
-const welcomeName =
-document.getElementById("welcomeName");
-
-const accountElement =
-document.getElementById("accountNumber");
-
-const popup =
-document.getElementById("notificationPopup");
-
-const popupMessage =
-document.getElementById("popupMessage");
-
-const loader =
-document.getElementById("loader");
-
-/*====================================
-INITIALISATION
-====================================*/
-
-window.addEventListener("load",()=>{
-
-setTimeout(()=>{
-
-loader.style.display="none";
-
-showPopup(
-"Bienvenue " + clientName + " !"
-);
-
-},1200);
+    initializeEvents();
 
 });
 
-/*====================================
-AFFICHAGE UTILISATEUR
-====================================*/
+//====================================================
+// CHARGER LE CLIENT
+//====================================================
 
-if(profileName)
-profileName.textContent=clientName;
+function loadUser(){
 
-if(welcomeName)
-welcomeName.textContent=clientName;
+    const data = localStorage.getItem("currentUser");
 
-if(accountElement)
-accountElement.textContent=
-accountNumber;
+    if(!data){
 
-if(balanceElement){
+        window.location.href="login.html";
+        return;
 
-balanceElement.textContent=
+    }
 
-currency+" "+balance.toLocaleString(
-undefined,
-{
-minimumFractionDigits:2
-}
-);
+    currentUser = JSON.parse(data);
 
 }
 
-/*====================================
-POPUP
-====================================*/
+//====================================================
+// TABLEAU DE BORD
+//====================================================
 
-function showPopup(message){
+function updateDashboard(){
 
-popupMessage.textContent=message;
+    document.getElementById("welcomeTitle").textContent =
+        "Bonjour " + currentUser.name;
 
-popup.classList.add("show");
+    document.getElementById("welcomeName").textContent =
+        "Bienvenue sur votre espace bancaire sécurisé.";
 
-setTimeout(()=>{
+    document.getElementById("clientName").textContent =
+        currentUser.name;
 
-popup.classList.remove("show");
+    document.getElementById("cardHolder").textContent =
+        currentUser.name.toUpperCase();
 
-},3500);
+    document.getElementById("clientAccount").textContent =
+        currentUser.account;
 
-}
+    document.getElementById("accountNumber").textContent =
+        currentUser.account;
 
-/*====================================
-DATE
-====================================*/
+    document.getElementById("clientId").textContent =
+        currentUser.id;
 
-const options={
+    document.getElementById("clientInfoId").textContent =
+        currentUser.id;
 
-weekday:"long",
+    document.getElementById("cardNumber").textContent =
+        formatCard(currentUser.account);
 
-year:"numeric",
-
-month:"long",
-
-day:"numeric"
-
-};
-
-const today=new Date();
-
-const currentDate=document.getElementById("currentDate");
-
-if(currentDate){
-
-currentDate.textContent=
-
-today.toLocaleDateString(
-"en-CA",
-options
-);
+    refreshBalance(currentUser.balance);
 
 }
 
-/*====================================
-SALUTATION
-====================================*/
+//====================================================
+// FORMAT CARTE
+//====================================================
 
-const greeting=document.getElementById("greeting");
+function formatCard(number){
 
-if(greeting){
+    if(!number) return "**** **** **** ****";
 
-const hour=new Date().getHours();
-
-if(hour<12){
-
-greeting.textContent="Good Morning";
-
-}else if(hour<18){
-
-greeting.textContent="Good Afternoon";
-
-}else{
-
-greeting.textContent="Good Evening";
+    return number.replace(/(.{4})/g,"$1 ").trim();
 
 }
 
-}
-/*==================================================
-RBC DEMO BANK
-dashboard.js
-PARTIE 2
-==================================================*/
+//====================================================
+// SOLDE
+//====================================================
 
-/*====================================
-MODE SOMBRE
-====================================*/
+function refreshBalance(balance){
 
-const darkButton =
-document.getElementById("darkMode");
+    currentUser.balance = Number(balance);
 
-if(localStorage.getItem("theme")==="dark"){
+    if(balanceVisible){
 
-document.body.classList.add("dark");
+        document.getElementById("balance").textContent =
+            formatMoney(balance);
 
-}
+    }else{
 
-if(darkButton){
+        document.getElementById("balance").textContent =
+            "********";
 
-darkButton.addEventListener("click",()=>{
-
-document.body.classList.toggle("dark");
-
-if(document.body.classList.contains("dark")){
-
-localStorage.setItem("theme","dark");
-
-showPopup("Dark mode activated");
-
-}else{
-
-localStorage.setItem("theme","light");
-
-showPopup("Light mode activated");
+    }
 
 }
 
-});
+//====================================================
+// FORMAT ARGENT
+//====================================================
+
+function formatMoney(amount){
+
+    return Number(amount).toLocaleString(
+
+        "en-CA",
+
+        {
+
+            style:"currency",
+
+            currency:"CAD"
+
+        }
+
+    );
 
 }
 
-/*====================================
-GRAPHIQUE DES DEPENSES
-====================================*/
+//====================================================
+// AFFICHER / MASQUER LE SOLDE
+//====================================================
 
-const chartCanvas =
-document.getElementById("expenseChart");
+function toggleBalance(){
 
-if(chartCanvas){
+    balanceVisible = !balanceVisible;
 
-new Chart(chartCanvas,{
+    refreshBalance(currentUser.balance);
 
-type:"line",
+    const icon =
+        document.querySelector("#toggleBalance i");
 
-data:{
+    if(balanceVisible){
 
-labels:[
-"Jan",
-"Feb",
-"Mar",
-"Apr",
-"May",
-"Jun",
-"Jul",
-"Aug",
-"Sep",
-"Oct",
-"Nov",
-"Dec"
-],
+        icon.className="fas fa-eye";
 
-datasets:[{
+    }else{
 
-label:"Expenses",
+        icon.className="fas fa-eye-slash";
 
-data:[
-2400,
-1850,
-2100,
-2600,
-2300,
-2800,
-3000,
-2700,
-2550,
-3100,
-2950,
-3400
-],
-
-borderWidth:3,
-
-fill:true,
-
-tension:.35
-
-}]
-
-},
-
-options:{
-
-responsive:true,
-
-maintainAspectRatio:false,
-
-plugins:{
-
-legend:{
-
-display:true
+    }
 
 }
 
-},
+//====================================================
+// EVENEMENTS
+//====================================================
 
-scales:{
+function initializeEvents(){
 
-y:{
+    document
+    .getElementById("toggleBalance")
+    .addEventListener("click",toggleBalance);
 
-beginAtZero:true
+}
+//====================================================
+// TRANSACTIONS
+//====================================================
+
+function loadTransactions(){
+
+    const data = localStorage.getItem("transactions");
+
+    if(data){
+
+        transactions = JSON.parse(data);
+
+    }else{
+
+        transactions = [];
+
+    }
+
+    displayTransactions();
 
 }
 
-}
+//====================================================
+// AFFICHAGE DES TRANSACTIONS
+//====================================================
 
-}
+function displayTransactions(){
 
-});
+    const table =
+        document.getElementById("transactionsTable");
 
-}
+    if(!table) return;
 
-/*====================================
-ANIMATION DES STATISTIQUES
-====================================*/
+    table.innerHTML="";
 
-document.querySelectorAll(".stat-value").forEach(element=>{
+    if(transactions.length===0){
 
-const target=
-parseInt(element.dataset.value);
+        table.innerHTML=`
 
-let value=0;
+<tr>
 
-const speed=20;
+<td colspan="5" style="text-align:center;padding:30px;">
 
-const timer=setInterval(()=>{
+Aucune transaction disponible.
 
-value+=Math.ceil(target/40);
+</td>
 
-if(value>=target){
-
-value=target;
-
-clearInterval(timer);
-
-}
-
-element.textContent=value.toLocaleString();
-
-},speed);
-
-});
-
-/*====================================
-HORLOGE
-====================================*/
-
-const liveClock =
-document.getElementById("liveClock");
-
-if(liveClock){
-
-setInterval(()=>{
-
-const now=new Date();
-
-liveClock.textContent=
-
-now.toLocaleTimeString("en-CA");
-
-},1000);
-
-}
-
-/*====================================
-NOTIFICATIONS ALEATOIRES
-====================================*/
-
-const notifications=[
-
-"Your account is secure.",
-
-"New statement available.",
-
-"Visa card renewed successfully.",
-
-"Monthly report generated.",
-
-"No suspicious activity detected.",
-
-"Your transfer has been completed."
-
-];
-
-setInterval(()=>{
-
-const random=
-
-notifications[
-Math.floor(
-Math.random()*notifications.length
-)
-];
-
-showPopup(random);
-
-},60000);
-
-/*====================================
-ACTIONS RAPIDES
-====================================*/
-
-const quickButtons=
-
-document.querySelectorAll(".quick-action");
-
-quickButtons.forEach(button=>{
-
-button.addEventListener("click",()=>{
-
-const page=
-
-button.dataset.page;
-
-if(page){
-
-window.location.href=page;
-
-}
-
-});
-
-});
-
-/*====================================
-RECHERCHE
-====================================*/
-
-const searchInput=
-
-document.getElementById("searchInput");
-
-if(searchInput){
-
-searchInput.addEventListener("keyup",()=>{
-
-const value=
-
-searchInput.value.toLowerCase();
-
-document
-.querySelectorAll(".search-item")
-.forEach(item=>{
-
-item.style.display=
-
-item.textContent
-.toLowerCase()
-.includes(value)
-
-? ""
-
-: "none";
-
-});
-
-});
-
-}
-/*==================================================
-RBC DEMO BANK
-dashboard.js
-PARTIE 3
-==================================================*/
-
-/*====================================
-BOUTONS PRINCIPAUX
-====================================*/
-
-const depositBtn =
-document.getElementById("depositBtn");
-
-const transferBtn =
-document.getElementById("transferBtn");
-
-const withdrawBtn =
-document.getElementById("withdrawBtn");
-
-if(depositBtn){
-
-depositBtn.addEventListener("click",()=>{
-
-window.location.href="deposit.html";
-
-});
-
-}
-
-if(transferBtn){
-
-transferBtn.addEventListener("click",()=>{
-
-window.location.href="transfer.html";
-
-});
-
-}
-
-if(withdrawBtn){
-
-withdrawBtn.addEventListener("click",()=>{
-
-window.location.href="withdraw.html";
-
-});
-
-}
-
-/*====================================
-ACTUALISATION DU SOLDE
-====================================*/
-
-function refreshBalance(){
-
-const value=parseFloat(
-
-localStorage.getItem("balance") || balance
-
-);
-
-if(balanceElement){
-
-balanceElement.textContent=
-
-currency+" "+
-
-value.toLocaleString(undefined,{
-
-minimumFractionDigits:2,
-
-maximumFractionDigits:2
-
-});
-
-}
-
-}
-
-setInterval(refreshBalance,5000);
-
-/*====================================
-ACTIVITÉ UTILISATEUR
-====================================*/
-
-let lastActivity=Date.now();
-
-["click","mousemove","keydown","touchstart"]
-
-.forEach(event=>{
-
-document.addEventListener(event,()=>{
-
-lastActivity=Date.now();
-
-});
-
-});
-
-/*====================================
-EXPIRATION DE SESSION
-====================================*/
-
-const SESSION_TIMEOUT=30*60*1000;
-
-setInterval(()=>{
-
-if(Date.now()-lastActivity>SESSION_TIMEOUT){
-
-alert("Your session has expired.");
-
-logout();
-
-}
-
-},60000);
-
-/*====================================
-LOGOUT
-====================================*/
-
-function logout(){
-
-localStorage.removeItem("logged");
-
-window.location.href="login.html";
-
-}
-
-const logoutButton=
-
-document.getElementById("logout");
-
-if(logoutButton){
-
-logoutButton.addEventListener("click",logout);
-
-}
-
-/*====================================
-VÉRIFICATION DE SESSION
-====================================*/
-
-if(
-
-localStorage.getItem("logged")!=="true"
-
-){
-
-window.location.href="login.html";
-
-}
-
-/*====================================
-SIMULATION DES TAUX DE CHANGE
-====================================*/
-
-function updateExchangeRates(){
-
-document.querySelectorAll(".exchange-rate")
-
-.forEach(rate=>{
-
-const base=
-
-parseFloat(rate.dataset.base);
-
-const variation=
-
-(Math.random()*0.04)-0.02;
-
-const value=
-
-(base+variation).toFixed(4);
-
-rate.textContent=value;
-
-});
-
-}
-
-updateExchangeRates();
-
-setInterval(updateExchangeRates,15000);
-
-/*====================================
-SIMULATION DES NOTIFICATIONS
-====================================*/
-
-function addNotification(text){
-
-const list=
-
-document.getElementById("notificationList");
-
-if(!list) return;
-
-const item=document.createElement("li");
-
-item.innerHTML=`
-
-<i class="fa-solid fa-circle-info"></i>
-
-<span>${text}</span>
+</tr>
 
 `;
 
-list.prepend(item);
+        return;
 
-while(list.children.length>8){
+    }
 
-list.removeChild(list.lastChild);
+    transactions.forEach(transaction=>{
 
-}
+        const amountClass =
+            transaction.amount>=0
+            ? "credit"
+            : "debit";
 
-}
+        const sign =
+            transaction.amount>=0
+            ? "+"
+            : "-";
 
-setInterval(()=>{
+        table.innerHTML += `
 
-const messages=[
+<tr>
 
-"Exchange rates updated.",
+<td>${transaction.date}</td>
 
-"Daily statement available.",
+<td>${transaction.type}</td>
 
-"Your balance has been synchronized.",
+<td>${transaction.description}</td>
 
-"Security scan completed.",
+<td class="${amountClass}">
 
-"System backup successful."
+${sign} ${Math.abs(transaction.amount).toLocaleString("en-CA",{
 
-];
+minimumFractionDigits:2
 
-const message=
+})} $
 
-messages[
+</td>
 
-Math.floor(
+<td>
 
-Math.random()*messages.length
+<span class="status active">
 
-)
+${transaction.status}
 
-];
+</span>
 
-addNotification(message);
+</td>
 
-},90000);
+</tr>
 
-/*====================================
-RACCOURCIS CLAVIER
-====================================*/
+`;
 
-document.addEventListener("keydown",(e)=>{
-
-if(e.altKey && e.key==="t"){
-
-window.location.href="transfer.html";
-
-}
-
-if(e.altKey && e.key==="h"){
-
-window.location.href="history.html";
+    });
 
 }
 
-if(e.altKey && e.key==="a"){
+//====================================================
+// AJOUTER TRANSACTION
+//====================================================
 
-window.location.href="accounts.html";
+function addTransaction(type,description,amount){
+
+    const transaction={
+
+        date:new Date().toLocaleDateString("fr-CA"),
+
+        type:type,
+
+        description:description,
+
+        amount:Number(amount),
+
+        status:"Complété"
+
+    };
+
+    transactions.unshift(transaction);
+
+    localStorage.setItem(
+
+        "transactions",
+
+        JSON.stringify(transactions)
+
+    );
+
+    displayTransactions();
+
+    updateSummary();
 
 }
+
+//====================================================
+// RESUME FINANCIER
+//====================================================
+
+function updateSummary(){
+
+    let income=0;
+
+    let expense=0;
+
+    transactions.forEach(item=>{
+
+        if(item.amount>=0){
+
+            income+=item.amount;
+
+        }else{
+
+            expense+=Math.abs(item.amount);
+
+        }
+
+    });
+
+    document.getElementById("monthlyIncome").textContent=
+
+        formatMoney(income);
+
+    document.getElementById("monthlyExpense").textContent=
+
+        formatMoney(expense);
+
+    document.getElementById("savingAmount").textContent=
+
+        formatMoney(income-expense);
+
+}
+
+//====================================================
+// NOTIFICATIONS
+//====================================================
+
+function showNotification(message,icon="fa-circle-check"){
+
+    const container=
+
+        document.getElementById("notificationsContainer");
+
+    if(!container) return;
+
+    container.insertAdjacentHTML(
+
+        "afterbegin",
+
+`
+
+<div class="notification">
+
+<i class="fas ${icon}"></i>
+
+<p>${message}</p>
+
+</div>
+
+`
+
+    );
+
+}
+
+//====================================================
+// RECHARGER MON COMPTE
+//====================================================
+
+function openRecharge(){
+
+    document.getElementById("rechargeModal").style.display="flex";
+
+}
+
+function closeRecharge(){
+
+    document.getElementById("rechargeModal").style.display="none";
+
+}
+
+window.onclick=function(e){
+
+    const modal=document.getElementById("rechargeModal");
+
+    if(e.target===modal){
+
+        closeRecharge();
+
+    }
+
+};
+//====================================================
+// SERVICES VERROUILLÉS
+//====================================================
+
+function serviceLocked(){
+
+    alert(
+
+`Ce service n'est pas encore activé.
+
+Veuillez contacter votre administrateur.`
+
+    );
+
+}
+
+//====================================================
+// FORMULAIRE RECHARGE
+//====================================================
+
+const rechargeForm=document.getElementById("rechargeForm");
+
+if(rechargeForm){
+
+rechargeForm.addEventListener("submit",submitRecharge);
+
+}
+
+async function submitRecharge(e){
+
+e.preventDefault();
+
+const amount=
+Number(document.getElementById("depositAmount").value);
+
+const operator=
+document.getElementById("mobileOperator").value;
+
+const phone=
+document.getElementById("phoneNumber").value.trim();
+
+if(amount<=0){
+
+alert("Montant invalide.");
+
+return;
+
+}
+
+if(operator===""){
+
+alert("Choisissez un opérateur.");
+
+return;
+
+}
+
+if(phone===""){
+
+alert("Entrez votre numéro.");
+
+return;
+
+}
+
+//==========================================
+// SEBPAY
+//==========================================
+
+const payload={
+
+amount:amount,
+
+operator:operator,
+
+phone:phone,
+
+customerId:currentUser.id,
+
+accountNumber:currentUser.account,
+
+customerName:currentUser.name
+
+};
+
+//================================================
+// ICI TU CONNECTERAS TON API SEBPAY
+//================================================
+
+// Exemple :
+
+/*
+
+const response=await fetch("/api/sebpay/deposit",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(payload)
 
 });
 
-/*====================================
-INITIALISATION
-====================================*/
+const result=await response.json();
 
-refreshBalance();
+if(result.success){
 
-console.log(
+...
 
-"RBC Demo Bank Dashboard Ready"
+}
+
+*/
+
+//================================================
+// DEMO
+//================================================
+
+alert(
+
+"Demande de recharge envoyée.\n\n" +
+
+"Montant : "+amount+" CAD"
 
 );
 
-/*==================================================
-FIN DU FICHIER dashboard.js
-==================================================*/
+addTransaction(
+
+"Recharge",
+
+"Demande SebPay",
+
+amount
+
+);
+
+showNotification(
+
+"Nouvelle demande de recharge envoyée.",
+
+"fa-wallet"
+
+);
+
+closeRecharge();
+
+rechargeForm.reset();
+
+}
+
+//====================================================
+// RAFRAÎCHISSEMENT AUTOMATIQUE
+//====================================================
+
+function refreshDashboard(){
+
+loadUser();
+
+refreshBalance(currentUser.balance);
+
+displayTransactions();
+
+updateSummary();
+
+}
+
+setInterval(refreshDashboard,10000);
+
+//====================================================
+// SYNCHRONISATION
+//====================================================
+
+window.addEventListener("storage",function(){
+
+loadUser();
+
+displayTransactions();
+
+refreshBalance(currentUser.balance);
+
+updateSummary();
+
+});
+
+//====================================================
+// SAUVEGARDE
+//====================================================
+
+function saveCurrentUser(){
+
+localStorage.setItem(
+
+"currentUser",
+
+JSON.stringify(currentUser)
+
+);
+
+}
+
+setInterval(saveCurrentUser,5000);
+
+//====================================================
+// DERNIÈRE CONNEXION
+//====================================================
+
+const now=new Date();
+
+document.getElementById("lastConnection").textContent=
+
+now.toLocaleString("fr-CA");
+
+//====================================================
+// DÉCONNEXION
+//====================================================
+
+function logout(){
+
+localStorage.removeItem("currentUser");
+
+localStorage.removeItem("isLoggedIn");
+
+window.location.href="login.html";
+
+}
+
+//====================================================
+// STATISTIQUES
+//====================================================
+
+function getStatistics(){
+
+console.log({
+
+client:currentUser.name,
+
+compte:currentUser.account,
+
+solde:currentUser.balance,
+
+operations:transactions.length
+
+});
+
+}
+
+getStatistics();
+
+//====================================================
+// FIN
+//====================================================
