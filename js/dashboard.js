@@ -19,14 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSummary();
     initializeEvents();
 
-});
-
-//====================================================
-// CHARGER UTILISATEUR
-//====================================================
-
-function
-    function loadUser(){
+function loadUser(){
 
     const data = localStorage.getItem("currentUser");
 
@@ -37,6 +30,10 @@ function
         return;
 
     }
+
+    currentUser = JSON.parse(data);
+
+}
 
     currentUser = JSON.parse(data);
 
