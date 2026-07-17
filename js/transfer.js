@@ -1,1081 +1,827 @@
-// ===========================================
-// RBC DEMO BANK
-// transfer.js
-// Intégration SebPay
-// ===========================================
+/*=========================================
+  DEMO BANK
+  transfer.js
+=========================================*/
 
-const SEBPAY_BASE_URL = "https://newapi.sebpay.bj/api/v1";
+let currentUser = null;
+let transfers = [];
+let beneficiaries = [];
 
-const PUBLIC_KEY = "";
-const SECRET_KEY = "";
+function loadUser() {
 
-let currentTransaction = null;
-let depositHistory = [];
+    const user = localStorage.getItem("currentUser");
 
-const $ = (id) => document.getElementById(id);
+    if (!user) {
 
-function getCurrency(country){
+        window.location.href = "login.html";
+        return;
 
-switch(country){
+    }
 
-case "BJ":
-case "BF":
-case "CI":
-case "GW":
-case "ML":
-case "NE":
-case "SN":
-case "TG":
-return "XOF";
-
-case "CM":
-case "CG":
-case "GA":
-case "TD":
-return "XAF";
-
-case "GH":
-return "GHS";
-
-case "NG":
-return "NGN";
-
-case "GM":
-return "GMD";
-
-case "GN":
-return "GNF";
-
-case "CD":
-return "CDF";
-
-default:
-return "XOF";
+    currentUser = JSON.parse(user);
 
 }
 
+function loadTransfers() {
+
+    const data = localStorage.getItem("transfers");
+
+    transfers = data ? JSON.parse(data) : [];
+
 }
 
-function headers(){
+function saveTransfers() {
 
-return{
+    localStorage.setItem(
+        "transfers",
+        JSON.stringify(transfers)
+    );
 
-"Content-Type":"application/json",
+}
 
-"X-Public-Key":PUBLIC_KEY,
+function saveCurrentUser() {
 
-"X-Secret-Key":SECRET_KEY
+    localStorage.setItem(
+        "currentUser",
+        JSON.stringify(currentUser)
+    );
+
+}
+
+function formatMoney(amount) {
+
+    return Number(amount).toLocaleString("en-CA", {
+
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+
+    });
+
+}
+
+function updateBalance() {
+
+    const balance = document.getElementById("availableBalance");
+
+    if (balance) {
+
+        balance.textContent = "$ " + formatMoney(currentUser.balance);
+
+    }
+
+    const summary = document.getElementById("summaryBalance");
+
+    if (summary) {
+
+        summary.textContent = "$ " + formatMoney(currentUser.balance);
+
+    }
+
+}
+
+function showMessage(message, color = "#0b8f45") {
+
+    alert(message);
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    loadUser();
+
+    loadTransfers();
+
+    updateBalance();
+
+});
+/*=========================================
+  VALIDATION DU FORMULAIRE
+=========================================*/
+
+function getFormData() {
+
+    return {
+
+        sender: document.getElementById("senderAccount").value.trim(),
+        beneficiary: document.getElementById("beneficiaryName").value.trim(),
+        account: document.getElementById("beneficiaryAccount").value.trim(),
+        bank: document.getElementById("bank").value,
+        currency: document.getElementById("currency").value,
+        amount: parseFloat(document.getElementById("amount").value),
+        reason: document.getElementById("reason").value.trim(),
+        code: document.getElementById("accessCode").value.trim()
+
+    };
+
+}
+
+function validateTransfer(data) {
+
+    if (!data.beneficiary) {
+
+        showMessage("Veuillez saisir le nom du bénéficiaire.");
+        return false;
+
+    }
+
+    if (!data.account) {
+
+        showMessage("Veuillez saisir le numéro de compte.");
+        return false;
+
+    }
+
+    if (!data.bank) {
+
+        showMessage("Veuillez sélectionner une banque.");
+        return false;
+
+    }
+
+    if (isNaN(data.amount) || data.amount <= 0) {
+
+        showMessage("Veuillez saisir un montant valide.");
+        return false;
+
+    }
+
+    if (data.amount > currentUser.balance) {
+
+        showMessage("Solde insuffisant.");
+        return false;
+
+    }
+
+    if (data.code.length < 4) {
+
+        showMessage("Code d'accès invalide.");
+        return false;
+
+    }
+
+    return true;
+
+}
+
+function clearForm() {
+
+    document.getElementById("beneficiaryName").value = "";
+    document.getElementById("beneficiaryAccount").value = "";
+    document.getElementById("bank").selectedIndex = 0;
+    document.getElementById("currency").selectedIndex = 0;
+    document.getElementById("amount").value = "";
+    document.getElementById("reason").value = "";
+    document.getElementById("accessCode").value = "";
+
+}
+
+function cancelTransfer() {
+
+    if (confirm("Voulez-vous vraiment annuler ce virement ?")) {
+
+        clearForm();
+
+    }
+
+}
+/*=========================================
+  APERÇU DU VIREMENT
+=========================================*/
+
+function previewTransfer() {
+
+    const data = getFormData();
+
+    if (!validateTransfer(data)) {
+
+        return;
+
+    }
+
+    document.getElementById("confirmBeneficiary").textContent = data.beneficiary;
+    document.getElementById("confirmAccount").textContent = data.account;
+    document.getElementById("confirmBank").textContent = data.bank;
+    document.getElementById("confirmCurrency").textContent = data.currency;
+    document.getElementById("confirmAmount").textContent =
+        data.currency + " " + formatMoney(data.amount);
+    document.getElementById("confirmReason").textContent =
+        data.reason || "-";
+
+    const section = document.getElementById("confirmationSection");
+
+    if (section) {
+
+        section.scrollIntoView({
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+}
+
+function generateReference() {
+
+    return "TRX-" +
+        Date.now().toString().slice(-8) +
+        "-" +
+        Math.floor(Math.random() * 9000 + 1000);
+
+}
+
+function getCurrentDate() {
+
+    return new Date().toLocaleString("fr-FR");
+
+}
+/*=========================================
+  APERÇU DU VIREMENT
+=========================================*/
+
+function previewTransfer() {
+
+    const data = getFormData();
+
+    if (!validateTransfer(data)) {
+
+        return;
+
+    }
+
+    document.getElementById("confirmBeneficiary").textContent = data.beneficiary;
+    document.getElementById("confirmAccount").textContent = data.account;
+    document.getElementById("confirmBank").textContent = data.bank;
+    document.getElementById("confirmCurrency").textContent = data.currency;
+    document.getElementById("confirmAmount").textContent =
+        data.currency + " " + formatMoney(data.amount);
+    document.getElementById("confirmReason").textContent =
+        data.reason || "-";
+
+    const section = document.getElementById("confirmationSection");
+
+    if (section) {
+
+        section.scrollIntoView({
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+}
+
+function generateReference() {
+
+    return "TRX-" +
+        Date.now().toString().slice(-8) +
+        "-" +
+        Math.floor(Math.random() * 9000 + 1000);
+
+}
+
+function getCurrentDate() {
+
+    return new Date().toLocaleString("fr-FR");
+
+}
+/*=========================================
+  GÉNÉRATION DU REÇU
+=========================================*/
+
+function displayReceipt(transfer) {
+
+    const receipt = document.getElementById("receipt");
+
+    if (!receipt) {
+
+        return;
+
+    }
+
+    receipt.classList.add("active");
+
+    document.getElementById("receiptReference").textContent = transfer.id;
+
+    document.getElementById("receiptDate").textContent = transfer.date;
+
+    document.getElementById("receiptSender").textContent =
+        transfer.sender;
+
+    document.getElementById("receiptBeneficiary").textContent =
+        transfer.beneficiary;
+
+    document.getElementById("receiptAccount").textContent =
+        transfer.beneficiaryAccount;
+
+    document.getElementById("receiptBank").textContent =
+        transfer.bank;
+
+    document.getElementById("receiptAmount").textContent =
+        transfer.currency + " " + formatMoney(transfer.amount);
+
+    document.getElementById("receiptStatus").textContent =
+        transfer.status;
+
+    receipt.scrollIntoView({
+
+        behavior: "smooth"
+
+    });
+
+}
+
+function downloadReceipt() {
+
+    window.print();
+
+}
+
+function closeReceipt() {
+
+    const receipt = document.getElementById("receipt");
+
+    if (receipt) {
+
+        receipt.classList.remove("active");
+
+    }
+
+}
+/*=========================================
+  GESTION DES BÉNÉFICIAIRES
+=========================================*/
+
+function addBeneficiary(name, account, bank) {
+
+    const exists = beneficiaries.find(item => item.account === account);
+
+    if (exists) {
+
+        return;
+
+    }
+
+    beneficiaries.push({
+
+        name: name,
+        account: account,
+        bank: bank
+
+    });
+
+    localStorage.setItem(
+        "beneficiaries",
+        JSON.stringify(beneficiaries)
+    );
+
+}
+
+function loadBeneficiaries() {
+
+    const data = localStorage.getItem("beneficiaries");
+
+    beneficiaries = data ? JSON.parse(data) : [];
+
+}
+
+function selectBeneficiary(name, account, bank) {
+
+    document.getElementById("beneficiaryName").value = name;
+    document.getElementById("beneficiaryAccount").value = account;
+    document.getElementById("bank").value = bank;
+
+    showMessage("Bénéficiaire sélectionné.");
+
+}
+
+function saveCurrentBeneficiary() {
+
+    const data = getFormData();
+
+    if (!data.beneficiary || !data.account || !data.bank) {
+
+        showMessage("Complétez les informations du bénéficiaire.");
+        return;
+
+    }
+
+    addBeneficiary(
+        data.beneficiary,
+        data.account,
+        data.bank
+    );
+
+    showMessage("Bénéficiaire enregistré.");
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    loadBeneficiaries();
+
+});
+/*=========================================
+  HISTORIQUE DES VIREMENTS
+=========================================*/
+
+function renderTransferHistory() {
+
+    const tbody = document.getElementById("historyBody");
+
+    if (!tbody) {
+
+        return;
+
+    }
+
+    tbody.innerHTML = "";
+
+    if (transfers.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center;">
+                    Aucun virement disponible.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    transfers.forEach(transfer => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>${transfer.date}</td>
+
+            <td>${transfer.beneficiary}</td>
+
+            <td>${transfer.currency} ${formatMoney(transfer.amount)}</td>
+
+            <td>
+                <span class="badge success">
+                    ${transfer.status}
+                </span>
+            </td>
+
+        `;
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+function searchTransfers(keyword) {
+
+    keyword = keyword.toLowerCase();
+
+    const rows = document.querySelectorAll("#historyBody tr");
+
+    rows.forEach(row => {
+
+        if (row.innerText.toLowerCase().includes(keyword)) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    renderTransferHistory();
+
+});
+/*=========================================
+  MISE À JOUR DU RÉSUMÉ
+=========================================*/
+
+function updateTransferSummary() {
+
+    const amount =
+        parseFloat(document.getElementById("amount").value) || 0;
+
+    const currency =
+        document.getElementById("currency").value;
+
+    document.getElementById("summaryAmount").textContent =
+        currency + " " + formatMoney(amount);
+
+    const fees = amount > 0 ? amount * 0.01 : 0;
+
+    document.getElementById("summaryFees").textContent =
+        currency + " " + formatMoney(fees);
+
+    const total = amount + fees;
+
+    document.getElementById("summaryTotal").textContent =
+        currency + " " + formatMoney(total);
+
+}
+
+function attachSummaryEvents() {
+
+    const amount = document.getElementById("amount");
+    const currency = document.getElementById("currency");
+
+    if (amount) {
+
+        amount.addEventListener("input", updateTransferSummary);
+
+    }
+
+    if (currency) {
+
+        currency.addEventListener("change", updateTransferSummary);
+
+    }
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    attachSummaryEvents();
+
+    updateTransferSummary();
+
+});
+/*=========================================
+  LIMITES DE VIREMENT
+=========================================*/
+
+const transferLimits = {
+
+    daily: 10000,
+    monthly: 50000,
+    minimum: 10
 
 };
 
+function checkTransferLimits(amount) {
+
+    if (amount < transferLimits.minimum) {
+
+        showMessage(
+            "Le montant minimum autorisé est de " +
+            formatMoney(transferLimits.minimum)
+        );
+
+        return false;
+
+    }
+
+    if (amount > transferLimits.daily) {
+
+        showMessage(
+            "Vous dépassez la limite journalière de " +
+            formatMoney(transferLimits.daily)
+        );
+
+        return false;
+
+    }
+
+    return true;
+
 }
 
-function formatMoney(value){
+function calculateFees(amount) {
 
-return Number(value || 0).toLocaleString("fr-FR",{
+    if (amount <= 1000) {
 
-minimumFractionDigits:2,
+        return 5;
 
-maximumFractionDigits:2
+    }
+
+    if (amount <= 5000) {
+
+        return 10;
+
+    }
+
+    return amount * 0.01;
+
+}
+
+function updateFees() {
+
+    const amount = parseFloat(
+        document.getElementById("amount").value
+    ) || 0;
+
+    const currency =
+        document.getElementById("currency").value;
+
+    const fees = calculateFees(amount);
+
+    document.getElementById("summaryFees").textContent =
+        currency + " " + formatMoney(fees);
+
+    document.getElementById("summaryTotal").textContent =
+        currency + " " + formatMoney(amount + fees);
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const amountField = document.getElementById("amount");
+
+    if (amountField) {
+
+        amountField.addEventListener("input", updateFees);
+
+    }
+
+});
+/*=========================================
+  ACTUALISATION DU TABLEAU DE BORD
+=========================================*/
+
+function updateDashboardData() {
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const index = users.findIndex(user => user.account === currentUser.account);
+
+    if (index !== -1) {
+
+        users[index] = currentUser;
+
+        localStorage.setItem(
+            "users",
+            JSON.stringify(users)
+        );
+
+    }
+
+}
+
+function saveTransferToAccount(transfer) {
+
+    let history = JSON.parse(
+        localStorage.getItem("transactions")
+    ) || [];
+
+    history.unshift({
+
+        id: transfer.id,
+        type: "Transfer",
+        date: transfer.date,
+        description: "Transfer to " + transfer.beneficiary,
+        amount: -transfer.amount,
+        currency: transfer.currency,
+        status: transfer.status
+
+    });
+
+    localStorage.setItem(
+        "transactions",
+        JSON.stringify(history)
+    );
+
+}
+
+function completeTransfer(transfer) {
+
+    updateDashboardData();
+
+    saveTransferToAccount(transfer);
+
+    renderTransferHistory();
+
+    updateBalance();
+
+}
+/*=========================================
+  INITIALISATION
+=========================================*/
+
+function initializeTransferPage() {
+
+    loadUser();
+
+    loadTransfers();
+
+    loadBeneficiaries();
+
+    updateBalance();
+
+    renderTransferHistory();
+
+    updateTransferSummary();
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    initializeTransferPage();
+
+    const form = document.getElementById("transferForm");
+
+    if (form) {
+
+        form.addEventListener("submit", function (e) {
+
+            e.preventDefault();
+
+            previewTransfer();
+
+        });
+
+    }
+
+    const amountField = document.getElementById("amount");
+
+    if (amountField) {
+
+        amountField.addEventListener("input", function () {
+
+            updateTransferSummary();
+            updateFees();
+
+        });
+
+    }
+
+    const currencyField = document.getElementById("currency");
+
+    if (currencyField) {
+
+        currencyField.addEventListener("change", function () {
+
+            updateTransferSummary();
+            updateFees();
+
+        });
+
+    }
+
+});
+/*=========================================
+  FONCTIONS FINALES
+=========================================*/
+
+function resetTransferForm() {
+
+    clearForm();
+
+    updateTransferSummary();
+
+    updateFees();
+
+    const confirmation = document.getElementById("confirmationSection");
+
+    if (confirmation) {
+
+        confirmation.scrollIntoView({
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+}
+
+function logout() {
+
+    if (confirm("Voulez-vous vous déconnecter ?")) {
+
+        localStorage.removeItem("currentUser");
+
+        window.location.href = "login.html";
+
+    }
+
+}
+
+window.addEventListener("storage", function () {
+
+    loadUser();
+
+    updateBalance();
+
+    renderTransferHistory();
 
 });
 
-}
+window.onload = function () {
 
-function loadUser(){
+    initializeTransferPage();
 
-const user=JSON.parse(localStorage.getItem("currentUser"));
-
-if(!user){
-
-window.location.href="login.html";
-
-return null;
-
-}
-
-$("senderAccount").value=user.account;
-
-$("summaryAccount").textContent=user.account;
-
-$("availableBalance").textContent=formatMoney(user.balance)+" $";
-
-$("summaryBalance").textContent=formatMoney(user.balance)+" $";
-
-$("walletBalance").textContent=formatMoney(user.balance)+" $";
-
-return user;
-
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-loadUser();
-
-});
-async function loadOperators(country){
-
-const operator=$("operator");
-
-operator.innerHTML="<option>Chargement...</option>";
-
-try{
-
-const response=await fetch(
-
-`${SEBPAY_BASE_URL}/operators?country=${country}`,
-
-{
-
-method:"GET",
-
-headers:headers()
-
-}
-
-);
-
-const result=await response.json();
-
-if(!result.success){
-
-operator.innerHTML="<option>Aucun opérateur</option>";
-
-return;
-
-}
-
-operator.innerHTML="";
-
-result.data.forEach(item=>{
-
-const option=document.createElement("option");
-
-option.value=item.slug;
-
-option.textContent=item.name;
-
-option.dataset.otp=item.otp_required;
-
-operator.appendChild(option);
-
-});
-
-toggleOTP();
-
-}
-
-catch(e){
-
-console.error(e);
-
-operator.innerHTML="<option>Erreur</option>";
-
-}
-
-}
-
-function toggleOTP(){
-
-const operator=$("operator");
-
-const otpContainer=$("otpContainer");
-
-if(!operator.selectedOptions.length){
-
-otpContainer.style.display="none";
-
-return;
-
-}
-
-otpContainer.style.display=
-
-operator.selectedOptions[0].dataset.otp==="true"
-
-?"block"
-
-:"none";
-
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-loadOperators($("country").value);
-
-$("country").addEventListener("change",()=>{
-
-loadOperators($("country").value);
-
-});
-
-$("operator").addEventListener("change",toggleOTP);
-
-});
-async function createCollection(){
-
-const payload={
-
-amount:Number($("amount").value),
-
-currency:getCurrency($("country").value),
-
-phone:$("phone").value.trim(),
-
-operator:$("operator").value,
-
-country:$("country").value,
-
-external_reference:"RBC-"+Date.now(),
-
-callback_url:"https://example.com/webhook"
+    console.log("Demo Bank - Transfer Module Loaded");
 
 };
-
-if($("otp").value.trim()!==""){
-
-payload.otp_code=$("otp").value.trim();
-
-}
-
-if(
-
-!payload.phone||
-
-!payload.operator||
-
-payload.amount<=0
-
-){
-
-alert("Veuillez remplir correctement tous les champs.");
-
-return;
-
-}
-
-try{
-
-const response=await fetch(
-
-`${SEBPAY_BASE_URL}/collections`,
-
-{
-
-method:"POST",
-
-headers:headers(),
-
-body:JSON.stringify(payload)
-
-}
-
-);
-
-const result=await response.json();
-
-if(!result.success){
-
-alert(result.message);
-
-return;
-
-}
-
-currentTransaction=result.data;
-
-localStorage.setItem(
-
-"lastCollection",
-
-JSON.stringify(currentTransaction)
-
-);
-
-$("depositReference").textContent=
-
-currentTransaction.reference||"-";
-
-$("depositStatus").textContent=
-
-currentTransaction.status||"En attente";
-
-$("depositAmount").textContent=
-
-formatMoney(currentTransaction.amount);
-
-$("depositResult").textContent=
-
-currentTransaction.message||"Transaction créée";
-
-if(currentTransaction.provider_link){
-
-window.open(
-
-currentTransaction.provider_link,
-
-"_blank"
-
-);
-
-}
-
-}
-
-catch(error){
-
-console.error(error);
-
-alert("Erreur de connexion avec SebPay.");
-
-}
-
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-$("payButton").addEventListener(
-
-"click",
-
-createCollection
-
-);
-
-});
-async function checkCollectionStatus(reference=null){
-
-try{
-
-let transactionReference=reference;
-
-if(!transactionReference){
-
-const last=JSON.parse(
-
-localStorage.getItem("lastCollection")
-
-);
-
-if(!last){
-
-alert("Aucune transaction trouvée.");
-
-return;
-
-}
-
-transactionReference=
-
-last.reference||
-
-last.external_reference||
-
-last.id;
-
-}
-
-const response=await fetch(
-
-`${SEBPAY_BASE_URL}/collections/${transactionReference}`,
-
-{
-
-method:"GET",
-
-headers:headers()
-
-}
-
-);
-
-const result=await response.json();
-
-if(!result.success){
-
-alert(result.message);
-
-return;
-
-}
-
-currentTransaction=result.data;
-
-localStorage.setItem(
-
-"lastCollection",
-
-JSON.stringify(currentTransaction)
-
-);
-
-$("lastReference").textContent=
-
-currentTransaction.reference||"-";
-
-$("lastTransactionId").textContent=
-
-currentTransaction.id||"-";
-
-$("lastStatus").textContent=
-
-currentTransaction.status||"-";
-
-$("lastMessage").textContent=
-
-currentTransaction.message||"-";
-
-$("lastCountry").textContent=
-
-currentTransaction.country||"-";
-
-$("lastOperator").textContent=
-
-currentTransaction.operator||"-";
-
-$("lastPhone").textContent=
-
-currentTransaction.phone||"-";
-
-$("requestedAmount").textContent=
-
-formatMoney(currentTransaction.amount);
-
-$("receivedAmount").textContent=
-
-formatMoney(
-
-currentTransaction.received_amount||
-
-currentTransaction.amount
-
-);
-
-$("receivedCurrency").textContent=
-
-currentTransaction.currency||"-";
-
-$("createdAt").textContent=
-
-currentTransaction.created_at||"-";
-
-$("updatedAt").textContent=
-
-currentTransaction.updated_at||"-";
-
-$("paymentResult").textContent=
-
-currentTransaction.status||"-";
-
-$("depositReference").textContent=
-
-currentTransaction.reference||"-";
-
-$("depositStatus").textContent=
-
-currentTransaction.status||"-";
-
-$("depositAmount").textContent=
-
-formatMoney(currentTransaction.amount);
-
-}
-
-catch(error){
-
-console.error(error);
-
-alert("Impossible de récupérer le statut.");
-
-}
-
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-$("statusButton").addEventListener(
-
-"click",
-
-()=>checkCollectionStatus()
-
-);
-
-$("refreshStatus").addEventListener(
-
-"click",
-
-()=>checkCollectionStatus()
-
-);
-
-});
-function previewDeposit(){
-
-$("confirmAccount").textContent=$("senderAccount").value;
-
-$("confirmCountry").textContent=
-
-$("country").options[$("country").selectedIndex].text;
-
-$("confirmOperator").textContent=
-
-$("operator").options[$("operator").selectedIndex]?.text||"-";
-
-$("confirmPhone").textContent=
-
-$("phone").value;
-
-$("confirmAmount").textContent=
-
-formatMoney($("amount").value);
-
-$("confirmCurrency").textContent=
-
-getCurrency($("country").value);
-
-$("confirmReference").textContent=
-
-currentTransaction?.reference||"---------";
-
-$("confirmStatus").textContent=
-
-currentTransaction?.status||"En attente";
-
-}
-
-function saveHistory(){
-
-if(!currentTransaction) return;
-
-let history=
-
-JSON.parse(localStorage.getItem("depositHistory"))||[];
-
-history.unshift(currentTransaction);
-
-localStorage.setItem(
-
-"depositHistory",
-
-JSON.stringify(history)
-
-);
-
-}
-
-function loadDepositHistory(){
-
-const tbody=$("depositHistory");
-
-const history=
-
-JSON.parse(localStorage.getItem("depositHistory"))||[];
-
-tbody.innerHTML="";
-
-if(history.length===0){
-
-tbody.innerHTML=`
-
-<tr>
-
-<td colspan="5">
-
-Aucun dépôt disponible.
-
-</td>
-
-</tr>
-
-`;
-
-return;
-
-}
-
-history.forEach(item=>{
-
-tbody.innerHTML+=`
-
-<tr>
-
-<td>${item.reference||"-"}</td>
-
-<td>${formatMoney(item.amount)}</td>
-
-<td>${item.operator||"-"}</td>
-
-<td>${item.status||"-"}</td>
-
-<td>${item.created_at||"-"}</td>
-
-</tr>
-
-`;
-
-});
-
-}
-
-function clearDepositHistory(){
-
-localStorage.removeItem("depositHistory");
-
-loadDepositHistory();
-
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-$("previewButton").addEventListener(
-
-"click",
-
-previewDeposit
-
-);
-
-$("reloadHistory").addEventListener(
-
-"click",
-
-loadDepositHistory
-
-);
-
-$("clearHistory").addEventListener(
-
-"click",
-
-clearDepositHistory
-
-);
-
-loadDepositHistory();
-
-});
-function loadActivity(){
-
-const tbody=$("activityHistory");
-
-const history=
-
-JSON.parse(localStorage.getItem("depositHistory"))||[];
-
-tbody.innerHTML="";
-
-if(history.length===0){
-
-tbody.innerHTML=`
-
-<tr>
-
-<td colspan="5">
-
-Aucune activité.
-
-</td>
-
-</tr>
-
-`;
-
-return;
-
-}
-
-history.slice(0,10).forEach(item=>{
-
-tbody.innerHTML+=`
-
-<tr>
-
-<td>${item.updated_at||item.created_at||"-"}</td>
-
-<td>${item.reference||"-"}</td>
-
-<td>Dépôt</td>
-
-<td>${formatMoney(item.amount)} ${item.currency||""}</td>
-
-<td>${item.status||"-"}</td>
-
-</tr>
-
-`;
-
-});
-
-}
-
-function updateStatistics(){
-
-const history=
-
-JSON.parse(localStorage.getItem("depositHistory"))||[];
-
-let total=0;
-
-let success=0;
-
-let failed=0;
-
-history.forEach(item=>{
-
-total+=Number(item.amount||0);
-
-if(
-
-item.status==="SUCCESS"||
-
-item.status==="SUCCESSFUL"
-
-){
-
-success++;
-
-}
-
-if(
-
-item.status==="FAILED"||
-
-item.status==="CANCELLED"
-
-){
-
-failed++;
-
-}
-
-});
-
-$("totalDeposits").textContent=
-
-formatMoney(total)+" $";
-
-$("depositCount").textContent=
-
-history.length;
-
-$("successCount").textContent=
-
-success;
-
-$("failedCount").textContent=
-
-failed;
-
-if(history.length){
-
-const last=history[0];
-
-$("lastDepositAmount").textContent=
-
-formatMoney(last.amount)+" "+(last.currency||"");
-
-$("lastDepositStatus").textContent=
-
-last.status||"-";
-
-$("lastSync").textContent=
-
-new Date().toLocaleString("fr-FR");
-
-}
-
-}
-
-function downloadReceipt(){
-
-if(!currentTransaction){
-
-alert("Aucun reçu disponible.");
-
-return;
-
-}
-
-const receipt=`
-
-RBC DEMO BANK
-
-----------------------------
-
-Référence : ${currentTransaction.reference||"-"}
-
-Montant : ${currentTransaction.amount||0} ${currentTransaction.currency||""}
-
-Téléphone : ${currentTransaction.phone||"-"}
-
-Opérateur : ${currentTransaction.operator||"-"}
-
-Statut : ${currentTransaction.status||"-"}
-
-Date : ${currentTransaction.created_at||"-"}
-
-`;
-
-$("receiptContent").innerHTML=
-
-"<pre>"+receipt+"</pre>";
-
-const blob=new Blob([receipt],{
-
-type:"text/plain"
-
-});
-
-const url=URL.createObjectURL(blob);
-
-const a=document.createElement("a");
-
-a.href=url;
-
-a.download="recu-sebpay.txt";
-
-a.click();
-
-URL.revokeObjectURL(url);
-
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-$("refreshActivity").addEventListener(
-
-"click",
-
-loadActivity
-
-);
-
-$("downloadReceipt").addEventListener(
-
-"click",
-
-downloadReceipt
-
-);
-
-loadActivity();
-
-updateStatistics();
-
-});
-function updateWalletBalance(){
-
-const user=JSON.parse(localStorage.getItem("currentUser"));
-
-if(!user) return;
-
-const history=
-
-JSON.parse(localStorage.getItem("depositHistory"))||[];
-
-let credited=0;
-
-history.forEach(item=>{
-
-if(
-
-item.status==="SUCCESS"||
-
-item.status==="SUCCESSFUL"
-
-){
-
-credited+=Number(
-
-item.received_amount||
-
-item.amount||
-
-0
-
-);
-
-}
-
-});
-
-$("walletBalance").textContent=
-
-formatMoney(user.balance+credited)+" $";
-
-$("summaryBalance").textContent=
-
-formatMoney(user.balance+credited)+" $";
-
-$("availableBalance").textContent=
-
-formatMoney(user.balance+credited)+" $";
-
-}
-
-function notify(message,type="success"){
-
-const box=document.createElement("div");
-
-box.className=`notification ${type}`;
-
-box.textContent=message;
-
-document.body.appendChild(box);
-
-setTimeout(()=>{
-
-box.classList.add("show");
-
-},100);
-
-setTimeout(()=>{
-
-box.classList.remove("show");
-
-setTimeout(()=>{
-
-box.remove();
-
-},300);
-
-},3500);
-
-}
-
-function autoRefresh(){
-
-setInterval(async()=>{
-
-const last=
-
-JSON.parse(localStorage.getItem("lastCollection"));
-
-if(!last) return;
-
-await checkCollectionStatus(
-
-last.reference||
-
-last.id
-
-);
-
-saveHistory();
-
-loadDepositHistory();
-
-loadActivity();
-
-updateStatistics();
-
-updateWalletBalance();
-
-if(
-
-currentTransaction &&
-
-(
-
-currentTransaction.status==="SUCCESS"||
-
-currentTransaction.status==="SUCCESSFUL"
-
-)
-
-){
-
-notify(
-
-"Dépôt confirmé avec succès."
-
-);
-
-}
-
-},30000);
-
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-updateWalletBalance();
-
-autoRefresh();
-
-});
-function logout(){
-
-if(confirm("Voulez-vous vous déconnecter ?")){
-
-localStorage.removeItem("currentUser");
-
-window.location.href="login.html";
-
-}
-
-}
-
-function initializeTransfer(){
-
-const form=$("depositForm");
-
-if(form){
-
-form.reset();
-
-}
-
-const user=loadUser();
-
-if(user){
-
-updateWalletBalance();
-
-}
-
-loadDepositHistory();
-
-loadActivity();
-
-updateStatistics();
-
-$("depositStatus").textContent="-";
-
-$("depositReference").textContent="-";
-
-$("depositAmount").textContent="0.00";
-
-}
-
-window.addEventListener("online",()=>{
-
-notify("Connexion Internet rétablie.","success");
-
-});
-
-window.addEventListener("offline",()=>{
-
-notify("Connexion Internet perdue.","error");
-
-});
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-initializeTransfer();
-
-const logoutBtn=$("logoutButton");
-
-if(logoutBtn){
-
-logoutBtn.addEventListener("click",logout);
-
-}
-
-});
-// ============================================
-// FIN DU FICHIER
-// transfer.js
-// Intégration SebPay terminée
-// ============================================
