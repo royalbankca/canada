@@ -1,667 +1,116 @@
-//====================================================
-// ROYAL BANK
-// dashboard.js
-//====================================================
+async function submitRecharge(e){
 
-let currentUser = null;
-let transactions = [];
-let balanceVisible = true;
+    e.preventDefault();
 
-//====================================================
-// INITIALISATION
-//====================================================
+    const amount = Number(document.getElementById("depositAmount").value);
 
-document.addEventListener("DOMContentLoaded", () => {
+    const operator = document.getElementById("mobileOperator").value;
 
-    loadUser();
+    const phone = document.getElementById("phoneNumber").value.trim();
 
-    loadTransactions();
+    if(amount <= 0){
 
-    updateDashboard();
-
-    updateSummary();
-
-    initializeEvents();
-
-});
-
-//====================================================
-// CHARGER LE CLIENT
-//====================================================
-
-function loadUser(){
-
-    const data = localStorage.getItem("currentUser");
-
-    if(!data){
-
-        window.location.href="login.html";
-        return;
-
-    }
-
-    currentUser = JSON.parse(data);
-
-}
-
-//====================================================
-// TABLEAU DE BORD
-//====================================================
-
-function updateDashboard(){
-
-    document.getElementById("welcomeTitle").textContent =
-        "Bonjour " + currentUser.name;
-
-    document.getElementById("welcomeName").textContent =
-        "Bienvenue sur votre espace bancaire sécurisé.";
-
-    document.getElementById("clientName").textContent =
-        currentUser.name;
-
-    document.getElementById("cardHolder").textContent =
-        currentUser.name.toUpperCase();
-
-    document.getElementById("clientAccount").textContent =
-        currentUser.account;
-
-    document.getElementById("accountNumber").textContent =
-        currentUser.account;
-
-    document.getElementById("clientId").textContent =
-        currentUser.id;
-
-    document.getElementById("clientInfoId").textContent =
-        currentUser.id;
-
-    document.getElementById("cardNumber").textContent =
-        formatCard(currentUser.account);
-
-    refreshBalance(currentUser.balance);
-
-}
-
-//====================================================
-// FORMAT CARTE
-//====================================================
-
-function formatCard(number){
-
-    if(!number) return "**** **** **** ****";
-
-    return number.replace(/(.{4})/g,"$1 ").trim();
-
-}
-
-//====================================================
-// SOLDE
-//====================================================
-
-function refreshBalance(balance){
-
-    currentUser.balance = Number(balance);
-
-    if(balanceVisible){
-
-        document.getElementById("balance").textContent =
-            formatMoney(balance);
-
-    }else{
-
-        document.getElementById("balance").textContent =
-            "********";
-
-    }
-
-}
-
-//====================================================
-// FORMAT ARGENT
-//====================================================
-
-function formatMoney(amount){
-
-    return Number(amount).toLocaleString(
-
-        "en-CA",
-
-        {
-
-            style:"currency",
-
-            currency:"CAD"
-
-        }
-
-    );
-
-}
-
-//====================================================
-// AFFICHER / MASQUER LE SOLDE
-//====================================================
-
-function toggleBalance(){
-
-    balanceVisible = !balanceVisible;
-
-    refreshBalance(currentUser.balance);
-
-    const icon =
-        document.querySelector("#toggleBalance i");
-
-    if(balanceVisible){
-
-        icon.className="fas fa-eye";
-
-    }else{
-
-        icon.className="fas fa-eye-slash";
-
-    }
-
-}
-
-//====================================================
-// EVENEMENTS
-//====================================================
-
-function initializeEvents(){
-
-    document
-    .getElementById("toggleBalance")
-    .addEventListener("click",toggleBalance);
-
-}
-//====================================================
-// TRANSACTIONS
-//====================================================
-
-function loadTransactions(){
-
-    const data = localStorage.getItem("transactions");
-
-    if(data){
-
-        transactions = JSON.parse(data);
-
-    }else{
-
-        transactions = [];
-
-    }
-
-    displayTransactions();
-
-}
-
-//====================================================
-// AFFICHAGE DES TRANSACTIONS
-//====================================================
-
-function displayTransactions(){
-
-    const table =
-        document.getElementById("transactionsTable");
-
-    if(!table) return;
-
-    table.innerHTML="";
-
-    if(transactions.length===0){
-
-        table.innerHTML=`
-
-<tr>
-
-<td colspan="5" style="text-align:center;padding:30px;">
-
-Aucune transaction disponible.
-
-</td>
-
-</tr>
-
-`;
+        alert("Montant invalide.");
 
         return;
 
     }
 
-    transactions.forEach(transaction=>{
+    if(operator === ""){
 
-        const amountClass =
-            transaction.amount>=0
-            ? "credit"
-            : "debit";
+        alert("Choisissez votre opérateur.");
 
-        const sign =
-            transaction.amount>=0
-            ? "+"
-            : "-";
+        return;
 
-        table.innerHTML += `
+    }
 
-<tr>
+    if(phone === ""){
 
-<td>${transaction.date}</td>
+        alert("Entrez votre numéro Mobile Money.");
 
-<td>${transaction.type}</td>
+        return;
 
-<td>${transaction.description}</td>
+    }
 
-<td class="${amountClass}">
+    const payload = {
 
-${sign} ${Math.abs(transaction.amount).toLocaleString("en-CA",{
+        amount: amount,
 
-minimumFractionDigits:2
+        operator: operator,
 
-})} $
+        phone: phone,
 
-</td>
-
-<td>
-
-<span class="status active">
-
-${transaction.status}
-
-</span>
-
-</td>
-
-</tr>
-
-`;
-
-    });
-
-}
-
-//====================================================
-// AJOUTER TRANSACTION
-//====================================================
-
-function addTransaction(type,description,amount){
-
-    const transaction={
-
-        date:new Date().toLocaleDateString("fr-CA"),
-
-        type:type,
-
-        description:description,
-
-        amount:Number(amount),
-
-        status:"Complété"
+        country: "BJ"
 
     };
 
-    transactions.unshift(transaction);
+    try{
 
-    localStorage.setItem(
+        const response = await fetch("/api/sebpay/deposit",{
 
-        "transactions",
+            method:"POST",
 
-        JSON.stringify(transactions)
+            headers:{
 
-    );
+                "Content-Type":"application/json"
 
-    displayTransactions();
+            },
 
-    updateSummary();
+            body:JSON.stringify(payload)
 
-}
+        });
 
-//====================================================
-// RESUME FINANCIER
-//====================================================
+        const result = await response.json();
+                if(response.ok){
 
-function updateSummary(){
+            if(result.success === false){
 
-    let income=0;
+                alert(result.message || "Le paiement a échoué.");
 
-    let expense=0;
+                return;
 
-    transactions.forEach(item=>{
+            }
 
-        if(item.amount>=0){
+            alert("Votre demande de recharge a été envoyée avec succès.");
 
-            income+=item.amount;
+            addTransaction(
+
+                "Recharge",
+
+                "Recharge Mobile Money",
+
+                amount
+
+            );
+
+            showNotification(
+
+                "Votre demande de recharge est en cours de traitement.",
+
+                "fa-wallet"
+
+            );
+
+            closeRecharge();
+
+            rechargeForm.reset();
+
+            console.log(result);
 
         }else{
 
-            expense+=Math.abs(item.amount);
+            alert(result.message || "Erreur lors de la demande.");
+
+            console.log(result);
 
         }
 
-    });
+    }catch(error){
 
-    document.getElementById("monthlyIncome").textContent=
+        console.error(error);
 
-        formatMoney(income);
-
-    document.getElementById("monthlyExpense").textContent=
-
-        formatMoney(expense);
-
-    document.getElementById("savingAmount").textContent=
-
-        formatMoney(income-expense);
-
-}
-
-//====================================================
-// NOTIFICATIONS
-//====================================================
-
-function showNotification(message,icon="fa-circle-check"){
-
-    const container=
-
-        document.getElementById("notificationsContainer");
-
-    if(!container) return;
-
-    container.insertAdjacentHTML(
-
-        "afterbegin",
-
-`
-
-<div class="notification">
-
-<i class="fas ${icon}"></i>
-
-<p>${message}</p>
-
-</div>
-
-`
-
-    );
-
-}
-
-//====================================================
-// RECHARGER MON COMPTE
-//====================================================
-
-function openRecharge(){
-
-    document.getElementById("rechargeModal").style.display="flex";
-
-}
-
-function closeRecharge(){
-
-    document.getElementById("rechargeModal").style.display="none";
-
-}
-
-window.onclick=function(e){
-
-    const modal=document.getElementById("rechargeModal");
-
-    if(e.target===modal){
-
-        closeRecharge();
+        alert("Impossible de contacter le serveur.");
 
     }
 
-};
-//====================================================
-// SERVICES VERROUILLÉS
-//====================================================
-
-function serviceLocked(){
-
-    alert(
-
-`Ce service n'est pas encore activé.
-
-Veuillez contacter votre administrateur.`
-
-    );
-
 }
-
-//====================================================
-// FORMULAIRE RECHARGE
-//====================================================
-
-const rechargeForm=document.getElementById("rechargeForm");
-
-if(rechargeForm){
-
-rechargeForm.addEventListener("submit",submitRecharge);
-
-}
-
-async function submitRecharge(e){
-
-e.preventDefault();
-
-const amount=
-Number(document.getElementById("depositAmount").value);
-
-const operator=
-document.getElementById("mobileOperator").value;
-
-const phone=
-document.getElementById("phoneNumber").value.trim();
-
-if(amount<=0){
-
-alert("Montant invalide.");
-
-return;
-
-}
-
-if(operator===""){
-
-alert("Choisissez un opérateur.");
-
-return;
-
-}
-
-if(phone===""){
-
-alert("Entrez votre numéro.");
-
-return;
-
-}
-
-//==========================================
-// SEBPAY
-//==========================================
-
-const payload={
-
-amount:amount,
-
-operator:operator,
-
-phone:phone,
-
-customerId:currentUser.id,
-
-accountNumber:currentUser.account,
-
-customerName:currentUser.name
-
-};
-
-//================================================
-// ICI TU CONNECTERAS TON API SEBPAY
-//================================================
-
-// Exemple :
-
-/*
-
-const response=await fetch("/api/sebpay/deposit",{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify(payload)
-
-});
-
-const result=await response.json();
-
-if(result.success){
-
-...
-
-}
-
-*/
-
-//================================================
-// DEMO
-//================================================
-
-alert(
-
-"Demande de recharge envoyée.\n\n" +
-
-"Montant : "+amount+" CAD"
-
-);
-
-addTransaction(
-
-"Recharge",
-
-"Demande SebPay",
-
-amount
-
-);
-
-showNotification(
-
-"Nouvelle demande de recharge envoyée.",
-
-"fa-wallet"
-
-);
-
-closeRecharge();
-
-rechargeForm.reset();
-
-}
-
-//====================================================
-// RAFRAÎCHISSEMENT AUTOMATIQUE
-//====================================================
-
-function refreshDashboard(){
-
-loadUser();
-
-refreshBalance(currentUser.balance);
-
-displayTransactions();
-
-updateSummary();
-
-}
-
-setInterval(refreshDashboard,10000);
-
-//====================================================
-// SYNCHRONISATION
-//====================================================
-
-window.addEventListener("storage",function(){
-
-loadUser();
-
-displayTransactions();
-
-refreshBalance(currentUser.balance);
-
-updateSummary();
-
-});
-
-//====================================================
-// SAUVEGARDE
-//====================================================
-
-function saveCurrentUser(){
-
-localStorage.setItem(
-
-"currentUser",
-
-JSON.stringify(currentUser)
-
-);
-
-}
-
-setInterval(saveCurrentUser,5000);
-
-//====================================================
-// DERNIÈRE CONNEXION
-//====================================================
-
-const now=new Date();
-
-document.getElementById("lastConnection").textContent=
-
-now.toLocaleString("fr-CA");
-
-//====================================================
-// DÉCONNEXION
-//====================================================
-
-function logout(){
-
-localStorage.removeItem("currentUser");
-
-localStorage.removeItem("isLoggedIn");
-
-window.location.href="login.html";
-
-}
-
-//====================================================
-// STATISTIQUES
-//====================================================
-
-function getStatistics(){
-
-console.log({
-
-client:currentUser.name,
-
-compte:currentUser.account,
-
-solde:currentUser.balance,
-
-operations:transactions.length
-
-});
-
-}
-
-getStatistics();
-
-//====================================================
-// FIN
-//====================================================
