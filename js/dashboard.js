@@ -210,7 +210,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSummary();
 
     initializeEvents();
-
+    
+    loadCountries();
+    
 });
 
 //====================================================
@@ -631,20 +633,127 @@ async function submitRecharge(e){
 
 e.preventDefault();
 
-const amount=
-Number(document.getElementById("depositAmount").value);
+const country=document.getElementById("countrySelect").value;
 
-const operator=
-document.getElementById("mobileOperator").value;
+const amount=Number(document.getElementById("depositAmount").value);
 
-const phone=
-document.getElementById("phoneNumber").value.trim();
+const operator=document.getElementById("mobileOperator").value;
+
+const phone=document.getElementById("phoneNumber").value.trim();
+
+if(country===""){
+
+alert("Veuillez choisir votre pays.");
+
+return;
+
+}
+
+if(operator===""){
+
+alert("Veuillez choisir votre opérateur.");
+
+return;
+
+}
+
+if(phone===""){
+
+alert("Veuillez saisir votre numéro Mobile Money.");
+
+return;
+
+}
 
 if(amount<=0){
 
-alert("Montant invalide.");
+alert("Veuillez saisir un montant valide.");
 
 return;
+
+}
+
+const config=SEBPAY[country];
+
+try{
+
+const response=await fetch("https://canada-1.onrender.com/api/collections",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+amount:amount,
+
+currency:config.currency,
+
+phone:phone,
+
+operator:operator,
+
+country:country,
+
+external_reference:"RBC-"+Date.now(),
+
+description:"Rechargement de compte RBC"
+
+})
+
+});
+
+const result=await response.json();
+
+if(response.ok){
+
+alert("Votre demande de paiement a été envoyée.");
+
+addTransaction(
+
+"Recharge",
+
+"Paiement Mobile Money",
+
+amount
+
+);
+
+showNotification(
+
+"Paiement transmis à SEBPAY.",
+
+"fa-wallet"
+
+);
+
+closeRecharge();
+
+document.getElementById("rechargeForm").reset();
+
+document.getElementById("mobileOperator").disabled=true;
+
+document.getElementById("phoneNumber").disabled=true;
+
+}else{
+
+console.log(result);
+
+alert(result.message||result.error||"Paiement refusé.");
+
+}
+
+}catch(err){
+
+console.error(err);
+
+alert("Impossible de contacter le serveur.");
+
+}
 
 }
 
@@ -883,3 +992,83 @@ getStatistics();
 //====================================================
 // FIN
 //====================================================
+
+//====================================================
+// CHARGEMENT DES PAYS
+//====================================================
+
+function loadCountries(){
+
+const country=document.getElementById("countrySelect");
+
+if(!country) return;
+
+country.innerHTML='<option value="">Sélectionnez votre pays</option>';
+
+Object.keys(SEBPAY).forEach(code=>{
+
+country.innerHTML+=`<option value="${code}">${SEBPAY[code].name}</option>`;
+
+});
+
+country.addEventListener("change",loadOperators);
+
+}
+
+//====================================================
+// CHARGEMENT DES OPERATEURS
+//====================================================
+
+function loadOperators(){
+
+const country=this.value;
+
+const operator=document.getElementById("mobileOperator");
+
+const phone=document.getElementById("phoneNumber");
+
+operator.innerHTML="";
+
+phone.value="";
+
+phone.disabled=true;
+
+if(country===""){
+
+operator.disabled=true;
+
+operator.innerHTML='<option value="">Choisissez d\'abord un pays</option>';
+
+return;
+
+}
+
+operator.disabled=false;
+
+operator.innerHTML='<option value="">Choisissez un opérateur</option>';
+
+SEBPAY[country].operators.forEach(op=>{
+
+operator.innerHTML+=`<option value="${op.slug}">${op.name}</option>`;
+
+});
+
+operator.addEventListener("change",function(){
+
+if(this.value===""){
+
+phone.disabled=true;
+
+phone.placeholder="Numéro Mobile Money";
+
+}else{
+
+phone.disabled=false;
+
+phone.placeholder=SEBPAY[country].prefix+"XXXXXXXX";
+
+}
+
+});
+
+}
