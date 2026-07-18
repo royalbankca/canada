@@ -1341,149 +1341,46 @@ height:auto;
 /*======================================
 FIN
 ======================================*/
-/*==================================================
-RBC MONTREAL UI V2 - Étape 1
-==================================================*/
 
-/* Animation générale */
-.card,
-.action-card,
-.summary-card,
-.service-card,
-.overview-card,
-.transactions-section,
-.support-card,
-.bank-card{
-    transition: all .35s ease;
+
+/* ===== PREMIUM OVERRIDES PHASE 1 ===== */
+body{
+ background:linear-gradient(135deg,#edf4fb,#dfeaf7);
 }
-
-/* Effet au survol */
-.card:hover,
-.action-card:hover,
-.summary-card:hover,
-.service-card:hover,
-.overview-card:hover,
-.transactions-section:hover,
-.support-card:hover{
-    transform: translateY(-5px);
-    box-shadow:0 18px 40px rgba(0,73,144,.12);
-}
-
-/* Carte bancaire premium */
-.bank-card{
-    position:relative;
-    overflow:hidden;
-}
-
-.bank-card::before{
-    content:"";
-    position:absolute;
-    top:-40%;
-    left:-30%;
-    width:220px;
-    height:220px;
-    background:rgba(255,255,255,.08);
-    border-radius:50%;
-}
-
-.bank-card::after{
-    content:"";
-    position:absolute;
-    bottom:-50%;
-    right:-25%;
-    width:240px;
-    height:240px;
-    background:rgba(255,255,255,.06);
-    border-radius:50%;
-}
-
-/* Boutons plus modernes */
-button{
-    transition:.3s ease;
-}
-
-button:hover{
-    transform:translateY(-2px);
-}
-
-/* Barre de défilement */
-::-webkit-scrollbar{
-    width:10px;
-}
-
-::-webkit-scrollbar-thumb{
-    background:#0057a3;
-    border-radius:20px;
-}
-
-::-webkit-scrollbar-track{
-    background:#eef3f9;
-}
-/* ==================================================
-   RBC MONTREAL - PREMIUM UI (Phase 1)
-   ================================================== */
-
 .sidebar{
-    box-shadow: 8px 0 30px rgba(0,0,0,.15);
-    transition: .35s ease;
+ box-shadow:0 0 35px rgba(0,0,0,.18);
 }
-
-.sidebar li{
-    transition: .3s;
+.sidebar li a{
+ border-left:4px solid transparent;
 }
-
 .sidebar li:hover{
-    transform: translateX(6px);
+ background:#0a63b5;
 }
-
+.sidebar li:hover a,
+.sidebar li.active a{
+ border-left-color:#6ec1ff;
+ padding-left:30px;
+}
+.main{
+ padding:35px;
+}
 .bank-card{
-    transition: .35s ease;
+ border-radius:22px;
+ box-shadow:0 20px 45px rgba(0,73,144,.22);
+ transition:all .35s ease;
 }
-
 .bank-card:hover{
-    transform: translateY(-8px);
-    box-shadow:0 28px 55px rgba(0,0,0,.30);
+ transform:translateY(-6px);
 }
-
-.card,
-.action-card,
-.overview-card,
-.summary-card,
-.service-card,
-.timeline,
-.support-card,
-.transactions-section{
-    transition:.35s ease;
+.card,.summary-card,.overview-card,.support-card,.action-card{
+ border-radius:18px;
+ box-shadow:0 12px 30px rgba(0,0,0,.08);
+ transition:all .3s ease;
 }
-
-.card:hover,
-.action-card:hover,
-.overview-card:hover,
-.summary-card:hover,
-.service-card:hover,
-.support-card:hover,
-.transactions-section:hover{
-    transform:translateY(-6px);
-    box-shadow:0 18px 40px rgba(0,73,144,.18);
+.card:hover,.summary-card:hover,.overview-card:hover,.support-card:hover,.action-card:hover{
+ transform:translateY(-4px);
+ box-shadow:0 20px 40px rgba(0,73,144,.15);
 }
-
-button{
-    transition:.3s ease;
-}
-
-button:hover{
-    transform:scale(1.03);
-}
-
-.avatar{
-    transition:.3s;
-}
-
-.avatar:hover{
-    transform:rotate(5deg) scale(1.08);
-}
-
-header{
-    padding-bottom:15px;
-    border-bottom:1px solid rgba(0,73,144,.08);
+button,.btn{
+ border-radius:12px;
 }
