@@ -528,39 +528,62 @@ if(result.success){
 
 */
 
-//================================================
-// DEMO
-//================================================
+try {
 
-alert(
+    const response = await fetch("http://localhost:3000/api/collections", {
 
-"Demande de recharge envoyée.\n\n" +
+        method: "POST",
 
-"Montant : "+amount+" CAD"
+        headers: {
+            "Content-Type": "application/json"
+        },
 
-);
+        body: JSON.stringify({
+            amount: amount,
+            currency: "XAF",
+            phone: phone,
+            operator: operator,
+            country: "CM",
+            external_reference: "RBC-" + Date.now(),
+            description: "Rechargement de compte RBC"
+        })
 
-addTransaction(
+    });
 
-"Recharge",
+    const result = await response.json();
 
-"Demande SebPay",
+    if (response.ok) {
 
-amount
+        alert("Votre demande de paiement a été envoyée avec succès.");
 
-);
+        addTransaction(
+            "Recharge",
+            "Paiement Mobile Money",
+            amount
+        );
 
-showNotification(
+        showNotification(
+            "Paiement transmis à SEBPAY.",
+            "fa-wallet"
+        );
 
-"Nouvelle demande de recharge envoyée.",
+        closeRecharge();
 
-"fa-wallet"
+        rechargeForm.reset();
 
-);
+    } else {
 
-closeRecharge();
+        alert(result.error || "Le paiement a échoué.");
 
-rechargeForm.reset();
+    }
+
+} catch (error) {
+
+    console.error(error);
+
+    alert("Impossible de joindre le serveur.");
+
+}
 
 }
 
