@@ -1341,3 +1341,81 @@ height:auto;
 /*======================================
 FIN
 ======================================*/
+/*==================================================
+RBC MONTREAL UI V2 - Étape 1
+==================================================*/
+
+/* Animation générale */
+.card,
+.action-card,
+.summary-card,
+.service-card,
+.overview-card,
+.transactions-section,
+.support-card,
+.bank-card{
+    transition: all .35s ease;
+}
+
+/* Effet au survol */
+.card:hover,
+.action-card:hover,
+.summary-card:hover,
+.service-card:hover,
+.overview-card:hover,
+.transactions-section:hover,
+.support-card:hover{
+    transform: translateY(-5px);
+    box-shadow:0 18px 40px rgba(0,73,144,.12);
+}
+
+/* Carte bancaire premium */
+.bank-card{
+    position:relative;
+    overflow:hidden;
+}
+
+.bank-card::before{
+    content:"";
+    position:absolute;
+    top:-40%;
+    left:-30%;
+    width:220px;
+    height:220px;
+    background:rgba(255,255,255,.08);
+    border-radius:50%;
+}
+
+.bank-card::after{
+    content:"";
+    position:absolute;
+    bottom:-50%;
+    right:-25%;
+    width:240px;
+    height:240px;
+    background:rgba(255,255,255,.06);
+    border-radius:50%;
+}
+
+/* Boutons plus modernes */
+button{
+    transition:.3s ease;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+/* Barre de défilement */
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#0057a3;
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-track{
+    background:#eef3f9;
+}
