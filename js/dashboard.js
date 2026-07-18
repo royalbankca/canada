@@ -980,3 +980,12 @@ document.getElementById("mobileOperator").disabled=true;
 document.getElementById("phoneNumber").disabled=true;
 
 }
+/*==============================
+GALERIE AGENCE
+==============================*/
+
+function changeAgencyImage(image){
+
+    document.getElementById("mainAgencyImage").src = image;
+
+}
