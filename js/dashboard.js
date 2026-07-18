@@ -6,7 +6,195 @@
 let currentUser = null;
 let transactions = [];
 let balanceVisible = true;
+//====================================================
+// PAYS ET OPERATEURS SEBPAY
+//====================================================
 
+const SEBPAY = {
+
+BJ:{
+name:"Bénin",
+currency:"XOF",
+prefix:"+229",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Moov Money",slug:"moov"},
+{name:"Celtiis Money",slug:"celtiis"},
+{name:"Coris Money",slug:"coris"}
+]
+},
+
+BF:{
+name:"Burkina Faso",
+currency:"XOF",
+prefix:"+226",
+operators:[
+{name:"Moov Money",slug:"moov"},
+{name:"Orange Money",slug:"orange"},
+{name:"Wallet LigdiCash",slug:"wligdicash"}
+]
+},
+
+CM:{
+name:"Cameroun",
+currency:"XAF",
+prefix:"+237",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+CG:{
+name:"Congo",
+currency:"XAF",
+prefix:"+242",
+operators:[
+{name:"MTN Money",slug:"mtn"}
+]
+},
+
+CI:{
+name:"Côte d'Ivoire",
+currency:"XOF",
+prefix:"+225",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Orange Money",slug:"orange"},
+{name:"Moov Money",slug:"moov"},
+{name:"Wave Money",slug:"wave"}
+]
+},
+
+GA:{
+name:"Gabon",
+currency:"XAF",
+prefix:"+241",
+operators:[
+{name:"Airtel Money",slug:"airtel"},
+{name:"Moov Money",slug:"moov"}
+]
+},
+
+GM:{
+name:"Gambie",
+currency:"GMD",
+prefix:"+220",
+operators:[
+{name:"Afri Money",slug:"afrimoney"}
+]
+},
+
+GH:{
+name:"Ghana",
+currency:"GHS",
+prefix:"+233",
+operators:[
+{name:"Airtel Money",slug:"airtel"},
+{name:"MTN Money",slug:"mtn"},
+{name:"Telecel Cash",slug:"telecel"}
+]
+},
+
+GN:{
+name:"Guinée",
+currency:"GNF",
+prefix:"+224",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+GW:{
+name:"Guinée-Bissau",
+currency:"XOF",
+prefix:"+245",
+operators:[
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+ML:{
+name:"Mali",
+currency:"XOF",
+prefix:"+223",
+operators:[
+{name:"Moov Money",slug:"moov"},
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+NE:{
+name:"Niger",
+currency:"XOF",
+prefix:"+227",
+operators:[
+{name:"Airtel Money",slug:"airtel"},
+{name:"Amanata",slug:"amanata"},
+{name:"Moov Money",slug:"moov"},
+{name:"Nita",slug:"nita"},
+{name:"Wallet LigdiCash",slug:"wligdicash"},
+{name:"Zamani",slug:"zamani"}
+]
+},
+
+NG:{
+name:"Nigéria",
+currency:"NGN",
+prefix:"+234",
+operators:[
+{name:"Airtel",slug:"airtel"},
+{name:"MTN Money",slug:"mtn"}
+]
+},
+
+CD:{
+name:"RDC",
+currency:"CDF",
+prefix:"+243",
+operators:[
+{name:"Afri Money",slug:"afrimoney"},
+{name:"Airtel Money",slug:"airtel"},
+{name:"Mpesa",slug:"mpesa"},
+{name:"Orange Money",slug:"orange"},
+{name:"Vodacom",slug:"vodacom"}
+]
+},
+
+SN:{
+name:"Sénégal",
+currency:"XOF",
+prefix:"+221",
+operators:[
+{name:"E-money",slug:"emoney"},
+{name:"Free Money",slug:"free"},
+{name:"Orange Money",slug:"orange"},
+{name:"Wave Money",slug:"wave"}
+]
+},
+
+TD:{
+name:"Tchad",
+currency:"XAF",
+prefix:"+235",
+operators:[
+{name:"Airtel",slug:"airtel"},
+{name:"Moov",slug:"moov"}
+]
+},
+
+TG:{
+name:"Togo",
+currency:"XOF",
+prefix:"+228",
+operators:[
+{name:"Moov Money",slug:"moov"},
+{name:"T-Money",slug:"tmoney"}
+]
+}
+
+};
 //====================================================
 // INITIALISATION
 //====================================================
