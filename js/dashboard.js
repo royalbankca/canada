@@ -841,17 +841,18 @@ window.location.href="login.html";
 
 function getStatistics(){
 
-console.log({
+    if(!currentUser){
+        return;
+    }
 
-client:currentUser.name,
+    console.log({
+        client: currentUser.name,
+        compte: currentUser.account,
+        solde: currentUser.balance,
+        operations: transactions.length
+    });
 
-compte:currentUser.account,
-
-solde:currentUser.balance,
-
-operations:transactions.length
-
-});
+}
 
 }
 
