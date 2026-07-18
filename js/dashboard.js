@@ -603,7 +603,6 @@ document.getElementById("phoneNumber").placeholder="Numéro Mobile Money";
 
 }
 
-};
 //====================================================
 // SERVICES VERROUILLÉS
 //====================================================
