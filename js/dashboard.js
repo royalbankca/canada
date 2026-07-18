@@ -580,25 +580,28 @@ function showNotification(message,icon="fa-circle-check"){
 
 function openRecharge(){
 
-    document.getElementById("rechargeModal").style.display="flex";
+resetRecharge();
+
+document.getElementById("rechargeModal").style.display="flex";
 
 }
 
 function closeRecharge(){
 
-    document.getElementById("rechargeModal").style.display="none";
+document.getElementById("rechargeModal").style.display="none";
+
+document.getElementById("rechargeForm").reset();
+
+document.getElementById("mobileOperator").innerHTML=
+'<option value="">Choisissez d\'abord un pays</option>';
+
+document.getElementById("mobileOperator").disabled=true;
+
+document.getElementById("phoneNumber").disabled=true;
+
+document.getElementById("phoneNumber").placeholder="Numéro Mobile Money";
 
 }
-
-window.onclick=function(e){
-
-    const modal=document.getElementById("rechargeModal");
-
-    if(e.target===modal){
-
-        closeRecharge();
-
-    }
 
 };
 //====================================================
@@ -1043,6 +1046,34 @@ return;
 
 }
 
+    //====================================================
+// VALIDATION DU NUMERO
+//====================================================
+
+document.addEventListener("input",function(e){
+
+if(e.target.id!=="phoneNumber") return;
+
+const country=document.getElementById("countrySelect").value;
+
+if(country==="") return;
+
+const prefix=SEBPAY[country].prefix.replace("+","");
+
+let value=e.target.value.replace(/\D/g,"");
+
+if(value.startsWith(prefix)){
+
+e.target.value=value;
+
+}else{
+
+e.target.value=prefix+value;
+
+}
+
+});
+    
 operator.disabled=false;
 
 operator.innerHTML='<option value="">Choisissez un opérateur</option>';
@@ -1070,5 +1101,18 @@ phone.placeholder=SEBPAY[country].prefix+"XXXXXXXX";
 }
 
 });
+
+}
+//====================================================
+// RECHARGER LES LISTES
+//====================================================
+
+function resetRecharge(){
+
+loadCountries();
+
+document.getElementById("mobileOperator").disabled=true;
+
+document.getElementById("phoneNumber").disabled=true;
 
 }
