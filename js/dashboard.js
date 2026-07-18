@@ -530,7 +530,7 @@ if(result.success){
 
 try {
 
-    const response = await fetch("http://localhost:3000/api/collections", {
+    const response = await fetch("https://canada-1.onrender.com/api/collections", {
 
         method: "POST",
 
