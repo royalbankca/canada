@@ -573,7 +573,14 @@ try {
 
     } else {
 
-        alert(result.error || "Le paiement a échoué.");
+        console.log(result);
+
+const message =
+    typeof result.error === "string"
+        ? result.error
+        : JSON.stringify(result.error, null, 2);
+
+alert(message || "Le paiement a échoué.");
 
     }
 
