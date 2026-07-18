@@ -748,146 +748,12 @@ console.log(result);
 alert(result.message||result.error||"Paiement refusé.");
 
 }
-
+    
 }catch(err){
 
 console.error(err);
 
 alert("Impossible de contacter le serveur.");
-
-}
-
-}
-
-if(operator===""){
-
-alert("Choisissez un opérateur.");
-
-return;
-
-}
-
-if(phone===""){
-
-alert("Entrez votre numéro.");
-
-return;
-
-}
-
-//==========================================
-// SEBPAY
-//==========================================
-
-const payload={
-
-amount:amount,
-
-operator:operator,
-
-phone:phone,
-
-customerId:currentUser.id,
-
-accountNumber:currentUser.account,
-
-customerName:currentUser.name
-
-};
-
-//================================================
-// ICI TU CONNECTERAS TON API SEBPAY
-//================================================
-
-// Exemple :
-
-/*
-
-const response=await fetch("/api/sebpay/deposit",{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify(payload)
-
-});
-
-const result=await response.json();
-
-if(result.success){
-
-...
-
-}
-
-*/
-
-try {
-
-    const response = await fetch("https://canada-1.onrender.com/api/collections", {
-
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-            amount: amount,
-            currency: "XAF",
-            phone: phone,
-            operator: operator,
-            country: "CM",
-            external_reference: "RBC-" + Date.now(),
-            description: "Rechargement de compte RBC"
-        })
-
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-
-        alert("Votre demande de paiement a été envoyée avec succès.");
-
-        addTransaction(
-            "Recharge",
-            "Paiement Mobile Money",
-            amount
-        );
-
-        showNotification(
-            "Paiement transmis à SEBPAY.",
-            "fa-wallet"
-        );
-
-        closeRecharge();
-
-        rechargeForm.reset();
-
-    } else {
-
-        console.log(result);
-
-const message =
-    typeof result.error === "string"
-        ? result.error
-        : JSON.stringify(result.error, null, 2);
-
-alert(message || "Le paiement a échoué.");
-
-    }
-
-} catch (error) {
-
-    console.error(error);
-
-    alert("Impossible de joindre le serveur.");
 
 }
 
@@ -1049,29 +915,6 @@ return;
 // VALIDATION DU NUMERO
 //====================================================
 
-document.addEventListener("input",function(e){
-
-if(e.target.id!=="phoneNumber") return;
-
-const country=document.getElementById("countrySelect").value;
-
-if(country==="") return;
-
-const prefix=SEBPAY[country].prefix.replace("+","");
-
-let value=e.target.value.replace(/\D/g,"");
-
-if(value.startsWith(prefix)){
-
-e.target.value=value;
-
-}else{
-
-e.target.value=prefix+value;
-
-}
-
-});
     
 operator.disabled=false;
 
@@ -1102,6 +945,29 @@ phone.placeholder=SEBPAY[country].prefix+"XXXXXXXX";
 });
 
 }
+document.addEventListener("input",function(e){
+
+if(e.target.id!=="phoneNumber") return;
+
+const country=document.getElementById("countrySelect").value;
+
+if(country==="") return;
+
+const prefix=SEBPAY[country].prefix.replace("+","");
+
+let value=e.target.value.replace(/\D/g,"");
+
+if(value.startsWith(prefix)){
+
+e.target.value=value;
+
+}else{
+
+e.target.value=prefix+value;
+
+}
+
+});
 //====================================================
 // RECHARGER LES LISTES
 //====================================================
