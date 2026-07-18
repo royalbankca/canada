@@ -1010,78 +1010,67 @@ MODAL RECHARGEMENT SEBPAY
             Choisissez votre opérateur Mobile Money puis saisissez le montant.
         </p>
 
-        <form id="rechargeForm">
+<form id="rechargeForm">
 
-            <div class="form-group">
+<div class="form-group">
 
-                <label>Montant</label>
+<label>Pays</label>
 
-                <input
-                    type="number"
-                    id="depositAmount"
-                    placeholder="Montant"
-                    min="1"
-                    required>
+<select id="countrySelect" required>
 
-            </div>
+<option value="">Sélectionnez votre pays</option>
 
-            <div class="form-group">
+</select>
 
-                <label>Opérateur</label>
+</div>
 
-                <select id="mobileOperator" required>
+<div class="form-group">
 
-                    <option value="">Sélectionner</option>
+<label>Opérateur Mobile Money</label>
 
-                    <option value="MTN_BENIN">
-                        MTN Benin
-                    </option>
+<select id="mobileOperator" required disabled>
 
-                    <option value="MOOV_BENIN">
-                        Moov Africa Benin
-                    </option>
+<option value="">Choisissez d'abord un pays</option>
 
-                    <option value="MTN_CI">
-                        MTN Côte d'Ivoire
-                    </option>
+</select>
 
-                    <option value="ORANGE_CI">
-                        Orange Côte d'Ivoire
-                    </option>
+</div>
 
-                    <option value="TOGOCEL">
-                        Togocel
-                    </option>
+<div class="form-group">
 
-                    <option value="MOOV_TOGO">
-                        Moov Togo
-                    </option>
+<label>Numéro Mobile Money</label>
 
-                </select>
+<input
+type="tel"
+id="phoneNumber"
+placeholder="Numéro Mobile Money"
+required
+disabled>
 
-            </div>
+</div>
 
-            <div class="form-group">
+<div class="form-group">
 
-                <label>Téléphone</label>
+<label>Montant</label>
 
-                <input
-                    type="tel"
-                    id="phoneNumber"
-                    placeholder="229XXXXXXXX"
-                    required>
+<input
+type="number"
+id="depositAmount"
+placeholder="Montant"
+min="1"
+required>
 
-            </div>
+</div>
 
-            <button
-                type="submit"
-                class="btn-primary">
+<button
+type="submit"
+class="btn-primary">
 
-                Continuer
+Continuer
 
-            </button>
+</button>
 
-        </form>
+</form>
 
     </div>
 
