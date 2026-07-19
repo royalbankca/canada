@@ -1,173 +1,280 @@
-<!DOCTYPE html>
-<html lang="en">
+/*==================================
+RBC LOGIN
+==================================*/
 
-<head>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Roboto',sans-serif;
+}
 
-<meta charset="UTF-8">
+body{
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+background:#eef3f8;
 
-<title>RBC | Sign In</title>
+min-height:100vh;
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+display:flex;
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+flex-direction:column;
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+}
 
-<link rel="stylesheet" href="css/login.css">
+header{
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+height:80px;
 
-</head>
+background:#0051A5;
 
-<body>
+display:flex;
 
-<header>
+justify-content:space-between;
 
-<div class="logo">
+align-items:center;
 
-<h2>
+padding:0 60px;
 
-<span>RBC</span>
+color:white;
 
-Royal Bank
+}
 
-</h2>
+header h2{
 
-</div>
+font-size:30px;
 
-<a href="index.html">
+font-weight:900;
 
-Back Home
+}
 
-</a>
+header h2 span{
 
-</header>
+color:#FFD200;
 
-<div class="login-container">
+}
 
-<div class="left">
+header a{
 
-<h1>
+color:white;
 
-Online Banking
+text-decoration:none;
 
-</h1>
+font-weight:600;
 
-<p>
+}
 
-Access your Royal Bank online account securely.
+.login-container{
 
-</p>
+display:grid;
 
-<img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800"
-alt="bank">
+grid-template-columns:1fr 1fr;
 
-</div>
+flex:1;
 
-<div class="right">
+}
 
-<h2>
+.left{
 
-Sign In
+background:#0051A5;
 
-</h2>
+color:white;
 
-<form id="loginForm">
+padding:70px;
 
-<div class="input-box">
+display:flex;
 
-<label>
+flex-direction:column;
 
-Client Card / Client ID
+justify-content:center;
 
-</label>
+}
 
-<input
+.left h1{
 
-type="text"
+font-size:55px;
 
-id="client"
+margin-bottom:20px;
 
-placeholder="Enter Client ID"
+}
 
-required>
+.left p{
 
-</div>
+font-size:20px;
 
-<div class="input-box">
+margin-bottom:40px;
 
-<label>
+opacity:.95;
 
-Access Code
+}
 
-</label>
+.left img{
 
-<input
+width:100%;
 
-type="password"
+border-radius:20px;
 
-id="access"
+box-shadow:0 10px 25px rgba(0,0,0,.25);
 
-placeholder="Access Code"
+}
 
-required>
+.right{
 
-</div>
+display:flex;
 
-<div class="input-box">
+justify-content:center;
 
-<label>
+align-items:center;
 
-Password
+padding:60px;
 
-</label>
+background:white;
 
-<input
+}
 
-type="password"
+form{
 
-id="password"
+width:100%;
 
-placeholder="Password"
+max-width:450px;
 
-required>
+}
 
-</div>
+.right h2{
 
-<button
-type="submit">
+font-size:40px;
 
-Sign In
+margin-bottom:35px;
 
-</button>
+color:#0051A5;
 
-</form>
+}
 
-<div class="links">
+.input-box{
 
-<a href="https://tally.so/r/gD1oND">
+margin-bottom:22px;
 
-Open an Account
+}
 
-</a>
+.input-box label{
 
-<a href="#">
+display:block;
 
-Forgot Password ?
+margin-bottom:8px;
 
-</a>
+font-weight:600;
 
-</div>
+}
 
-</div>
+.input-box input{
 
-</div>
+width:100%;
 
-<script src="js/login.js"></script>
+height:55px;
 
-</body>
+padding:15px;
 
-</html>
+border:1px solid #ddd;
+
+border-radius:8px;
+
+font-size:16px;
+
+}
+
+.input-box input:focus{
+
+outline:none;
+
+border-color:#0051A5;
+
+}
+
+button{
+
+width:100%;
+
+height:55px;
+
+border:none;
+
+background:#0051A5;
+
+color:white;
+
+font-size:17px;
+
+font-weight:700;
+
+border-radius:8px;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+button:hover{
+
+background:#003B7A;
+
+}
+
+.links{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-top:20px;
+
+}
+
+.links a{
+
+color:#0051A5;
+
+text-decoration:none;
+
+font-weight:600;
+
+}
+
+.links a:hover{
+
+text-decoration:underline;
+
+}
+
+@media(max-width:900px){
+
+.login-container{
+
+grid-template-columns:1fr;
+
+}
+
+.left{
+
+display:none;
+
+}
+
+header{
+
+padding:0 20px;
+
+}
+
+.right{
+
+padding:30px;
+
+}
+
+.right h2{
+
+font-size:30px;
+
+}
+
+}
