@@ -405,6 +405,112 @@ app.get("/api/admin/customers/:id", async (req, res) => {
 
 });
 // =========================
+// ADMIN - CRÉER UN CLIENT
+// =========================
+
+app.post("/api/admin/customers", async (req, res) => {
+
+    try {
+
+        const customer = new Customer(req.body);
+
+        await customer.save();
+
+        res.status(201).json({
+            success: true,
+            customer
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur."
+        });
+
+    }
+
+});
+
+// =========================
+// ADMIN - MODIFIER UN CLIENT
+// =========================
+
+app.put("/api/admin/customers/:id", async (req, res) => {
+
+    try {
+
+        const customer = await Customer.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!customer) {
+            return res.status(404).json({
+                success: false,
+                message: "Client introuvable."
+            });
+        }
+
+        res.json({
+            success: true,
+            customer
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur."
+        });
+
+    }
+
+});
+
+// =========================
+// ADMIN - SUPPRIMER UN CLIENT
+// =========================
+
+app.delete("/api/admin/customers/:id", async (req, res) => {
+
+    try {
+
+        const customer = await Customer.findByIdAndDelete(req.params.id);
+
+        if (!customer) {
+            return res.status(404).json({
+                success: false,
+                message: "Client introuvable."
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Client supprimé."
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur."
+        });
+
+    }
+
+});
+// =========================
 // RÉCUPÉRER LE STATUT D'UNE TRANSACTION
 // =========================
 
