@@ -3,12 +3,26 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
-
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+// =======================================
+// ROYAL BANK CANADA DATABASE
+// =======================================
 
+mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000
+})
+.then(() => {
+    console.log("✅ MongoDB connecté");
+})
+.catch((err) => {
+    console.error("❌ Erreur MongoDB :", err.message);
+});
 // =========================
 // CONFIGURATION SEBPAY
 // =========================
