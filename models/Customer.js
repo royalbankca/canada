@@ -2,24 +2,46 @@ const mongoose = require("mongoose");
 
 const customerSchema = new mongoose.Schema({
 
-    customerId: {
+    firstName: {
         type: String,
-        required: true,
-        unique: true,
-        trim: true
+        required: true
     },
 
-    accountNumber: {
+    lastName: {
         type: String,
-        required: true,
-        unique: true,
-        trim: true
+        required: true
     },
 
-    accessCode: {
+    email: {
         type: String,
         required: true,
-        trim: true
+        unique: true
+    },
+
+    phone: {
+        type: String,
+        required: true
+    },
+
+    birthDate: String,
+
+    gender: String,
+
+    nationality: String,
+
+    profession: String,
+
+    country: String,
+
+    city: String,
+
+    address: String,
+
+    accountType: String,
+
+    currency: {
+        type: String,
+        default: "CAD"
     },
 
     password: {
@@ -27,41 +49,9 @@ const customerSchema = new mongoose.Schema({
         required: true
     },
 
-    role: {
+    accountNumber: {
         type: String,
-        enum: ["customer", "admin"],
-        default: "customer"
-    },
-
-    firstName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-
-    lastName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true
-    },
-
-    phone: {
-        type: String,
-        required: true,
-        trim: true
-    },
-
-    address: {
-        type: String,
-        default: ""
+        unique: true
     },
 
     balance: {
@@ -69,25 +59,13 @@ const customerSchema = new mongoose.Schema({
         default: 0
     },
 
-    currency: {
-        type: String,
-        default: "CAD"
-    },
-
     status: {
         type: String,
-        enum: ["active", "pending", "blocked"],
-        default: "active"
-    },
-
-    lastLogin: {
-        type: Date
+        default: "Active"
     }
 
 }, {
-
     timestamps: true
-
 });
 
 module.exports = mongoose.model("Customer", customerSchema);
