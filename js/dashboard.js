@@ -735,10 +735,12 @@ closeRecharge();
 // Laisser le navigateur fermer le modal
 setTimeout(() => {
 
-    showNotification(
-        "Paiement en attente de validation sur votre téléphone...",
-        "fa-spinner"
-    );
+   showPaymentStatus(
+    "Paiement en cours...",
+    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
+    "fas fa-spinner fa-spin",
+    "#0057a3"
+);
 
     verifierPaiement(transactionId, amount);
 
@@ -886,9 +888,12 @@ async function verifierPaiement(transactionId, amount) {
                     amount
                 );
 
-               showNotification(
-    "Paiement confirmé avec succès.",
-    "fa-circle-check"
+           showPaymentStatus(
+    "Paiement confirmé",
+    "Votre compte a été crédité avec succès.",
+    "fas fa-circle-check",
+    "#16a34a",
+    true
 );
 
                 closeRecharge();
@@ -899,9 +904,12 @@ async function verifierPaiement(transactionId, amount) {
 
                 clearInterval(interval);
 
-                showNotification(
-    "Paiement refusé.",
-    "fa-circle-xmark"
+               showPaymentStatus(
+    "Paiement refusé",
+    "La transaction Mobile Money a été refusée.",
+    "fas fa-circle-xmark",
+    "#dc2626",
+    true
 );
 
                 closeRecharge();
@@ -1064,4 +1072,24 @@ function changeAgencyImage(image) {
         mainImage.src = image;
     }
 
+}
+function showPaymentStatus(title, message, icon, color, showButton = false) {
+
+    const modal = document.getElementById("paymentStatusModal");
+
+    document.getElementById("paymentStatusTitle").innerText = title;
+    document.getElementById("paymentStatusMessage").innerText = message;
+
+    const statusIcon = document.getElementById("paymentStatusIcon");
+    statusIcon.className = icon;
+    statusIcon.style.color = color;
+
+    const button = document.getElementById("paymentStatusButton");
+    button.style.display = showButton ? "inline-block" : "none";
+
+    modal.style.display = "flex";
+}
+
+function closePaymentStatus() {
+    document.getElementById("paymentStatusModal").style.display = "none";
 }
