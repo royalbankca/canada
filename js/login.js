@@ -2,6 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("loginForm");
 
+    if (!form) {
+        console.error("Formulaire introuvable.");
+        return;
+    }
+
     form.addEventListener("submit", async (e) => {
 
         e.preventDefault();
@@ -17,39 +22,59 @@ document.addEventListener("DOMContentLoaded", () => {
             .value
             .trim();
 
-        // Connexion administrateur
+        // ==========================
+        // CONNEXION ADMINISTRATEUR
+        // ==========================
+
         if (
             customerId === "ADMIN" &&
             password === "ADMIN123"
         ) {
+
             localStorage.setItem("role", "admin");
+            localStorage.setItem("isLoggedIn", "true");
+
+            localStorage.setItem("currentUser", JSON.stringify({
+                customerId: "ADMIN",
+                firstName: "System",
+                lastName: "Administrator"
+            }));
+
             window.location.href = "admin.html";
             return;
+
         }
 
         try {
 
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    customerId,
-                    password
-                })
-            });
+            const response = await fetch(
+                "https://canada-1.onrender.com/api/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        customerId,
+                        password
+                    })
+                }
+            );
 
             const data = await response.json();
 
             if (!response.ok) {
+
                 alert(data.message || "Connexion impossible.");
+
                 return;
+
             }
 
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", "client");
             localStorage.setItem("isLoggedIn", "true");
+
             localStorage.setItem(
                 "currentUser",
                 JSON.stringify(data.customer)
@@ -57,10 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             window.location.href = "dashboard.html";
 
-        } catch (err) {
+        } catch (error) {
 
-            console.error(err);
-            alert("Erreur de connexion au serveur.");
+            console.error(error);
+
+            alert("Impossible de contacter le serveur.");
 
         }
 
