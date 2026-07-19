@@ -1,280 +1,173 @@
-/*==================================
-RBC LOGIN
-==================================*/
+<!DOCTYPE html>
+<html lang="en">
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Roboto',sans-serif;
-}
+<head>
 
-body{
+<meta charset="UTF-8">
 
-background:#eef3f8;
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-min-height:100vh;
+<title>RBC | Sign In</title>
 
-display:flex;
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-flex-direction:column;
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
-header{
+<link rel="stylesheet" href="css/login.css">
 
-height:80px;
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-background:#0051A5;
+</head>
 
-display:flex;
+<body>
 
-justify-content:space-between;
+<header>
 
-align-items:center;
+<div class="logo">
 
-padding:0 60px;
+<h2>
 
-color:white;
+<span>RBC</span>
 
-}
+Royal Bank
 
-header h2{
+</h2>
 
-font-size:30px;
+</div>
 
-font-weight:900;
+<a href="index.html">
 
-}
+Back Home
 
-header h2 span{
+</a>
 
-color:#FFD200;
+</header>
 
-}
+<div class="login-container">
 
-header a{
+<div class="left">
 
-color:white;
+<h1>
 
-text-decoration:none;
+Online Banking
 
-font-weight:600;
+</h1>
 
-}
+<p>
 
-.login-container{
+Access your Royal Bank online account securely.
 
-display:grid;
+</p>
 
-grid-template-columns:1fr 1fr;
+<img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800"
+alt="bank">
 
-flex:1;
+</div>
 
-}
+<div class="right">
 
-.left{
+<h2>
 
-background:#0051A5;
+Sign In
 
-color:white;
+</h2>
 
-padding:70px;
+<form id="loginForm">
 
-display:flex;
+<div class="input-box">
 
-flex-direction:column;
+<label>
 
-justify-content:center;
+Client Card / Client ID
 
-}
+</label>
 
-.left h1{
+<input
 
-font-size:55px;
+type="text"
 
-margin-bottom:20px;
+id="client"
 
-}
+placeholder="Enter Client ID"
 
-.left p{
+required>
 
-font-size:20px;
+</div>
 
-margin-bottom:40px;
+<div class="input-box">
 
-opacity:.95;
+<label>
 
-}
+Access Code
 
-.left img{
+</label>
 
-width:100%;
+<input
 
-border-radius:20px;
+type="password"
 
-box-shadow:0 10px 25px rgba(0,0,0,.25);
+id="access"
 
-}
+placeholder="Access Code"
 
-.right{
+required>
 
-display:flex;
+</div>
 
-justify-content:center;
+<div class="input-box">
 
-align-items:center;
+<label>
 
-padding:60px;
+Password
 
-background:white;
+</label>
 
-}
+<input
 
-form{
+type="password"
 
-width:100%;
+id="password"
 
-max-width:450px;
+placeholder="Password"
 
-}
+required>
 
-.right h2{
+</div>
 
-font-size:40px;
+<button
+type="submit">
 
-margin-bottom:35px;
+Sign In
 
-color:#0051A5;
+</button>
 
-}
+</form>
 
-.input-box{
+<div class="links">
 
-margin-bottom:22px;
+<a href="https://tally.so/r/gD1oND">
 
-}
+Open an Account
 
-.input-box label{
+</a>
 
-display:block;
+<a href="#">
 
-margin-bottom:8px;
+Forgot Password ?
 
-font-weight:600;
+</a>
 
-}
+</div>
 
-.input-box input{
+</div>
 
-width:100%;
+</div>
 
-height:55px;
+<script src="js/login.js"></script>
 
-padding:15px;
+</body>
 
-border:1px solid #ddd;
-
-border-radius:8px;
-
-font-size:16px;
-
-}
-
-.input-box input:focus{
-
-outline:none;
-
-border-color:#0051A5;
-
-}
-
-button{
-
-width:100%;
-
-height:55px;
-
-border:none;
-
-background:#0051A5;
-
-color:white;
-
-font-size:17px;
-
-font-weight:700;
-
-border-radius:8px;
-
-cursor:pointer;
-
-transition:.3s;
-
-}
-
-button:hover{
-
-background:#003B7A;
-
-}
-
-.links{
-
-display:flex;
-
-justify-content:space-between;
-
-margin-top:20px;
-
-}
-
-.links a{
-
-color:#0051A5;
-
-text-decoration:none;
-
-font-weight:600;
-
-}
-
-.links a:hover{
-
-text-decoration:underline;
-
-}
-
-@media(max-width:900px){
-
-.login-container{
-
-grid-template-columns:1fr;
-
-}
-
-.left{
-
-display:none;
-
-}
-
-header{
-
-padding:0 20px;
-
-}
-
-.right{
-
-padding:30px;
-
-}
-
-.right h2{
-
-font-size:30px;
-
-}
-
-}
+</html>
