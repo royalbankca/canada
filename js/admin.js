@@ -19,17 +19,12 @@ let currentClient = null;
 //=====================================================
 
 if (!token) {
-
     window.location.href = "login.html";
-
 }
 
 if (currentUser.role !== "admin") {
-
     alert("Accès refusé.");
-
     window.location.href = "login.html";
-
 }
 
 //=====================================================
@@ -37,15 +32,10 @@ if (currentUser.role !== "admin") {
 //=====================================================
 
 function headers() {
-
     return {
-
         "Content-Type": "application/json",
-
         Authorization: `Bearer ${token}`
-
     };
-
 }
 
 //=====================================================
@@ -57,26 +47,22 @@ async function loadClients() {
     try {
 
         const response = await fetch(
-
             API_URL + "/admin/customers",
-
             {
-
+                method: "GET",
                 headers: headers()
-
             }
-
         );
 
         const data = await response.json();
 
-        if (!response.ok) {
-
-            throw new Error(data.message);
-
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Impossible de charger les clients."
+            );
         }
 
-        clients = data;
+        clients = data.customers || [];
 
         renderClients();
 
@@ -84,12 +70,11 @@ async function loadClients() {
 
         console.error(err);
 
-        alert("Impossible de charger les clients.");
+        alert(err.message);
 
     }
 
 }
-
 //=====================================================
 // TABLEAU
 //=====================================================
@@ -100,26 +85,41 @@ function renderClients() {
 
     table.innerHTML = "";
 
+    if (!clients.length) {
+
+        table.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;">
+                Aucun client trouvé.
+            </td>
+        </tr>
+        `;
+
+        document.getElementById("totalClients").textContent = "0";
+        return;
+    }
+
     clients.forEach(client => {
+
+        const statusClass =
+            (client.status || "").toLowerCase();
 
         table.innerHTML += `
 
 <tr>
 
-<td>${client.customerId}</td>
+<td>${client.customerId || "-"}</td>
 
-<td>${client.firstName} ${client.lastName}</td>
+<td>${client.firstName || ""} ${client.lastName || ""}</td>
 
-<td>${client.accountNumber}</td>
+<td>${client.accountNumber || "-"}</td>
 
-<td>$${Number(client.balance).toLocaleString()}</td>
+<td>$${Number(client.balance || 0).toLocaleString()}</td>
 
 <td>
 
-<span class="status active">
-
-${client.status}
-
+<span class="status ${statusClass}">
+${client.status || "Active"}
 </span>
 
 </td>
@@ -129,25 +129,19 @@ ${client.status}
 <button
 class="edit"
 onclick="viewClient('${client._id}')">
-
 Voir
-
 </button>
 
 <button
 class="edit"
 onclick="openEditClient('${client._id}')">
-
 Modifier
-
 </button>
 
 <button
 class="delete"
 onclick="deleteClient('${client._id}')">
-
 Supprimer
-
 </button>
 
 </td>
@@ -158,7 +152,7 @@ Supprimer
 
     });
 
-    document.getElementById("totalClients").innerHTML = clients.length;
+    document.getElementById("totalClients").textContent = clients.length;
 
 }
 
@@ -174,25 +168,21 @@ if (search) {
 
         const value = this.value.toLowerCase();
 
-        document
-            .querySelectorAll("#clientTable tr")
+        document.querySelectorAll("#clientTable tr")
             .forEach(row => {
 
-                row.style.display =
-
-                    row.innerText
-                        .toLowerCase()
-                        .includes(value)
-
-                        ? ""
-
-                        : "none";
+                row.style.display = row.innerText
+                    .toLowerCase()
+                    .includes(value)
+                    ? ""
+                    : "none";
 
             });
 
     });
 
 }
+
 //=====================================================
 // VOIR CLIENT
 //=====================================================
@@ -201,16 +191,19 @@ function viewClient(id) {
 
     const client = clients.find(c => c._id === id);
 
-    if (!client) return;
+    if (!client) {
+        alert("Client introuvable.");
+        return;
+    }
 
     document.getElementById("infoName").textContent =
-        `${client.firstName} ${client.lastName}`;
+        `${client.firstName || ""} ${client.lastName || ""}`;
 
     document.getElementById("infoClientID").textContent =
-        client.customerId;
+        client.customerId || "-";
 
     document.getElementById("infoAccount").textContent =
-        client.accountNumber;
+        client.accountNumber || "-";
 
     document.getElementById("infoAccess").textContent =
         client.transitNumber || "-";
@@ -228,12 +221,11 @@ function viewClient(id) {
         client.address || "-";
 
     document.getElementById("infoBalance").textContent =
-        "$" + Number(client.balance).toLocaleString();
+        "$" + Number(client.balance || 0).toLocaleString();
 
     document.getElementById("viewClientModal").style.display = "flex";
 
 }
-
 //=====================================================
 // OUVRIR MODIFICATION
 //=====================================================
@@ -242,16 +234,19 @@ function openEditClient(id) {
 
     currentClient = clients.find(c => c._id === id);
 
-    if (!currentClient) return;
+    if (!currentClient) {
+        alert("Client introuvable.");
+        return;
+    }
 
     document.getElementById("editName").value =
-        `${currentClient.firstName} ${currentClient.lastName}`;
+        `${currentClient.firstName || ""} ${currentClient.lastName || ""}`;
 
     document.getElementById("editAccount").value =
-        currentClient.accountNumber;
+        currentClient.accountNumber || "";
 
     document.getElementById("editClientID").value =
-        currentClient.customerId;
+        currentClient.customerId || "";
 
     document.getElementById("editAccess").value =
         currentClient.transitNumber || "";
@@ -259,94 +254,12 @@ function openEditClient(id) {
     document.getElementById("editPassword").value = "";
 
     document.getElementById("editBalance").value =
-        currentClient.balance;
+        currentClient.balance || 0;
 
     document.getElementById("editClientModal").style.display = "flex";
 
 }
 
-//=====================================================
-// CREER CLIENT
-//=====================================================
-
-async function createClient() {
-
-    const fullname =
-        document.getElementById("fullname").value.trim();
-
-    const names = fullname.split(" ");
-
-    const firstName = names.shift() || "";
-
-    const lastName = names.join(" ");
-
-    const phone =
-        document.getElementById("phone").value.trim();
-
-    const email =
-        document.getElementById("email").value.trim();
-
-    const address =
-        document.getElementById("address").value.trim();
-
-    const balance =
-        Number(document.getElementById("balance").value);
-
-    try {
-
-        const response = await fetch(
-
-            API_URL + "/admin/customers",
-
-            {
-
-                method: "POST",
-
-                headers: headers(),
-
-                body: JSON.stringify({
-
-                    firstName,
-
-                    lastName,
-
-                    phone,
-
-                    email,
-
-                    address,
-
-                    balance
-
-                })
-
-            }
-
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-
-            throw new Error(data.message);
-
-        }
-
-        alert("Client créé avec succès.");
-
-        closeCreateClient();
-
-        loadClients();
-
-    } catch (err) {
-
-        console.error(err);
-
-        alert(err.message);
-
-    }
-
-}
 //=====================================================
 // ENREGISTRER MODIFICATIONS
 //=====================================================
@@ -364,6 +277,25 @@ async function saveClient() {
 
     const lastName = names.join(" ");
 
+    const body = {
+
+        firstName,
+        lastName,
+
+        customerId:
+            document.getElementById("editClientID").value,
+
+        accountNumber:
+            document.getElementById("editAccount").value,
+
+        transitNumber:
+            document.getElementById("editAccess").value,
+
+        balance:
+            Number(document.getElementById("editBalance").value)
+
+    };
+
     try {
 
         const response = await fetch(
@@ -376,19 +308,7 @@ async function saveClient() {
 
                 headers: headers(),
 
-                body: JSON.stringify({
-
-                    firstName,
-
-                    lastName,
-
-                    accountNumber: document.getElementById("editAccount").value,
-
-                    transitNumber: document.getElementById("editAccess").value,
-
-                    balance: Number(document.getElementById("editBalance").value)
-
-                })
+                body: JSON.stringify(body)
 
             }
 
@@ -396,9 +316,11 @@ async function saveClient() {
 
         const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok || !data.success) {
 
-            throw new Error(data.message);
+            throw new Error(
+                data.message || "Impossible de modifier le client."
+            );
 
         }
 
@@ -406,7 +328,7 @@ async function saveClient() {
 
         closeEditClient();
 
-        loadClients();
+        await loadClients();
 
     } catch (err) {
 
@@ -419,40 +341,56 @@ async function saveClient() {
 }
 
 //=====================================================
+// CREATION DESACTIVEE
+//=====================================================
+
+function createClient() {
+
+    alert(
+        "La création de client est désactivée pour le moment."
+    );
+
+}
+//=====================================================
 // SUPPRIMER CLIENT
 //=====================================================
 
 async function deleteClient(id) {
 
-    if (!confirm("Supprimer ce client ?")) return;
+    const client = clients.find(c => c._id === id);
+
+    if (!client) {
+        alert("Client introuvable.");
+        return;
+    }
+
+    if (!confirm(`Supprimer ${client.firstName} ${client.lastName} ?`)) {
+        return;
+    }
 
     try {
 
         const response = await fetch(
-
             API_URL + "/admin/customers/" + id,
-
             {
-
                 method: "DELETE",
-
                 headers: headers()
-
             }
-
         );
 
         const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok || !data.success) {
 
-            throw new Error(data.message);
+            throw new Error(
+                data.message || "Suppression impossible."
+            );
 
         }
 
-        alert("Client supprimé.");
+        alert("Client supprimé avec succès.");
 
-        loadClients();
+        await loadClients();
 
     } catch (err) {
 
@@ -482,6 +420,8 @@ function closeCreateClient() {
 
 function closeEditClient() {
 
+    currentClient = null;
+
     document.getElementById("editClientModal").style.display = "none";
 
 }
@@ -494,18 +434,21 @@ function closeViewClient() {
 
 window.onclick = function (event) {
 
-    ["createClientModal", "editClientModal", "viewClientModal"]
-        .forEach(id => {
+    [
+        "createClientModal",
+        "editClientModal",
+        "viewClientModal"
+    ].forEach(id => {
 
-            const modal = document.getElementById(id);
+        const modal = document.getElementById(id);
 
-            if (event.target === modal) {
+        if (modal && event.target === modal) {
 
-                modal.style.display = "none";
+            modal.style.display = "none";
 
-            }
+        }
 
-        });
+    });
 
 };
 
@@ -514,6 +457,10 @@ window.onclick = function (event) {
 //=====================================================
 
 function logout() {
+
+    if (!confirm("Voulez-vous vous déconnecter ?")) {
+        return;
+    }
 
     localStorage.removeItem("token");
     localStorage.removeItem("currentUser");
@@ -528,8 +475,16 @@ function logout() {
 // INITIALISATION
 //=====================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-    loadClients();
+    try {
+
+        await loadClients();
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
 
 });
