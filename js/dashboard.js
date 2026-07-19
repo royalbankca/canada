@@ -989,3 +989,16 @@ function changeAgencyImage(image){
     document.getElementById("mainAgencyImage").src = image;
 
 }
+/*======================================
+GALERIE AGENCE
+======================================*/
+
+function changeAgencyImage(image) {
+
+    const mainImage = document.getElementById("mainAgencyImage");
+
+    if (mainImage) {
+        mainImage.src = image;
+    }
+
+}
