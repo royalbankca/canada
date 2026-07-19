@@ -6,6 +6,7 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Customer = require("./models/Customer");
 const app = express();
 
 app.use(cors());
@@ -135,7 +136,7 @@ app.post("/api/webhook", (req, res) => {
 // OPEN ACCOUNT API
 //=========================================================
 
-const customers = [];
+const Customer = require("./models/Customer");
 
 app.post("/api/open-account", async (req, res) => {
 
@@ -177,7 +178,23 @@ message:"Missing required fields."
 });
 
 }
+if (
+!firstName ||
+!lastName ||
+!email ||
+!phone ||
+!password
+) {
 
+return res.status(400).json({
+
+success:false,
+
+message:"Missing required fields."
+
+});
+
+}
 const alreadyExists = customers.find(
 
 customer => customer.email === email
