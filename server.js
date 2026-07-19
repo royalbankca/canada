@@ -4,7 +4,6 @@
 //=========================================================
 
 app.post("/api/open-account", async (req, res) => {
-
     try {
 
         const {
@@ -24,20 +23,15 @@ app.post("/api/open-account", async (req, res) => {
             password
         } = req.body;
 
-        if (
-            !firstName ||
-            !lastName ||
-            !email ||
-            !phone ||
-            !password
-        ) {
+        // Vérification des champs obligatoires
+        if (!firstName || !lastName || !email || !phone || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Missing required fields."
             });
         }
 
-        // Vérifier si l'email existe déjà
+        // Vérifier si le client existe déjà
         const alreadyExists = await Customer.findOne({ email });
 
         if (alreadyExists) {
@@ -70,7 +64,7 @@ app.post("/api/open-account", async (req, res) => {
 
         const expiryDate = "12/31";
 
-        // Sauvegarde MongoDB
+        // Création du client
         const customer = new Customer({
             firstName,
             lastName,
@@ -115,5 +109,4 @@ app.post("/api/open-account", async (req, res) => {
         });
 
     }
-
 });
