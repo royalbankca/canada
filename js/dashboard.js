@@ -1064,15 +1064,7 @@ function changeAgencyImage(image){
 GALERIE AGENCE
 ======================================*/
 
-function changeAgencyImage(image) {
 
-    const mainImage = document.getElementById("mainAgencyImage");
-
-    if (mainImage) {
-        mainImage.src = image;
-    }
-
-}
 function showPaymentStatus(title, message, icon, color, showButton = false) {
 
     const modal = document.getElementById("paymentStatusModal");
@@ -1086,6 +1078,7 @@ function showPaymentStatus(title, message, icon, color, showButton = false) {
 
     const button = document.getElementById("paymentStatusButton");
     button.style.display = showButton ? "inline-block" : "none";
+    button.onclick = closePaymentStatus;
 
     modal.style.display = "flex";
 }
