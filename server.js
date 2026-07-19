@@ -309,25 +309,27 @@ app.post("/api/login", async (req, res) => {
             }
         );
 
-       customer: {
-    id: customer._id,
-    customerId: customer.customerId,
-    firstName: customer.firstName,
-    lastName: customer.lastName,
-    email: customer.email,
-    phone: customer.phone,
-    accountNumber: customer.accountNumber,
-    transitNumber: customer.transitNumber,
-    institutionNumber: customer.institutionNumber,
-    balance: customer.balance,
-    status: customer.status,
-    accountType: customer.accountType,
-    currency: customer.currency,
-    role: customer.role
-}
-
-    } catch (error) {
-
+return res.json({
+    success: true,
+    token,
+    customer: {
+        id: customer._id,
+        customerId: customer.customerId,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+        phone: customer.phone,
+        accountNumber: customer.accountNumber,
+        transitNumber: customer.transitNumber,
+        institutionNumber: customer.institutionNumber,
+        balance: customer.balance,
+        status: customer.status,
+        accountType: customer.accountType,
+        currency: customer.currency,
+        role: customer.role
+    }
+});
+} catch (error) {
         console.error(error);
 
         res.status(500).json({
