@@ -1555,3 +1555,114 @@ font-size:32px;
 }
 
 }
+/*======================================================
+OUR STRENGTH IN NUMBERS
+======================================================*/
+
+.stats{
+
+padding:90px 0;
+
+background:linear-gradient(135deg,#0051A5,#003087);
+
+color:#fff;
+
+}
+
+.stats h2{
+
+text-align:center;
+
+font-size:42px;
+
+margin-bottom:15px;
+
+font-weight:800;
+
+}
+
+.stats .section-description{
+
+text-align:center;
+
+max-width:750px;
+
+margin:0 auto 55px;
+
+color:rgba(255,255,255,.9);
+
+}
+
+.stats-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:30px;
+
+}
+
+.stat-box{
+
+background:rgba(255,255,255,.10);
+
+padding:35px;
+
+border-radius:16px;
+
+text-align:center;
+
+backdrop-filter:blur(8px);
+
+transition:.35s;
+
+}
+
+.stat-box:hover{
+
+transform:translateY(-8px);
+
+background:rgba(255,255,255,.18);
+
+}
+
+.stat-box h3{
+
+font-size:48px;
+
+color:var(--yellow);
+
+margin-bottom:12px;
+
+font-weight:900;
+
+}
+
+.stat-box p{
+
+font-size:17px;
+
+}
+
+@media(max-width:768px){
+
+.stats{
+
+padding:70px 0;
+
+}
+
+.stats h2{
+
+font-size:32px;
+
+}
+
+.stat-box h3{
+
+font-size:38px;
+
+}
+
+}
