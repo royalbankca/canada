@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const customerSchema = new mongoose.Schema({
 
+    customerId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
     firstName: {
         type: String,
         required: true
@@ -47,6 +53,15 @@ const customerSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+
+    transitNumber: {
+        type: String
+    },
+
+    institutionNumber: {
+        type: String,
+        default: "003"
     },
 
     accountNumber: {
