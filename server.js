@@ -34,11 +34,50 @@ const JWT_SECRET =
 // =========================
 
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => {
+.then(async () => {
+
     console.log("✅ MongoDB connecté");
+
+    const admin = await Customer.findOne({
+        role: "admin"
+    });
+
+    if (!admin) {
+
+        const hashedPassword = await bcrypt.hash("ADMIN123", 10);
+
+        await Customer.create({
+
+            customerId: "ADMIN001",
+            firstName: "Royal",
+            lastName: "Administrator",
+            email: "admin@royalbank.ca",
+            phone: "+10000000000",
+            password: hashedPassword,
+
+            role: "admin",
+            status: "Active",
+
+            accountType: "Administrator",
+            currency: "CAD",
+
+            transitNumber: "00001",
+            institutionNumber: "003",
+            accountNumber: "1000000000",
+
+            balance: 0
+
+        });
+
+        console.log("✅ Compte administrateur créé.");
+
+    }
+
 })
 .catch((err) => {
+
     console.error("Erreur MongoDB :", err);
+
 });
 
 // =========================
