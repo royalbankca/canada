@@ -139,11 +139,19 @@ app.post("/api/open-account", async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const customerId =
-            "RBC" + Math.floor(100000 + Math.random() * 900000);
+       let customerId;
 
-        const accountNumber =
-            "10" + Math.floor(1000000000 + Math.random() * 9000000000);
+do {
+    customerId =
+        "RBC" + Math.floor(100000 + Math.random() * 900000);
+} while (await Customer.findOne({ customerId }));
+
+       let accountNumber;
+
+do {
+    accountNumber =
+        "10" + Math.floor(1000000000 + Math.random() * 9000000000);
+} while (await Customer.findOne({ accountNumber }));
 
         const transitNumber =
             Math.floor(10000 + Math.random() * 90000).toString();
@@ -160,25 +168,33 @@ app.post("/api/open-account", async (req, res) => {
         const expiryDate = "12/31";
 
         const customer = new Customer({
-            firstName,
-            lastName,
-            email,
-            phone,
-            birthDate,
-            gender,
-            nationality,
-            profession,
-            country,
-            city,
-            address,
-            accountType,
-            currency,
-            password: hashedPassword,
-            accountNumber,
-            balance: 0,
-            status: "Active"
-        });
 
+    customerId,
+
+    firstName,
+    lastName,
+    email,
+    phone,
+    birthDate,
+    gender,
+    nationality,
+    profession,
+    country,
+    city,
+    address,
+    accountType,
+    currency,
+
+    password: hashedPassword,
+
+    transitNumber,
+    institutionNumber,
+    accountNumber,
+
+    balance: 0,
+    status: "Active"
+
+});
         await customer.save();
 
         return res.status(201).json({
@@ -213,16 +229,16 @@ app.post("/api/login", async (req, res) => {
 
     try {
 
-        const { email, password } = req.body;
+        const { customerId, password } = req.body;
 
-        if (!email || !password) {
+        if (!customerId || !password) {
             return res.status(400).json({
                 success: false,
-                message: "Email and password are required."
+                message: "Client ID and password are required."
             });
         }
 
-        const customer = await Customer.findOne({ email });
+        const customer = await Customer.findOne({ customerId });
 
         if (!customer) {
             return res.status(404).json({
@@ -246,7 +262,7 @@ app.post("/api/login", async (req, res) => {
         const token = jwt.sign(
             {
                 id: customer._id,
-                email: customer.email
+                customerId: customer.customerId
             },
             JWT_SECRET,
             {
@@ -259,10 +275,13 @@ app.post("/api/login", async (req, res) => {
             token,
             customer: {
                 id: customer._id,
+                customerId: customer.customerId,
                 firstName: customer.firstName,
                 lastName: customer.lastName,
                 email: customer.email,
                 accountNumber: customer.accountNumber,
+                transitNumber: customer.transitNumber,
+                institutionNumber: customer.institutionNumber,
                 balance: customer.balance,
                 status: customer.status,
                 accountType: customer.accountType,
