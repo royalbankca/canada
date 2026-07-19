@@ -33,7 +33,7 @@ app.post("/api/collections", async (req, res) => {
     description: req.body.description,
     callback_url: "https://canada-1.onrender.com/api/webhook"
 
-});
+      };
 
 const response = await axios.post(
     "https://newapi.sebpay.bj/api/v1/collections",
