@@ -266,3 +266,80 @@ app.get("/api/admin/dashboard", async (req, res) => {
     });
 
 });
+// ===============================
+// MODELS
+// ===============================
+
+const Customer = require("./models/Customer");
+const Transaction = require("./models/Transaction");
+const Payment = require("./models/Payment");
+const Notification = require("./models/Notification");
+
+// ===============================
+// CREATION DE L'ADMINISTRATEUR
+// ===============================
+
+async function createDefaultAdmin() {
+
+    try {
+
+        const admin = await Customer.findOne({
+
+            customerId: "ADMIN001"
+
+        });
+
+        if (admin) {
+
+            console.log("✅ Administrateur déjà existant.");
+            return;
+
+        }
+
+        const newAdmin = new Customer({
+
+            customerId: "ADMIN001",
+
+            accountNumber: "100000000001",
+
+            accessCode: "RBCA001",
+
+            password: "ADMIN123",
+
+            role: "admin",
+
+            firstName: "System",
+
+            lastName: "Administrator",
+
+            email: "admin@rbcroyalbank.com",
+
+            phone: "+10000000000",
+
+            address: "Royal Bank Headquarters",
+
+            balance: 0,
+
+            currency: "CAD",
+
+            status: "active"
+
+        });
+
+        await newAdmin.save();
+
+        console.log("✅ Administrateur créé.");
+
+    } catch (error) {
+
+        console.error("Erreur création administrateur :", error);
+
+    }
+
+}
+
+mongoose.connection.once("open", async () => {
+
+    await createDefaultAdmin();
+
+});
