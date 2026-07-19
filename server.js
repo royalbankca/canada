@@ -4,86 +4,66 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-const Customer = require("./models/Customer");
 
 const app = express();
 
+// ===============================
+// CONFIGURATION
+// ===============================
+
 app.use(cors());
+
 app.use(express.json());
 
-// =========================
-// CONFIGURATION
-// =========================
+app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 3000;
+// ===============================
+// MONGODB
+// ===============================
 
-const SECRET_KEY =
-    process.env.SEBPAY_SECRET_KEY || "VOTRE_SECRET_KEY";
+mongoose.connect(process.env.MONGODB_URI, {
 
-const PUBLIC_KEY =
-    process.env.SEBPAY_PUBLIC_KEY || "VOTRE_PUBLIC_KEY";
+    autoIndex: true
 
-const JWT_SECRET =
-    process.env.JWT_SECRET || "ROYAL_BANK_SECRET";
-
-// =========================
-// CONNEXION MONGODB
-// =========================
-
-mongoose.connect(process.env.MONGODB_URI)
-.then(async () => {
+})
+.then(() => {
 
     console.log("✅ MongoDB connecté");
-
-    const admin = await Customer.findOne({
-        role: "admin"
-    });
-
-    if (!admin) {
-
-        const hashedPassword = await bcrypt.hash("ADMIN123", 10);
-
-        await Customer.create({
-
-            customerId: "ADMIN001",
-            firstName: "Royal",
-            lastName: "Administrator",
-            email: "admin@royalbank.ca",
-            phone: "+10000000000",
-            password: hashedPassword,
-
-            role: "admin",
-            status: "Active",
-
-            accountType: "Administrator",
-            currency: "CAD",
-
-            transitNumber: "00001",
-            institutionNumber: "003",
-            accountNumber: "1000000000",
-
-            balance: 0
-
-        });
-
-        console.log("✅ Compte administrateur créé.");
-
-    }
 
 })
 .catch((err) => {
 
-    console.error("Erreur MongoDB :", err);
+    console.error("❌ Erreur MongoDB :", err.message);
 
 });
 
-// =========================
-// API DE RECHARGEMENT
-// =========================
+// ===============================
+// SEBPAY
+// ===============================
 
+const SECRET_KEY = process.env.SEBPAY_SECRET_KEY;
+
+const PUBLIC_KEY = process.env.SEBPAY_PUBLIC_KEY;
+
+// ===============================
+// TEST API
+// ===============================
+
+app.get("/", (req, res) => {
+
+    res.json({
+
+        success: true,
+        message: "RBC Royal Bank API fonctionne."
+
+    });
+
+});
+// ===============================
+// ROUTES SEBPAY
+// ===============================
+
+// Lancer un paiement Mobile Money
 app.post("/api/collections", async (req, res) => {
 
     try {
@@ -96,8 +76,7 @@ app.post("/api/collections", async (req, res) => {
             country: req.body.country,
             external_reference: req.body.external_reference,
             description: req.body.description,
-            callback_url:
-                "https://canada-1.onrender.com/api/webhook"
+            callback_url: process.env.CALLBACK_URL
         };
 
         const response = await axios.post(
@@ -112,14 +91,11 @@ app.post("/api/collections", async (req, res) => {
             }
         );
 
-        res.status(200).json(response.data);
+        res.json(response.data);
 
     } catch (error) {
 
-        console.error(
-            "Erreur SebPay :",
-            error.response?.data || error.message
-        );
+        console.error("Erreur SebPay :", error.response?.data || error.message);
 
         res.status(500).json({
             success: false,
@@ -129,391 +105,8 @@ app.post("/api/collections", async (req, res) => {
     }
 
 });
-// =========================
-// CRÉATION D'UN COMPTE
-// =========================
 
-app.post("/api/open-account", async (req, res) => {
-
-    try {
-
-        const {
-            firstName,
-            lastName,
-            email,
-            phone,
-            birthDate,
-            gender,
-            nationality,
-            profession,
-            country,
-            city,
-            address,
-            accountType,
-            currency,
-            password
-        } = req.body;
-
-        if (
-            !firstName ||
-            !lastName ||
-            !email ||
-            !phone ||
-            !password
-        ) {
-            return res.status(400).json({
-                success: false,
-                message: "Missing required fields."
-            });
-        }
-
-        const alreadyExists = await Customer.findOne({ email });
-
-        if (alreadyExists) {
-            return res.status(409).json({
-                success: false,
-                message: "Email already exists."
-            });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-       let customerId;
-
-do {
-    customerId =
-        "RBC" + Math.floor(100000 + Math.random() * 900000);
-} while (await Customer.findOne({ customerId }));
-
-       let accountNumber;
-
-do {
-    accountNumber =
-        "10" + Math.floor(1000000000 + Math.random() * 9000000000);
-} while (await Customer.findOne({ accountNumber }));
-
-        const transitNumber =
-            Math.floor(10000 + Math.random() * 90000).toString();
-
-        const institutionNumber = "003";
-
-        const debitCard =
-            "4539" +
-            Math.floor(100000000000 + Math.random() * 900000000000);
-
-        const cvv =
-            Math.floor(100 + Math.random() * 900).toString();
-
-        const expiryDate = "12/31";
-
-        const customer = new Customer({
-
-    customerId,
-
-    firstName,
-    lastName,
-    email,
-    phone,
-    birthDate,
-    gender,
-    nationality,
-    profession,
-    country,
-    city,
-    address,
-    accountType,
-    currency,
-
-    password: hashedPassword,
-
-    transitNumber,
-    institutionNumber,
-    accountNumber,
-
-    balance: 0,
-    status: "Active"
-
-});
-        await customer.save();
-
-        return res.status(201).json({
-            success: true,
-            message: "Royal Bank Canada account successfully created.",
-            customerId,
-            accountNumber,
-            transitNumber,
-            institutionNumber,
-            debitCard,
-            expiryDate,
-            cvv
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error."
-        });
-
-    }
-
-});
-// =========================
-// CONNEXION CLIENT
-// =========================
-
-app.post("/api/login", async (req, res) => {
-
-    try {
-
-        const { customerId, password } = req.body;
-
-        if (!customerId || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "Client ID and password are required."
-            });
-        }
-
-        const customer = await Customer.findOne({ customerId });
-
-        if (!customer) {
-            return res.status(404).json({
-                success: false,
-                message: "Account not found."
-            });
-        }
-
-        const passwordValid = await bcrypt.compare(
-            password,
-            customer.password
-        );
-
-        if (!passwordValid) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid password."
-            });
-        }
-
-        const token = jwt.sign(
-            {
-                id: customer._id,
-                customerId: customer.customerId
-            },
-            JWT_SECRET,
-            {
-                expiresIn: "7d"
-            }
-        );
-
-return res.json({
-    success: true,
-    token,
-    customer: {
-        id: customer._id,
-        customerId: customer.customerId,
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        email: customer.email,
-        phone: customer.phone,
-        accountNumber: customer.accountNumber,
-        transitNumber: customer.transitNumber,
-        institutionNumber: customer.institutionNumber,
-        balance: customer.balance,
-        status: customer.status,
-        accountType: customer.accountType,
-        currency: customer.currency,
-        role: customer.role
-    }
-});
-} catch (error) {
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: "Internal server error."
-        });
-
-    }
-
-});
-// =========================
-// ADMIN - LISTE DES CLIENTS
-// =========================
-
-app.get("/api/admin/customers", async (req, res) => {
-
-    try {
-
-        const customers = await Customer.find().sort({
-            createdAt: -1
-        });
-
-        res.json({
-            success: true,
-            customers
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: "Erreur serveur."
-        });
-
-    }
-
-});
-
-// =========================
-// ADMIN - DÉTAIL D'UN CLIENT
-// =========================
-
-app.get("/api/admin/customers/:id", async (req, res) => {
-
-    try {
-
-        const customer = await Customer.findById(req.params.id);
-
-        if (!customer) {
-            return res.status(404).json({
-                success: false,
-                message: "Client introuvable."
-            });
-        }
-
-        res.json({
-            success: true,
-            customer
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: "Erreur serveur."
-        });
-
-    }
-
-});
-// =========================
-// ADMIN - CRÉER UN CLIENT
-// =========================
-
-app.post("/api/admin/customers", async (req, res) => {
-
-    try {
-
-        const customer = new Customer(req.body);
-
-        await customer.save();
-
-        res.status(201).json({
-            success: true,
-            customer
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: "Erreur serveur."
-        });
-
-    }
-
-});
-
-// =========================
-// ADMIN - MODIFIER UN CLIENT
-// =========================
-
-app.put("/api/admin/customers/:id", async (req, res) => {
-
-    try {
-
-        const customer = await Customer.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-
-        if (!customer) {
-            return res.status(404).json({
-                success: false,
-                message: "Client introuvable."
-            });
-        }
-
-        res.json({
-            success: true,
-            customer
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: "Erreur serveur."
-        });
-
-    }
-
-});
-
-// =========================
-// ADMIN - SUPPRIMER UN CLIENT
-// =========================
-
-app.delete("/api/admin/customers/:id", async (req, res) => {
-
-    try {
-
-        const customer = await Customer.findByIdAndDelete(req.params.id);
-
-        if (!customer) {
-            return res.status(404).json({
-                success: false,
-                message: "Client introuvable."
-            });
-        }
-
-        res.json({
-            success: true,
-            message: "Client supprimé."
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: "Erreur serveur."
-        });
-
-    }
-
-});
-// =========================
-// RÉCUPÉRER LE STATUT D'UNE TRANSACTION
-// =========================
-
+// Vérifier le statut d'un paiement
 app.get("/api/collections/:id", async (req, res) => {
 
     try {
@@ -522,8 +115,8 @@ app.get("/api/collections/:id", async (req, res) => {
             `https://newapi.sebpay.bj/api/v1/collections/${req.params.id}`,
             {
                 headers: {
-                    "X-Public-Key": PUBLIC_KEY,
-                    "X-Secret-Key": SECRET_KEY
+                    "X-Secret-Key": SECRET_KEY,
+                    "X-Public-Key": PUBLIC_KEY
                 }
             }
         );
@@ -532,9 +125,7 @@ app.get("/api/collections/:id", async (req, res) => {
 
     } catch (error) {
 
-        console.error(
-            error.response?.data || error.message
-        );
+        console.error("Erreur statut :", error.response?.data || error.message);
 
         res.status(500).json({
             success: false,
@@ -545,37 +136,133 @@ app.get("/api/collections/:id", async (req, res) => {
 
 });
 
-// =========================
+// ===============================
 // WEBHOOK SEBPAY
-// =========================
+// ===============================
 
-app.post("/api/webhook", (req, res) => {
+app.post("/api/webhook", async (req, res) => {
 
-    console.log("Notification SebPay :", req.body);
+    console.log("Webhook reçu :", req.body);
 
-    // Ici tu pourras traiter automatiquement
-    // les paiements validés, refusés ou expirés.
+    // Ici nous enregistrerons plus tard le paiement
+    // et mettrons automatiquement à jour le solde du client.
 
     res.sendStatus(200);
 
 });
+// ===============================
+// AUTHENTIFICATION
+// ===============================
 
-// =========================
-// TEST DU SERVEUR
-// =========================
+app.post("/api/login", async (req, res) => {
 
-app.get("/", (req, res) => {
+    try {
 
-    res.send("RBC Royal Bank API - Serveur opérationnel");
+        const { customerId, password } = req.body;
+
+        if (!customerId || !password) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Identifiants manquants."
+            });
+
+        }
+
+        // Recherche MongoDB à ajouter
+        // const customer = await Customer.findOne({ customerId });
+
+        return res.status(501).json({
+            success: false,
+            message: "Authentification non encore connectée à MongoDB."
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur."
+        });
+
+    }
 
 });
 
-// =========================
-// DÉMARRAGE DU SERVEUR
-// =========================
+// ===============================
+// CLIENTS
+// ===============================
 
-app.listen(PORT, () => {
+// Liste des clients
+app.get("/api/customers", async (req, res) => {
 
-    console.log(`✅ Serveur démarré sur le port ${PORT}`);
+    res.json({
+        success: true,
+        customers: []
+    });
+
+});
+
+// Détails d'un client
+app.get("/api/customers/:id", async (req, res) => {
+
+    res.json({
+        success: true,
+        customer: null
+    });
+
+});
+
+// Création d'un client
+app.post("/api/customers", async (req, res) => {
+
+    res.status(501).json({
+        success: false,
+        message: "Création bientôt disponible."
+    });
+
+});
+
+// Modification d'un client
+app.put("/api/customers/:id", async (req, res) => {
+
+    res.status(501).json({
+        success: false,
+        message: "Modification bientôt disponible."
+    });
+
+});
+
+// Suppression d'un client
+app.delete("/api/customers/:id", async (req, res) => {
+
+    res.status(501).json({
+        success: false,
+        message: "Suppression bientôt disponible."
+    });
+
+});
+
+// ===============================
+// ADMINISTRATION
+// ===============================
+
+app.get("/api/admin/dashboard", async (req, res) => {
+
+    res.json({
+
+        success: true,
+
+        statistics: {
+
+            customers: 0,
+            activeAccounts: 0,
+            pendingRequests: 0,
+            transactions: 0
+
+        }
+
+    });
 
 });
