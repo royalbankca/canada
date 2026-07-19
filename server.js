@@ -30,8 +30,10 @@ app.post("/api/collections", async (req, res) => {
     operator: req.body.operator,
     country: req.body.country,
     external_reference: req.body.external_reference,
-    description: req.body.description
-};
+    description: req.body.description,
+    callback_url: "https://canada-1.onrender.com/api/webhook"
+
+});
 
 const response = await axios.post(
     "https://newapi.sebpay.bj/api/v1/collections",
@@ -68,7 +70,52 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+// =========================
+// RÉCUPÉRER LE STATUT D'UNE TRANSACTION
+// =========================
 
+app.get("/api/collections/:id", async (req, res) => {
+
+    try {
+
+        const response = await axios.get(
+            `https://newapi.sebpay.bj/api/v1/collections/${req.params.id}`,
+            {
+                headers: {
+                    "X-Public-Key": PUBLIC_KEY,
+                    "X-Secret-Key": SECRET_KEY
+                }
+            }
+        );
+
+        res.json(response.data);
+
+    } catch (error) {
+
+        console.error(error.response?.data || error.message);
+
+        res.status(500).json({
+            success: false,
+            error: error.response?.data || error.message
+        });
+
+    }
+
+});
+// =========================
+// WEBHOOK SEBPAY
+// =========================
+
+app.post("/api/webhook", (req, res) => {
+
+    console.log("Notification SebPay :", req.body);
+
+    // Ici nous traiterons automatiquement
+    // les paiements validés ou refusés.
+
+    res.sendStatus(200);
+
+});
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
