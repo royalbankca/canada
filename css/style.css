@@ -1401,3 +1401,50 @@ justify-content:center;
 }
 
 }
+/*======================================================
+ANIMATIONS
+======================================================*/
+
+.card,
+.why-box,
+.trust-item,
+.agency-image img,
+.agency-content,
+.btn{
+
+transition:all .35s ease;
+
+}
+
+.card:hover,
+.why-box:hover{
+
+transform:translateY(-10px);
+
+box-shadow:0 15px 35px rgba(0,0,0,.15);
+
+}
+
+.btn:hover{
+
+transform:translateY(-3px);
+
+}
+
+.trust-item:hover{
+
+transform:scale(1.05);
+
+}
+
+.logo img{
+
+transition:transform .4s ease;
+
+}
+
+.logo img:hover{
+
+transform:rotate(-5deg) scale(1.08);
+
+}
