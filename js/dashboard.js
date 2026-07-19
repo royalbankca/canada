@@ -548,26 +548,38 @@ function updateSummary(){
 
 function showNotification(message, icon = "fa-circle-check") {
 
-    const container = document.getElementById("notificationsContainer");
+    let toast = document.getElementById("toastNotification");
 
-    if (!container) return;
+    if (!toast) {
 
-    container.insertAdjacentHTML(
-        "afterbegin",
-        `
-        <div class="notification">
-            <i class="fas ${icon}"></i>
-            <p>${message}</p>
-        </div>
-        `
-    );
+        toast = document.createElement("div");
+        toast.id = "toastNotification";
 
-    // Faire défiler jusqu'aux notifications
-    container.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+        toast.style.position = "fixed";
+        toast.style.top = "20px";
+        toast.style.right = "20px";
+        toast.style.background = "#0057a3";
+        toast.style.color = "#fff";
+        toast.style.padding = "16px 20px";
+        toast.style.borderRadius = "10px";
+        toast.style.boxShadow = "0 8px 20px rgba(0,0,0,.25)";
+        toast.style.zIndex = "999999";
+        toast.style.fontSize = "15px";
+        toast.style.display = "none";
 
+        document.body.appendChild(toast);
+    }
+
+    toast.innerHTML = `
+        <i class="fas ${icon}" style="margin-right:10px;"></i>
+        ${message}
+    `;
+
+    toast.style.display = "block";
+
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 4000);
 }
 
 //====================================================
