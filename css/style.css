@@ -94,7 +94,7 @@ HEADER
 
 position:fixed;
 
-top:0;
+top:40px;
 
 left:0;
 
@@ -369,7 +369,7 @@ HERO SECTION
 
 .hero{
 
-margin-top:82px;
+margin-top:122px;
 
 height:92vh;
 
@@ -1269,6 +1269,75 @@ height:55px;
 .agency-content h2{
 
 font-size:32px;
+
+}
+
+}
+/*======================================================
+TOP BAR
+======================================================*/
+
+.topbar{
+
+background:#003087;
+
+color:#fff;
+
+font-size:14px;
+
+padding:8px 0;
+
+}
+
+.topbar-content{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+flex-wrap:wrap;
+
+gap:10px;
+
+}
+
+.topbar-left,
+.topbar-right{
+
+display:flex;
+
+gap:25px;
+
+align-items:center;
+
+}
+
+.topbar i{
+
+color:var(--yellow);
+
+margin-right:6px;
+
+}
+
+@media(max-width:768px){
+
+.topbar-content{
+
+justify-content:center;
+
+text-align:center;
+
+}
+
+.topbar-left,
+.topbar-right{
+
+flex-direction:column;
+
+gap:6px;
 
 }
 
