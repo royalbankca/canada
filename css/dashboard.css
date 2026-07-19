@@ -1680,3 +1680,72 @@ grid-template-columns:repeat(2,1fr);
     }
 
 }
+/* ===========================
+   MODAL STATUT PAIEMENT
+=========================== */
+
+.payment-status-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999999;
+}
+
+.payment-status-box{
+    width:420px;
+    max-width:90%;
+    background:#ffffff;
+    border-radius:18px;
+    padding:35px;
+    text-align:center;
+    box-shadow:0 25px 70px rgba(0,0,0,.35);
+    animation:popup .35s ease;
+}
+
+.payment-status-box i{
+    font-size:60px;
+    margin-bottom:20px;
+    color:#0057a3;
+}
+
+.payment-status-box h2{
+    margin-bottom:15px;
+    font-size:28px;
+    color:#222;
+}
+
+.payment-status-box p{
+    font-size:16px;
+    color:#666;
+    line-height:1.6;
+}
+
+.payment-status-box button{
+    margin-top:25px;
+    padding:12px 35px;
+    border:none;
+    border-radius:8px;
+    background:#0057a3;
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
+    display:none;
+}
+
+.payment-status-box button:hover{
+    background:#004488;
+}
+
+@keyframes popup{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
