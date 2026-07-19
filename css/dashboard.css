@@ -1607,3 +1607,76 @@ grid-template-columns:repeat(2,1fr);
 }
 
 }
+/* ======================================
+   MOBILE OPTIMIZATION
+====================================== */
+
+@media (max-width:768px){
+
+    body{
+        display:block;
+    }
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .logo h2,
+    .logo p,
+    .sidebar span{
+        display:block;
+    }
+
+    .sidebar ul{
+        display:flex;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+    .sidebar li{
+        border:none;
+        flex:0 0 auto;
+    }
+
+    .sidebar li a{
+        padding:15px;
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+        padding:15px;
+    }
+
+    .header-icons{
+        width:100%;
+        justify-content:space-between;
+        flex-wrap:wrap;
+    }
+
+    .bank-card{
+        width:100%;
+    }
+
+    .cards,
+    .quick-actions,
+    .finance-summary,
+    .services-grid,
+    .account-overview,
+    .support-section{
+        grid-template-columns:1fr;
+    }
+
+    .transactions-table{
+        min-width:600px;
+    }
+
+    .action-card button,
+    .service-btn,
+    .support-actions button{
+        width:100%;
+    }
+
+}
