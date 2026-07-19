@@ -713,18 +713,30 @@ const result=await response.json();
 
 if (response.ok) {
 
-    alert("Demande envoyée. En attente de validation du paiement...");
+    const transactionId =
+        result.data?.transaction_id || result.transaction_id;
 
-   const transactionId =
-    result.data?.transaction_id || result.transaction_id;
+    if (!transactionId) {
+        alert("Impossible de récupérer l'identifiant de la transaction.");
+        return;
+    }
 
-if (!transactionId) {
-    alert("Impossible de récupérer l'identifiant de la transaction.");
-    return;
-}
+  // Fermer immédiatement le formulaire
+closeRecharge();
 
-verifierPaiement(transactionId, amount);
-}else{
+// Laisser le navigateur fermer le modal
+setTimeout(() => {
+
+    showNotification(
+        "Paiement en attente de validation sur votre téléphone...",
+        "fa-spinner"
+    );
+
+    verifierPaiement(transactionId, amount);
+
+}, 300);
+
+} else {
 
 console.log(result);
 
@@ -866,12 +878,10 @@ async function verifierPaiement(transactionId, amount) {
                     amount
                 );
 
-                showNotification(
-                    "Recharge confirmée.",
-                    "fa-circle-check"
-                );
-
-                alert("Paiement confirmé.");
+               showNotification(
+    "Paiement confirmé avec succès.",
+    "fa-circle-check"
+);
 
                 closeRecharge();
 
@@ -881,7 +891,10 @@ async function verifierPaiement(transactionId, amount) {
 
                 clearInterval(interval);
 
-                alert("Paiement refusé.");
+                showNotification(
+    "Paiement refusé.",
+    "fa-circle-xmark"
+);
 
                 closeRecharge();
 
