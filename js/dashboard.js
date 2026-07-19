@@ -1,83 +1,782 @@
 //====================================================
+// ROYAL BANK
+// dashboard.js
+//====================================================
+
+let currentUser = null;
+let transactions = [];
+let balanceVisible = true;
+//====================================================
+// PAYS ET OPERATEURS SEBPAY
+//====================================================
+
+const SEBPAY = {
+
+BJ:{
+name:"Bénin",
+currency:"XOF",
+prefix:"+229",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Moov Money",slug:"moov"},
+{name:"Celtiis Money",slug:"celtiis"},
+{name:"Coris Money",slug:"coris"}
+]
+},
+
+BF:{
+name:"Burkina Faso",
+currency:"XOF",
+prefix:"+226",
+operators:[
+{name:"Moov Money",slug:"moov"},
+{name:"Orange Money",slug:"orange"},
+{name:"Wallet LigdiCash",slug:"wligdicash"}
+]
+},
+
+CM:{
+name:"Cameroun",
+currency:"XAF",
+prefix:"+237",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+CG:{
+name:"Congo",
+currency:"XAF",
+prefix:"+242",
+operators:[
+{name:"MTN Money",slug:"mtn"}
+]
+},
+
+CI:{
+name:"Côte d'Ivoire",
+currency:"XOF",
+prefix:"+225",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Orange Money",slug:"orange"},
+{name:"Moov Money",slug:"moov"},
+{name:"Wave Money",slug:"wave"}
+]
+},
+
+GA:{
+name:"Gabon",
+currency:"XAF",
+prefix:"+241",
+operators:[
+{name:"Airtel Money",slug:"airtel"},
+{name:"Moov Money",slug:"moov"}
+]
+},
+
+GM:{
+name:"Gambie",
+currency:"GMD",
+prefix:"+220",
+operators:[
+{name:"Afri Money",slug:"afrimoney"}
+]
+},
+
+GH:{
+name:"Ghana",
+currency:"GHS",
+prefix:"+233",
+operators:[
+{name:"Airtel Money",slug:"airtel"},
+{name:"MTN Money",slug:"mtn"},
+{name:"Telecel Cash",slug:"telecel"}
+]
+},
+
+GN:{
+name:"Guinée",
+currency:"GNF",
+prefix:"+224",
+operators:[
+{name:"MTN Money",slug:"mtn"},
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+GW:{
+name:"Guinée-Bissau",
+currency:"XOF",
+prefix:"+245",
+operators:[
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+ML:{
+name:"Mali",
+currency:"XOF",
+prefix:"+223",
+operators:[
+{name:"Moov Money",slug:"moov"},
+{name:"Orange Money",slug:"orange"}
+]
+},
+
+NE:{
+name:"Niger",
+currency:"XOF",
+prefix:"+227",
+operators:[
+{name:"Airtel Money",slug:"airtel"},
+{name:"Amanata",slug:"amanata"},
+{name:"Moov Money",slug:"moov"},
+{name:"Nita",slug:"nita"},
+{name:"Wallet LigdiCash",slug:"wligdicash"},
+{name:"Zamani",slug:"zamani"}
+]
+},
+
+NG:{
+name:"Nigéria",
+currency:"NGN",
+prefix:"+234",
+operators:[
+{name:"Airtel",slug:"airtel"},
+{name:"MTN Money",slug:"mtn"}
+]
+},
+
+CD:{
+name:"RDC",
+currency:"CDF",
+prefix:"+243",
+operators:[
+{name:"Afri Money",slug:"afrimoney"},
+{name:"Airtel Money",slug:"airtel"},
+{name:"Mpesa",slug:"mpesa"},
+{name:"Orange Money",slug:"orange"},
+{name:"Vodacom",slug:"vodacom"}
+]
+},
+
+SN:{
+name:"Sénégal",
+currency:"XOF",
+prefix:"+221",
+operators:[
+{name:"E-money",slug:"emoney"},
+{name:"Free Money",slug:"free"},
+{name:"Orange Money",slug:"orange"},
+{name:"Wave Money",slug:"wave"}
+]
+},
+
+TD:{
+name:"Tchad",
+currency:"XAF",
+prefix:"+235",
+operators:[
+{name:"Airtel",slug:"airtel"},
+{name:"Moov",slug:"moov"}
+]
+},
+
+TG:{
+name:"Togo",
+currency:"XOF",
+prefix:"+228",
+operators:[
+{name:"Moov Money",slug:"moov"},
+{name:"T-Money",slug:"tmoney"}
+]
+}
+
+};
+//====================================================
+// INITIALISATION
+//====================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    loadUser();
+
+    loadTransactions();
+
+    updateDashboard();
+
+    updateSummary();
+
+    initializeEvents();
+    
+    loadCountries();
+    
+});
+
+//====================================================
+// CHARGER LE CLIENT
+//====================================================
+
+function loadUser(){
+
+    const data = localStorage.getItem("currentUser");
+
+    if(!data){
+
+        window.location.href="login.html";
+        return;
+
+    }
+
+    currentUser = JSON.parse(data);
+
+}
+
+//====================================================
 // TABLEAU DE BORD
 //====================================================
 
 function updateDashboard(){
 
-    const fullName =
-        `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim();
-
     document.getElementById("welcomeTitle").textContent =
-        "Bonjour " + fullName;
+        "Bonjour " + currentUser.name;
 
     document.getElementById("welcomeName").textContent =
         "Bienvenue sur votre espace bancaire sécurisé.";
 
     document.getElementById("clientName").textContent =
-        fullName;
+        currentUser.name;
 
     document.getElementById("cardHolder").textContent =
-        fullName.toUpperCase();
+        currentUser.name.toUpperCase();
 
     document.getElementById("clientAccount").textContent =
-        currentUser.accountNumber || "-";
+        currentUser.account;
 
     document.getElementById("accountNumber").textContent =
-        currentUser.accountNumber || "-";
+        currentUser.account;
 
     document.getElementById("clientId").textContent =
-        currentUser.customerId || "-";
+        currentUser.id;
 
     document.getElementById("clientInfoId").textContent =
-        currentUser.customerId || "-";
+        currentUser.id;
 
     document.getElementById("cardNumber").textContent =
-        formatCard(currentUser.accountNumber || "");
+        formatCard(currentUser.account);
 
-    refreshBalance(currentUser.balance || 0);
+    refreshBalance(currentUser.balance);
 
-    const accountType =
-        document.getElementById("accountType");
+}
 
-    if(accountType){
+//====================================================
+// FORMAT CARTE
+//====================================================
 
-        accountType.textContent =
-            currentUser.accountType || "Business Account";
+function formatCard(number){
+
+    if(!number) return "**** **** **** ****";
+
+    return number.replace(/(.{4})/g,"$1 ").trim();
+
+}
+
+//====================================================
+// SOLDE
+//====================================================
+
+function refreshBalance(balance){
+
+    currentUser.balance = Number(balance);
+
+    if(balanceVisible){
+
+        document.getElementById("balance").textContent =
+            formatMoney(balance);
+
+    }else{
+
+        document.getElementById("balance").textContent =
+            "********";
 
     }
 
-    const currency =
-        document.getElementById("currency");
+}
 
-    if(currency){
+//====================================================
+// FORMAT ARGENT
+//====================================================
 
-        currency.textContent =
-            currentUser.currency || "CAD";
+function formatMoney(amount){
+
+    return Number(amount).toLocaleString(
+
+        "en-CA",
+
+        {
+
+            style:"currency",
+
+            currency:"CAD"
+
+        }
+
+    );
+
+}
+
+//====================================================
+// AFFICHER / MASQUER LE SOLDE
+//====================================================
+
+function toggleBalance(){
+
+    balanceVisible = !balanceVisible;
+
+    refreshBalance(currentUser.balance);
+
+    const icon =
+        document.querySelector("#toggleBalance i");
+
+    if(balanceVisible){
+
+        icon.className="fas fa-eye";
+
+    }else{
+
+        icon.className="fas fa-eye-slash";
 
     }
 
-    document.querySelectorAll(".status.active")
-    .forEach(item=>{
+}
 
-        item.textContent =
-            currentUser.status || "Active";
+//====================================================
+// EVENEMENTS
+//====================================================
+
+function initializeEvents(){
+
+    document
+    .getElementById("toggleBalance")
+    .addEventListener("click",toggleBalance);
+
+}
+//====================================================
+// TRANSACTIONS
+//====================================================
+
+function loadTransactions(){
+
+    const data = localStorage.getItem("transactions");
+
+    if(data){
+
+        transactions = JSON.parse(data);
+
+    }else{
+
+        transactions = [];
+
+    }
+
+    displayTransactions();
+
+}
+
+//====================================================
+// AFFICHAGE DES TRANSACTIONS
+//====================================================
+
+function displayTransactions(){
+
+    const table =
+        document.getElementById("transactionsTable");
+
+    if(!table) return;
+
+    table.innerHTML="";
+
+    if(transactions.length===0){
+
+        table.innerHTML=`
+
+<tr>
+
+<td colspan="5" style="text-align:center;padding:30px;">
+
+Aucune transaction disponible.
+
+</td>
+
+</tr>
+
+`;
+
+        return;
+
+    }
+
+    transactions.forEach(transaction=>{
+
+        const amountClass =
+            transaction.amount>=0
+            ? "credit"
+            : "debit";
+
+        const sign =
+            transaction.amount>=0
+            ? "+"
+            : "-";
+
+        table.innerHTML += `
+
+<tr>
+
+<td>${transaction.date}</td>
+
+<td>${transaction.type}</td>
+
+<td>${transaction.description}</td>
+
+<td class="${amountClass}">
+
+${sign} ${Math.abs(transaction.amount).toLocaleString("en-CA",{
+
+minimumFractionDigits:2
+
+})} $
+
+</td>
+
+<td>
+
+<span class="status active">
+
+${transaction.status}
+
+</span>
+
+</td>
+
+</tr>
+
+`;
 
     });
 
 }
+
+//====================================================
+// AJOUTER TRANSACTION
+//====================================================
+
+function addTransaction(type,description,amount){
+
+    const transaction={
+
+        date:new Date().toLocaleDateString("fr-CA"),
+
+        type:type,
+
+        description:description,
+
+        amount:Number(amount),
+
+        status:"Complété"
+
+    };
+
+    transactions.unshift(transaction);
+
+    localStorage.setItem(
+
+        "transactions",
+
+        JSON.stringify(transactions)
+
+    );
+
+    displayTransactions();
+
+    updateSummary();
+
+}
+
+//====================================================
+// RESUME FINANCIER
+//====================================================
+
+function updateSummary(){
+
+    let income=0;
+
+    let expense=0;
+
+    transactions.forEach(item=>{
+
+        if(item.amount>=0){
+
+            income+=item.amount;
+
+        }else{
+
+            expense+=Math.abs(item.amount);
+
+        }
+
+    });
+
+    document.getElementById("monthlyIncome").textContent=
+
+        formatMoney(income);
+
+    document.getElementById("monthlyExpense").textContent=
+
+        formatMoney(expense);
+
+    document.getElementById("savingAmount").textContent=
+
+        formatMoney(income-expense);
+
+}
+
+//====================================================
+// NOTIFICATIONS
+//====================================================
+
+function showNotification(message, icon = "fa-circle-check") {
+
+    let toast = document.getElementById("toastNotification");
+
+    if (!toast) {
+
+        toast = document.createElement("div");
+        toast.id = "toastNotification";
+
+        toast.style.position = "fixed";
+        toast.style.top = "20px";
+        toast.style.right = "20px";
+        toast.style.background = "#0057a3";
+        toast.style.color = "#fff";
+        toast.style.padding = "16px 20px";
+        toast.style.borderRadius = "10px";
+        toast.style.boxShadow = "0 8px 20px rgba(0,0,0,.25)";
+        toast.style.zIndex = "999999";
+        toast.style.fontSize = "15px";
+        toast.style.display = "none";
+
+        document.body.appendChild(toast);
+    }
+
+    toast.innerHTML = `
+        <i class="fas ${icon}" style="margin-right:10px;"></i>
+        ${message}
+    `;
+
+    toast.style.display = "block";
+
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 4000);
+}
+
+//====================================================
+// RECHARGER MON COMPTE
+//====================================================
+
+function openRecharge(){
+
+resetRecharge();
+
+document.getElementById("rechargeModal").style.display="flex";
+
+}
+
+function closeRecharge(){
+
+document.getElementById("rechargeModal").style.display="none";
+
+document.getElementById("rechargeForm").reset();
+
+document.getElementById("mobileOperator").innerHTML=
+'<option value="">Choisissez d\'abord un pays</option>';
+
+document.getElementById("mobileOperator").disabled=true;
+
+document.getElementById("phoneNumber").disabled=true;
+
+document.getElementById("phoneNumber").placeholder="Numéro Mobile Money";
+
+}
+
+//====================================================
+// SERVICES VERROUILLÉS
+//====================================================
+
+function serviceLocked(){
+
+    alert(
+
+`Ce service n'est pas encore activé.
+
+Veuillez contacter votre administrateur.`
+
+    );
+
+}
+
+//====================================================
+// FORMULAIRE RECHARGE
+//====================================================
+
+const rechargeForm=document.getElementById("rechargeForm");
+
+if(rechargeForm){
+
+rechargeForm.addEventListener("submit",submitRecharge);
+
+}
+
+async function submitRecharge(e){
+
+e.preventDefault();
+
+const country=document.getElementById("countrySelect").value;
+
+const amount=Number(document.getElementById("depositAmount").value);
+
+const operator=document.getElementById("mobileOperator").value;
+
+const phone=document.getElementById("phoneNumber").value.trim();
+
+if(country===""){
+
+alert("Veuillez choisir votre pays.");
+
+return;
+
+}
+
+if(operator===""){
+
+alert("Veuillez choisir votre opérateur.");
+
+return;
+
+}
+
+if(phone===""){
+
+alert("Veuillez saisir votre numéro Mobile Money.");
+
+return;
+
+}
+
+if(amount<=0){
+
+alert("Veuillez saisir un montant valide.");
+
+return;
+
+}
+
+const config=SEBPAY[country];
+
+try{
+
+const response=await fetch("https://canada-1.onrender.com/api/collections",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+amount:amount,
+
+currency:config.currency,
+
+phone:phone,
+
+operator:operator,
+
+country:country,
+
+external_reference:"RBC-"+Date.now(),
+
+description:"Rechargement de compte RBC"
+
+})
+
+});
+
+const result=await response.json();
+
+if (response.ok) {
+
+    const transactionId =
+        result.data?.transaction_id || result.transaction_id;
+
+    if (!transactionId) {
+        alert("Impossible de récupérer l'identifiant de la transaction.");
+        return;
+    }
+
+  // Fermer immédiatement le formulaire
+closeRecharge();
+
+// Laisser le navigateur fermer le modal
+setTimeout(() => {
+
+   showPaymentStatus(
+    "Paiement en cours...",
+    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
+    "fas fa-spinner fa-spin",
+    "#0057a3"
+);
+
+    verifierPaiement(transactionId, amount);
+
+}, 300);
+
+} else {
+
+console.log(result);
+
+alert(result.message||result.error||"Paiement refusé.");
+
+}
+    
+}catch(err){
+
+console.error(err);
+
+alert("Impossible de contacter le serveur.");
+
+}
+
+}
+
 //====================================================
 // RAFRAÎCHISSEMENT AUTOMATIQUE
 //====================================================
 
 function refreshDashboard(){
 
-    loadUser();
+loadUser();
 
-    updateDashboard();
+refreshBalance(currentUser.balance);
 
-    displayTransactions();
+displayTransactions();
 
-    updateSummary();
+updateSummary();
 
 }
 
@@ -89,13 +788,13 @@ setInterval(refreshDashboard,10000);
 
 window.addEventListener("storage",function(){
 
-    loadUser();
+loadUser();
 
-    updateDashboard();
+displayTransactions();
 
-    displayTransactions();
+refreshBalance(currentUser.balance);
 
-    updateSummary();
+updateSummary();
 
 });
 
@@ -105,13 +804,13 @@ window.addEventListener("storage",function(){
 
 function saveCurrentUser(){
 
-    localStorage.setItem(
+localStorage.setItem(
 
-        "currentUser",
+"currentUser",
 
-        JSON.stringify(currentUser)
+JSON.stringify(currentUser)
 
-    );
+);
 
 }
 
@@ -121,17 +820,11 @@ setInterval(saveCurrentUser,5000);
 // DERNIÈRE CONNEXION
 //====================================================
 
-const now = new Date();
+const now=new Date();
 
-const lastConnection =
-    document.getElementById("lastConnection");
+document.getElementById("lastConnection").textContent=
 
-if(lastConnection){
-
-    lastConnection.textContent =
-        now.toLocaleString("fr-CA");
-
-}
+now.toLocaleString("fr-CA");
 
 //====================================================
 // DÉCONNEXION
@@ -139,11 +832,11 @@ if(lastConnection){
 
 function logout(){
 
-    localStorage.removeItem("currentUser");
+localStorage.removeItem("currentUser");
 
-    localStorage.removeItem("isLoggedIn");
+localStorage.removeItem("isLoggedIn");
 
-    window.location.href = "login.html";
+window.location.href="login.html";
 
 }
 
@@ -153,452 +846,243 @@ function logout(){
 
 function getStatistics(){
 
-    if(!currentUser) return;
+    if(!currentUser){
+        return;
+    }
 
     console.log({
-
-        client:
-            `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim(),
-
-        customerId:
-            currentUser.customerId,
-
-        accountNumber:
-            currentUser.accountNumber,
-
-        transitNumber:
-            currentUser.transitNumber,
-
-        institutionNumber:
-            currentUser.institutionNumber,
-
-        accountType:
-            currentUser.accountType,
-
-        currency:
-            currentUser.currency,
-
-        status:
-            currentUser.status,
-
-        balance:
-            currentUser.balance,
-
-        operations:
-            transactions.length
-
+        client: currentUser.name,
+        compte: currentUser.account,
+        solde: currentUser.balance,
+        operations: transactions.length
     });
 
 }
+async function verifierPaiement(transactionId, amount) {
 
+    const interval = setInterval(async () => {
+
+        try {
+
+            const response = await fetch(
+                `https://canada-1.onrender.com/api/collections/${transactionId}`
+            );
+
+            const result = await response.json();
+
+            const status = result.data?.status || result.status;
+
+            if (status === "approved") {
+
+                clearInterval(interval);
+
+                currentUser.balance += Number(amount);
+
+                refreshBalance(currentUser.balance);
+
+                saveCurrentUser();
+
+                addTransaction(
+                    "Recharge",
+                    "Paiement Mobile Money",
+                    amount
+                );
+
+           showPaymentStatus(
+    "Paiement confirmé",
+    "Votre compte a été crédité avec succès.",
+    "fas fa-circle-check",
+    "#16a34a",
+    true
+);
+
+                closeRecharge();
+
+            }
+
+            if (status === "rejected") {
+
+                clearInterval(interval);
+
+               showPaymentStatus(
+    "Paiement refusé",
+    "La transaction Mobile Money a été refusée.",
+    "fas fa-circle-xmark",
+    "#dc2626",
+    true
+);
+
+                closeRecharge();
+
+            }
+
+        } catch (err) {
+
+            console.error(err);
+
+        }
+
+    }, 5000);
+
+}
 getStatistics();
-//====================================================
-// CHARGER LE CLIENT
-//====================================================
-
-function loadUser(){
-
-    const data = localStorage.getItem("currentUser");
-
-    if(!data){
-
-        window.location.href = "login.html";
-        return;
-
-    }
-
-    currentUser = JSON.parse(data);
-
-    // Compatibilité ancienne / nouvelle structure
-
-    if(!currentUser.firstName && currentUser.name){
-
-        const names = currentUser.name.split(" ");
-
-        currentUser.firstName = names.shift() || "";
-
-        currentUser.lastName = names.join(" ");
-
-    }
-
-    if(!currentUser.accountNumber && currentUser.account){
-
-        currentUser.accountNumber = currentUser.account;
-
-    }
-
-    if(!currentUser.customerId && currentUser.id){
-
-        currentUser.customerId = currentUser.id;
-
-    }
-
-    if(!currentUser.balance){
-
-        currentUser.balance = 0;
-
-    }
-
-    if(!currentUser.currency){
-
-        currentUser.currency = "CAD";
-
-    }
-
-    if(!currentUser.accountType){
-
-        currentUser.accountType = "Business Account";
-
-    }
-
-    if(!currentUser.status){
-
-        currentUser.status = "Active";
-
-    }
-
-}
 
 //====================================================
-// FORMAT CARTE
+// FIN
 //====================================================
 
-function formatCard(number){
-
-    if(!number){
-
-        return "**** **** **** ****";
-
-    }
-
-    const value = String(number).replace(/\s/g,"");
-
-    return value.replace(/(.{4})/g,"$1 ").trim();
-
-}
-
 //====================================================
-// SOLDE
+// CHARGEMENT DES PAYS
 //====================================================
 
-function refreshBalance(balance){
+function loadCountries(){
 
-    currentUser.balance = Number(balance || 0);
+const country=document.getElementById("countrySelect");
 
-    if(balanceVisible){
+if(!country) return;
 
-        document.getElementById("balance").textContent =
-            formatMoney(currentUser.balance);
+country.innerHTML='<option value="">Sélectionnez votre pays</option>';
 
-    }else{
+Object.keys(SEBPAY).forEach(code=>{
 
-        document.getElementById("balance").textContent =
-            "********";
-
-    }
-
-    saveCurrentUser();
-
-}
-
-//====================================================
-// FORMAT ARGENT
-//====================================================
-
-function formatMoney(amount){
-
-    return Number(amount || 0).toLocaleString(
-
-        "en-CA",
-
-        {
-
-            style:"currency",
-
-            currency:currentUser.currency || "CAD"
-
-        }
-
-    );
-
-}
-//====================================================
-// SUPPORT CLIENT
-//====================================================
-
-function openWhatsApp(){
-
-    window.open(
-        "https://wa.me/19026000017",
-        "_blank"
-    );
-
-}
-
-function callSupport(){
-
-    window.location.href =
-        "tel:+19026000017";
-
-}
-
-function emailSupport(){
-
-    window.location.href =
-        "mailto:clientsupport@rbc-montreal.com";
-
-}
-
-//====================================================
-// INFORMATIONS CLIENT
-//====================================================
-
-function updateClientInformation(){
-
-    if(!currentUser) return;
-
-    const fullName =
-        `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim();
-
-    const map = {
-
-        clientName: fullName,
-
-        clientAccount:
-            currentUser.accountNumber || "-",
-
-        accountNumber:
-            currentUser.accountNumber || "-",
-
-        clientId:
-            currentUser.customerId || "-",
-
-        clientInfoId:
-            currentUser.customerId || "-",
-
-        cardHolder:
-            fullName.toUpperCase(),
-
-        cardNumber:
-            formatCard(currentUser.accountNumber || "")
-
-    };
-
-    Object.keys(map).forEach(id=>{
-
-        const el = document.getElementById(id);
-
-        if(el){
-
-            el.textContent = map[id];
-
-        }
-
-    });
-
-    const accountType =
-        document.getElementById("accountType");
-
-    if(accountType){
-
-        accountType.textContent =
-            currentUser.accountType || "Business Account";
-
-    }
-
-    const currency =
-        document.getElementById("currency");
-
-    if(currency){
-
-        currency.textContent =
-            currentUser.currency || "CAD";
-
-    }
-
-    const transit =
-        document.getElementById("transitNumber");
-
-    if(transit){
-
-        transit.textContent =
-            currentUser.transitNumber || "-";
-
-    }
-
-    const institution =
-        document.getElementById("institutionNumber");
-
-    if(institution){
-
-        institution.textContent =
-            currentUser.institutionNumber || "-";
-
-    }
-
-    const status =
-        document.getElementById("accountStatus");
-
-    if(status){
-
-        status.textContent =
-            currentUser.status || "Active";
-
-    }
-
-}
-
-//====================================================
-// INITIALISATION
-//====================================================
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    loadUser();
-
-    updateDashboard();
-
-    updateClientInformation();
-
-    loadTransactions();
-
-    updateSummary();
-
-    initializeEvents();
-
-    loadCountries();
-
-    const whatsapp =
-        document.getElementById("btnWhatsapp");
-
-    if(whatsapp){
-
-        whatsapp.onclick = openWhatsApp;
-
-    }
-
-    const phone =
-        document.getElementById("btnPhone");
-
-    if(phone){
-
-        phone.onclick = callSupport;
-
-    }
-
-    const email =
-        document.getElementById("btnEmail");
-
-    if(email){
-
-        email.onclick = emailSupport;
-
-    }
-
-});
-//====================================================
-// MISE À JOUR DES DONNÉES APRÈS CONNEXION
-//====================================================
-
-function syncDashboardUser(){
-
-    const data = localStorage.getItem("currentUser");
-
-    if(!data) return;
-
-    currentUser = JSON.parse(data);
-
-    updateDashboard();
-
-    updateClientInformation();
-
-    updateSummary();
-
-    displayTransactions();
-
-}
-
-//====================================================
-// OBSERVATEUR
-//====================================================
-
-window.addEventListener("focus",syncDashboardUser);
-
-window.addEventListener("pageshow",syncDashboardUser);
-
-document.addEventListener("visibilitychange",()=>{
-
-    if(!document.hidden){
-
-        syncDashboardUser();
-
-    }
+country.innerHTML+=`<option value="${code}">${SEBPAY[code].name}</option>`;
 
 });
 
-//====================================================
-// MISE À JOUR DU SOLDE
-//====================================================
-
-function setBalance(value){
-
-    currentUser.balance = Number(value);
-
-    refreshBalance(currentUser.balance);
-
-    saveCurrentUser();
-
-    updateSummary();
+country.addEventListener("change",loadOperators);
 
 }
 
 //====================================================
-// AJOUT D'UNE TRANSACTION
+// CHARGEMENT DES OPERATEURS
 //====================================================
 
-function addTransaction(transaction){
+function loadOperators(){
 
-    if(!Array.isArray(transactions)){
+const country=this.value;
 
-        transactions = [];
+const operator=document.getElementById("mobileOperator");
 
-    }
+const phone=document.getElementById("phoneNumber");
 
-    transactions.unshift(transaction);
+operator.innerHTML="";
 
-    localStorage.setItem(
-        "transactions",
-        JSON.stringify(transactions)
-    );
+phone.value="";
 
-    displayTransactions();
+phone.disabled=true;
 
-    updateSummary();
+if(country===""){
+
+operator.disabled=true;
+
+operator.innerHTML='<option value="">Choisissez d\'abord un pays</option>';
+
+return;
 
 }
 
+    //====================================================
+// VALIDATION DU NUMERO
 //====================================================
-// RECHARGEMENT COMPLET
-//====================================================
 
-function reloadDashboard(){
+    
+operator.disabled=false;
 
-    loadUser();
+operator.innerHTML='<option value="">Choisissez un opérateur</option>';
 
-    loadTransactions();
+SEBPAY[country].operators.forEach(op=>{
 
-    updateDashboard();
+operator.innerHTML+=`<option value="${op.slug}">${op.name}</option>`;
 
-    updateClientInformation();
+});
 
-    displayTransactions();
+operator.addEventListener("change",function(){
 
-    updateSummary();
+if(this.value===""){
+
+phone.disabled=true;
+
+phone.placeholder="Numéro Mobile Money";
+
+}else{
+
+phone.disabled=false;
+
+phone.placeholder=SEBPAY[country].prefix+"XXXXXXXX";
 
 }
 
+});
+
+}
+document.addEventListener("input",function(e){
+
+if(e.target.id!=="phoneNumber") return;
+
+const country=document.getElementById("countrySelect").value;
+
+if(country==="") return;
+
+const prefix=SEBPAY[country].prefix.replace("+","");
+
+let value=e.target.value.replace(/\D/g,"");
+
+if(value.startsWith(prefix)){
+
+e.target.value=value;
+
+}else{
+
+e.target.value=prefix+value;
+
+}
+
+});
 //====================================================
-// LANCEMENT
+// RECHARGER LES LISTES
 //====================================================
 
-reloadDashboard();
+function resetRecharge(){
+
+loadCountries();
+
+document.getElementById("mobileOperator").disabled=true;
+
+document.getElementById("phoneNumber").disabled=true;
+
+}
+/*==============================
+GALERIE AGENCE
+==============================*/
+
+function changeAgencyImage(image){
+
+    document.getElementById("mainAgencyImage").src = image;
+
+}
+/*======================================
+GALERIE AGENCE
+======================================*/
+
+
+function showPaymentStatus(title, message, icon, color, showButton = false) {
+
+    const modal = document.getElementById("paymentStatusModal");
+
+    document.getElementById("paymentStatusTitle").innerText = title;
+    document.getElementById("paymentStatusMessage").innerText = message;
+
+    const statusIcon = document.getElementById("paymentStatusIcon");
+    statusIcon.className = icon;
+    statusIcon.style.color = color;
+
+    const button = document.getElementById("paymentStatusButton");
+    button.style.display = showButton ? "inline-block" : "none";
+    button.onclick = closePaymentStatus;
+
+    modal.style.display = "flex";
+}
+
+function closePaymentStatus() {
+    document.getElementById("paymentStatusModal").style.display = "none";
+}
