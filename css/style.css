@@ -137,7 +137,33 @@ align-items:center;
 gap:10px;
 
 }
+.logo{
 
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.logo img{
+
+width:58px;
+
+height:58px;
+
+object-fit:contain;
+
+transition:.3s;
+
+}
+
+.logo img:hover{
+
+transform:scale(1.08);
+
+}
 .logo .blue{
 
 color:var(--blue);
