@@ -1,77 +1,68 @@
-// =======================================
-// RBC BANK LOGIN
-// =======================================
-
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("loginForm");
 
-    if (!form) {
-        console.error("Formulaire loginForm introuvable !");
-        return;
-    }
-
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async (e) => {
 
         e.preventDefault();
 
-        const client = document.getElementById("client").value.trim().toUpperCase();
-        const access = document.getElementById("access").value.trim();
-        const password = document.getElementById("password").value.trim();
+        const customerId = document
+            .getElementById("client")
+            .value
+            .trim()
+            .toUpperCase();
 
-        // =============================
-        // ADMIN
-        // =============================
+        const password = document
+            .getElementById("password")
+            .value
+            .trim();
 
+        // Connexion administrateur
         if (
-            client === "ADMIN" &&
-            access === "ADMIN" &&
+            customerId === "ADMIN" &&
             password === "ADMIN123"
         ) {
-
             localStorage.setItem("role", "admin");
-            localStorage.setItem("isLoggedIn", "true");
-
-            localStorage.setItem("currentUser", JSON.stringify({
-                id: "ADMIN",
-                name: "Administrator",
-                access: "ADMIN",
-                account: "ADMIN",
-                balance: 0
-            }));
-
-            alert("Connexion Administrateur réussie.");
             window.location.href = "admin.html";
             return;
         }
 
-        // =============================
-        // CLIENT
-        // =============================
+        try {
 
-        if (
-            client === "100001" &&
-            access === "4587" &&
-            password === "RBC2026"
-        ) {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    customerId,
+                    password
+                })
+            });
 
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.message || "Connexion impossible.");
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
             localStorage.setItem("role", "client");
             localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem(
+                "currentUser",
+                JSON.stringify(data.customer)
+            );
 
-            localStorage.setItem("currentUser", JSON.stringify({
-                id: "100001",
-                name: "Michael Johnson",
-                access: "4587",
-                account: "CA4587458965412",
-                balance: 45870.00
-            }));
-
-            alert("Connexion Client réussie.");
             window.location.href = "dashboard.html";
-            return;
-        }
 
-        alert("Client ID, Access Code ou Password incorrect.");
+        } catch (err) {
+
+            console.error(err);
+            alert("Erreur de connexion au serveur.");
+
+        }
 
     });
 
