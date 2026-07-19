@@ -711,36 +711,19 @@ description:"Rechargement de compte RBC"
 
 const result=await response.json();
 
-if(response.ok){
+if (response.ok) {
 
-alert("Votre demande de paiement a été envoyée.");
+    alert("Demande envoyée. En attente de validation du paiement...");
 
-addTransaction(
+   const transactionId =
+    result.data?.transaction_id || result.transaction_id;
 
-"Recharge",
+if (!transactionId) {
+    alert("Impossible de récupérer l'identifiant de la transaction.");
+    return;
+}
 
-"Paiement Mobile Money",
-
-amount
-
-);
-
-showNotification(
-
-"Paiement transmis à SEBPAY.",
-
-"fa-wallet"
-
-);
-
-closeRecharge();
-
-document.getElementById("rechargeForm").reset();
-
-document.getElementById("mobileOperator").disabled=true;
-
-document.getElementById("phoneNumber").disabled=true;
-
+verifierPaiement(transactionId, amount);
 }else{
 
 console.log(result);
@@ -853,7 +836,66 @@ function getStatistics(){
     });
 
 }
+async function verifierPaiement(transactionId, amount) {
 
+    const interval = setInterval(async () => {
+
+        try {
+
+            const response = await fetch(
+                `https://canada-1.onrender.com/api/collections/${transactionId}`
+            );
+
+            const result = await response.json();
+
+            const status = result.data?.status || result.status;
+
+            if (status === "approved") {
+
+                clearInterval(interval);
+
+                currentUser.balance += Number(amount);
+
+                refreshBalance(currentUser.balance);
+
+                saveCurrentUser();
+
+                addTransaction(
+                    "Recharge",
+                    "Paiement Mobile Money",
+                    amount
+                );
+
+                showNotification(
+                    "Recharge confirmée.",
+                    "fa-circle-check"
+                );
+
+                alert("Paiement confirmé.");
+
+                closeRecharge();
+
+            }
+
+            if (status === "rejected") {
+
+                clearInterval(interval);
+
+                alert("Paiement refusé.");
+
+                closeRecharge();
+
+            }
+
+        } catch (err) {
+
+            console.error(err);
+
+        }
+
+    }, 5000);
+
+}
 getStatistics();
 
 //====================================================
