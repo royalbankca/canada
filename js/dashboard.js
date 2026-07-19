@@ -546,30 +546,24 @@ function updateSummary(){
 // NOTIFICATIONS
 //====================================================
 
-function showNotification(message,icon="fa-circle-check"){
+function showNotification(message, icon = "fa-circle-check") {
 
-    const container=
+    console.log("Notification :", message);
 
-        document.getElementById("notificationsContainer");
+    const container = document.getElementById("notificationsContainer");
 
-    if(!container) return;
+    console.log(container);
+
+    if (!container) return;
 
     container.insertAdjacentHTML(
-
         "afterbegin",
-
-`
-
-<div class="notification">
-
-<i class="fas ${icon}"></i>
-
-<p>${message}</p>
-
-</div>
-
-`
-
+        `
+        <div class="notification">
+            <i class="fas ${icon}"></i>
+            <p>${message}</p>
+        </div>
+        `
     );
 
 }
