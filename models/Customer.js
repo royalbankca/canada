@@ -5,45 +5,75 @@ const customerSchema = new mongoose.Schema({
     customerId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
     },
 
     firstName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
 
     lastName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
 
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true
     },
 
     phone: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
 
-    birthDate: String,
+    birthDate: {
+        type: String,
+        default: ""
+    },
 
-    gender: String,
+    gender: {
+        type: String,
+        default: ""
+    },
 
-    nationality: String,
+    nationality: {
+        type: String,
+        default: ""
+    },
 
-    profession: String,
+    profession: {
+        type: String,
+        default: ""
+    },
 
-    country: String,
+    country: {
+        type: String,
+        default: ""
+    },
 
-    city: String,
+    city: {
+        type: String,
+        default: ""
+    },
 
-    address: String,
+    address: {
+        type: String,
+        default: ""
+    },
 
-    accountType: String,
+    accountType: {
+        type: String,
+        default: "Checking"
+    },
 
     currency: {
         type: String,
@@ -56,7 +86,8 @@ const customerSchema = new mongoose.Schema({
     },
 
     transitNumber: {
-        type: String
+        type: String,
+        default: ""
     },
 
     institutionNumber: {
@@ -66,7 +97,8 @@ const customerSchema = new mongoose.Schema({
 
     accountNumber: {
         type: String,
-        unique: true
+        unique: true,
+        sparse: true
     },
 
     balance: {
@@ -76,7 +108,24 @@ const customerSchema = new mongoose.Schema({
 
     status: {
         type: String,
+        enum: ["Active", "Blocked", "Pending", "Closed"],
         default: "Active"
+    },
+
+    role: {
+        type: String,
+        enum: ["customer", "admin"],
+        default: "customer"
+    },
+
+    lastLogin: {
+        type: Date,
+        default: null
+    },
+
+    profilePhoto: {
+        type: String,
+        default: ""
     }
 
 }, {
