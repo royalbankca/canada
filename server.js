@@ -116,6 +116,177 @@ app.post("/api/webhook", (req, res) => {
     res.sendStatus(200);
 
 });
+//=========================================================
+// ROYAL BANK CANADA
+// OPEN ACCOUNT API
+//=========================================================
+
+const customers = [];
+
+app.post("/api/open-account", async (req, res) => {
+
+try {
+
+const {
+
+firstName,
+lastName,
+email,
+phone,
+birthDate,
+gender,
+nationality,
+profession,
+country,
+city,
+address,
+accountType,
+currency,
+password
+
+} = req.body;
+
+if (
+!firstName ||
+!lastName ||
+!email ||
+!phone ||
+!password
+) {
+
+return res.status(400).json({
+
+success:false,
+
+message:"Missing required fields."
+
+});
+
+}
+
+const alreadyExists = customers.find(
+
+customer => customer.email === email
+
+);
+
+if(alreadyExists){
+
+return res.status(409).json({
+
+success:false,
+
+message:"Email already exists."
+
+});
+
+}
+
+const customerId =
+"RBC" +
+Math.floor(100000 + Math.random()*900000);
+
+const accountNumber =
+"10" +
+Math.floor(1000000000 + Math.random()*9000000000);
+
+const transitNumber =
+Math.floor(10000 + Math.random()*90000);
+
+const institutionNumber = "003";
+
+const debitCard =
+"4539" +
+Math.floor(100000000000 + Math.random()*900000000000);
+
+const cvv =
+Math.floor(100 + Math.random()*900);
+
+const expiryDate = "12/31";
+
+const customer = {
+
+id:customerId,
+
+firstName,
+
+lastName,
+
+email,
+
+phone,
+
+birthDate,
+
+gender,
+
+nationality,
+
+profession,
+
+country,
+
+city,
+
+address,
+
+accountType,
+
+currency,
+
+accountNumber,
+
+transitNumber,
+
+institutionNumber,
+
+debitCard,
+
+expiryDate,
+
+cvv,
+
+balance:0,
+
+password,
+
+createdAt:new Date()
+
+};
+
+customers.push(customer);
+
+return res.status(201).json({
+
+success:true,
+
+message:"Royal Bank Canada account successfully created.",
+
+customerId,
+
+accountNumber,
+
+transitNumber,
+
+institutionNumber
+
+});
+
+}catch(error){
+
+console.error(error);
+
+return res.status(500).json({
+
+success:false,
+
+message:"Internal server error."
+
+});
+
+}
+
+});
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
