@@ -341,6 +341,70 @@ return res.json({
 
 });
 // =========================
+// ADMIN - LISTE DES CLIENTS
+// =========================
+
+app.get("/api/admin/customers", async (req, res) => {
+
+    try {
+
+        const customers = await Customer.find().sort({
+            createdAt: -1
+        });
+
+        res.json({
+            success: true,
+            customers
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur."
+        });
+
+    }
+
+});
+
+// =========================
+// ADMIN - DÉTAIL D'UN CLIENT
+// =========================
+
+app.get("/api/admin/customers/:id", async (req, res) => {
+
+    try {
+
+        const customer = await Customer.findById(req.params.id);
+
+        if (!customer) {
+            return res.status(404).json({
+                success: false,
+                message: "Client introuvable."
+            });
+        }
+
+        res.json({
+            success: true,
+            customer
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur."
+        });
+
+    }
+
+});
+// =========================
 // RÉCUPÉRER LE STATUT D'UNE TRANSACTION
 // =========================
 
