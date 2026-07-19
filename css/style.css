@@ -1342,3 +1342,62 @@ gap:6px;
 }
 
 }
+/*======================================================
+TRUST BAR
+======================================================*/
+
+.trust-bar{
+
+background:#ffffff;
+
+padding:25px 0;
+
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+
+}
+
+.trust-items{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+gap:20px;
+
+flex-wrap:wrap;
+
+}
+
+.trust-item{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+font-weight:600;
+
+color:var(--blue);
+
+}
+
+.trust-item i{
+
+font-size:22px;
+
+color:var(--yellow);
+
+}
+
+@media(max-width:768px){
+
+.trust-items{
+
+justify-content:center;
+
+}
+
+}
