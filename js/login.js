@@ -1,33 +1,31 @@
-document.addEventListener("DOMContentLoaded", () => {
+// =======================================
+// RBC BANK LOGIN
+// =======================================
+
+document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("loginForm");
 
     if (!form) {
-        console.error("Formulaire introuvable.");
+        console.error("Formulaire loginForm introuvable !");
         return;
     }
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", function (e) {
 
         e.preventDefault();
 
-        const customerId = document
-            .getElementById("client")
-            .value
-            .trim()
-            .toUpperCase();
+        const client = document.getElementById("client").value.trim().toUpperCase();
+        const access = document.getElementById("access").value.trim();
+        const password = document.getElementById("password").value.trim();
 
-        const password = document
-            .getElementById("password")
-            .value
-            .trim();
-
-        // ==========================
-        // CONNEXION ADMINISTRATEUR
-        // ==========================
+        // =============================
+        // ADMIN
+        // =============================
 
         if (
-            customerId === "ADMIN" &&
+            client === "ADMIN" &&
+            access === "ADMIN" &&
             password === "ADMIN123"
         ) {
 
@@ -35,60 +33,45 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("isLoggedIn", "true");
 
             localStorage.setItem("currentUser", JSON.stringify({
-                customerId: "ADMIN",
-                firstName: "System",
-                lastName: "Administrator"
+                id: "ADMIN",
+                name: "Administrator",
+                access: "ADMIN",
+                account: "ADMIN",
+                balance: 0
             }));
 
+            alert("Connexion Administrateur réussie.");
             window.location.href = "admin.html";
             return;
-
         }
 
-        try {
+        // =============================
+        // CLIENT
+        // =============================
 
-            const response = await fetch(
-                "https://canada-1.onrender.com/api/login",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        customerId,
-                        password
-                    })
-                }
-            );
+        if (
+            client === "100001" &&
+            access === "4587" &&
+            password === "RBC2026"
+        ) {
 
-            const data = await response.json();
-
-            if (!response.ok) {
-
-                alert(data.message || "Connexion impossible.");
-
-                return;
-
-            }
-
-            localStorage.setItem("token", data.token);
             localStorage.setItem("role", "client");
             localStorage.setItem("isLoggedIn", "true");
 
-            localStorage.setItem(
-                "currentUser",
-                JSON.stringify(data.customer)
-            );
+            localStorage.setItem("currentUser", JSON.stringify({
+                id: "100001",
+                name: "Michael Johnson",
+                access: "4587",
+                account: "CA4587458965412",
+                balance: 45870.00
+            }));
 
+            alert("Connexion Client réussie.");
             window.location.href = "dashboard.html";
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert("Impossible de contacter le serveur.");
-
+            return;
         }
+
+        alert("Client ID, Access Code ou Password incorrect.");
 
     });
 
