@@ -548,11 +548,7 @@ function updateSummary(){
 
 function showNotification(message, icon = "fa-circle-check") {
 
-    console.log("Notification :", message);
-
     const container = document.getElementById("notificationsContainer");
-
-    console.log(container);
 
     if (!container) return;
 
@@ -565,6 +561,12 @@ function showNotification(message, icon = "fa-circle-check") {
         </div>
         `
     );
+
+    // Faire défiler jusqu'aux notifications
+    container.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 
 }
 
