@@ -12,15 +12,10 @@ const customerSchema = new mongoose.Schema({
         required: true
     },
 
-   customerId: {
-    type: String,
-    unique: true,
-    required: true
-},
-
-    accessCode: {
+    customerId: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
 
     email: {
@@ -64,6 +59,16 @@ const customerSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
+
+    transitNumber: String,
+
+    institutionNumber: String,
+
+    debitCard: String,
+
+    cvv: String,
+
+    expiryDate: String,
 
     balance: {
         type: Number,
