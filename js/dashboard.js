@@ -770,13 +770,19 @@ alert("Impossible de contacter le serveur.");
 
 function refreshDashboard(){
 
-loadUser();
+    const data = localStorage.getItem("currentUser");
 
-refreshBalance(currentUser.balance);
+    if(!data){
+        return;
+    }
 
-displayTransactions();
+    currentUser = JSON.parse(data);
 
-updateSummary();
+    refreshBalance(currentUser.balance);
+
+    displayTransactions();
+
+    updateSummary();
 
 }
 
@@ -786,15 +792,19 @@ setInterval(refreshDashboard,10000);
 // SYNCHRONISATION
 //====================================================
 
-window.addEventListener("storage",function(){
+window.addEventListener("storage", () => {
 
-loadUser();
+    const data = localStorage.getItem("currentUser");
 
-displayTransactions();
+    if(!data) return;
 
-refreshBalance(currentUser.balance);
+    currentUser = JSON.parse(data);
 
-updateSummary();
+    refreshBalance(currentUser.balance);
+
+    displayTransactions();
+
+    updateSummary();
 
 });
 
@@ -832,11 +842,12 @@ now.toLocaleString("fr-CA");
 
 function logout(){
 
-localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("transactions");
+    localStorage.removeItem("isLoggedIn");
 
-localStorage.removeItem("isLoggedIn");
-
-window.location.href="login.html";
+    window.location.replace("login.html");
 
 }
 
