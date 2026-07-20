@@ -1,0 +1,292 @@
+/*====================================================
+  ROYAL BANK CANADA
+  ACCOUNT CREATED
+====================================================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial,Helvetica,sans-serif;
+    background:#edf3fb;
+    color:#222;
+
+}
+
+.page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px 20px;
+
+}
+
+.card{
+
+    width:100%;
+
+    max-width:800px;
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    padding:40px;
+
+    box-shadow:0 10px 35px rgba(0,0,0,.15);
+
+}
+
+.header{
+
+    text-align:center;
+
+}
+
+.logo{
+
+    width:95px;
+
+    margin-bottom:15px;
+
+}
+
+.header h1{
+
+    color:#0051a5;
+
+    font-size:32px;
+
+    margin-bottom:10px;
+
+}
+
+.header h2{
+
+    color:#0070d2;
+
+    margin-bottom:15px;
+
+}
+
+.subtitle{
+
+    font-size:17px;
+
+    color:#555;
+
+}
+
+hr{
+
+    margin:30px 0;
+
+    border:none;
+
+    border-top:1px solid #dcdcdc;
+
+}
+
+.account-details{
+
+    margin-bottom:30px;
+
+}
+
+.row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #ececec;
+
+}
+
+.row span{
+
+    font-weight:bold;
+
+    color:#444;
+
+}
+
+.row strong{
+
+    color:#0051a5;
+
+    font-size:18px;
+
+}
+
+.security-box{
+
+    background:#fff7e8;
+
+    border-left:6px solid #f7b500;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    margin:30px 0;
+
+}
+
+.security-box h3{
+
+    margin-bottom:10px;
+
+    color:#8a5a00;
+
+}
+
+.security-box p{
+
+    margin-bottom:10px;
+
+    line-height:1.6;
+
+}
+
+.contact{
+
+    background:#f4f9ff;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    margin-bottom:30px;
+
+}
+
+.contact h3{
+
+    color:#0051a5;
+
+    margin-bottom:12px;
+
+}
+
+.contact p{
+
+    margin:8px 0;
+
+    font-size:16px;
+
+}
+
+.buttons{
+
+    display:flex;
+
+    gap:15px;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+}
+
+.buttons button{
+
+    border:none;
+
+    background:#0051a5;
+
+    color:#fff;
+
+    padding:14px 28px;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.buttons button:hover{
+
+    background:#003d7d;
+
+}
+
+.footer{
+
+    text-align:center;
+
+    margin-top:35px;
+
+    color:#666;
+
+    font-size:14px;
+
+}
+
+@media(max-width:700px){
+
+    .card{
+
+        padding:25px;
+
+    }
+
+    .row{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:6px;
+
+    }
+
+    .header h1{
+
+        font-size:25px;
+
+    }
+
+}
+
+@media print{
+
+    body{
+
+        background:white;
+
+    }
+
+    .card{
+
+        box-shadow:none;
+
+        border:none;
+
+    }
+
+    .buttons{
+
+        display:none;
+
+    }
+
+}
