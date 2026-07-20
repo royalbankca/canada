@@ -1,90 +1,43 @@
-// =========================
-// CONNEXION CLIENT
-// =========================
+const API_URL = "https://canada-1.onrender.com";
 
-app.post("/api/login", async (req, res) => {
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("loginForm");
 
-    try {
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-        const { customerId, accessCode, password } = req.body;
+        const customerId = document.getElementById("customerId").value.trim();
+        const accessCode = document.getElementById("accessCode").value.trim();
+        const password = document.getElementById("password").value;
 
-        console.log("=== LOGIN ===");
-        console.log({
-            customerId,
-            accessCode,
-            password
-        });
-
-        if (!customerId || !accessCode || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "Client ID, Access Code and Password are required."
+        try {
+            const response = await fetch(`${API_URL}/api/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    customerId,
+                    accessCode,
+                    password
+                })
             });
-        }
 
-        const customer = await Customer.findOne({
-            customerId,
-            accessCode
-        });
+            const result = await response.json();
 
-        console.log("Customer trouvé :", customer);
-
-        if (!customer) {
-            return res.status(404).json({
-                success: false,
-                message: "Invalid Client ID or Access Code."
-            });
-        }
-
-        const passwordValid = await bcrypt.compare(
-            password,
-            customer.password
-        );
-
-        if (!passwordValid) {
-            return res.status(401).json({
-                success: false,
-                message: "Incorrect password."
-            });
-        }
-
-        const token = jwt.sign(
-            {
-                id: customer._id,
-                customerId: customer.customerId
-            },
-            JWT_SECRET,
-            {
-                expiresIn: "7d"
+            if (!result.success) {
+                alert(result.message);
+                return;
             }
-        );
 
-        return res.json({
-            success: true,
-            token,
+            localStorage.setItem("token", result.token);
+            localStorage.setItem("currentUser", JSON.stringify(result.customer));
 
-            customer: {
-                name: customer.firstName + " " + customer.lastName,
-                id: customer.customerId,
-                account: customer.accountNumber,
-                balance: customer.balance || 0,
-                email: customer.email,
-                phone: customer.phone,
-                accountType: customer.accountType,
-                currency: customer.currency,
-                status: customer.status
-            }
-        });
+            window.location.href = "dashboard.html";
 
-    } catch (error) {
-
-        console.error(error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error."
-        });
-
-    }
-
+        } catch (err) {
+            console.error(err);
+            alert("Connexion impossible.");
+        }
+    });
 });
