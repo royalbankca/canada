@@ -394,6 +394,37 @@ app.get("/", (req, res) => {
 // DÉMARRAGE DU SERVEUR
 // =========================
 
+//======================================================
+// ADMIN - GET ALL CUSTOMERS
+//======================================================
+
+app.get("/api/admin/customers", async (req, res) => {
+
+    try {
+
+        const customers = await Customer
+            .find()
+            .sort({ createdAt: -1 })
+            .select("-password");
+
+        res.json({
+            success: true,
+            customers
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Unable to retrieve customers."
+        });
+
+    }
+
+});
+
 app.listen(PORT, () => {
 
     console.log(`✅ Serveur démarré sur le port ${PORT}`);
