@@ -286,11 +286,23 @@ app.post("/api/login", async (req, res) => {
         );
 
         return res.json({
-            success: true,
-            token,
-            customer
-        });
-
+    success: true,
+    token,
+    customer: {
+        customerId: customer.customerId,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+        phone: customer.phone,
+        accountNumber: customer.accountNumber,
+        transitNumber: customer.transitNumber,
+        institutionNumber: customer.institutionNumber,
+        balance: customer.balance,
+        status: customer.status,
+        accountType: customer.accountType,
+        currency: customer.currency
+    }
+});
     } catch (error) {
 
         console.error(error);
