@@ -163,9 +163,6 @@ search.addEventListener("keyup", () => {
 // ACTIONS
 //==============================
 
-//==============================
-// ACTIONS
-//==============================
 
 async function editCustomer(id) {
 
