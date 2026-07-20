@@ -142,7 +142,7 @@ app.post("/api/open-account", async (req, res) => {
        // Génération automatique du Client ID
 const lastCustomer = await Customer.findOne().sort({ clientId: -1 });
 
-let clientId = "RBC100090001";
+let customerId = "RBC100090001";
 
 if (
     lastCustomer &&
