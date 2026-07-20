@@ -140,19 +140,16 @@ app.post("/api/open-account", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
        // Génération automatique du Client ID
-const lastCustomer = await Customer.findOne().sort({ clientId: -1 });
-
 let customerId = "RBC100090001";
 
-if (
-    lastCustomer &&
-    lastCustomer.clientId &&
-    lastCustomer.clientId.startsWith("RBC")
-) {
-    const number = Number(lastCustomer.clientId.substring(3));
-    clientId = "RBC" + (number + 1);
-}
+const lastCustomer = await Customer.findOne({
+    customerId: { $exists: true }
+}).sort({ customerId: -1 });
 
+if (lastCustomer) {
+    const number = Number(lastCustomer.customerId.substring(3));
+    customerId = "RBC" + (number + 1);
+}
 // Génération automatique du Code d'accès
 const accessCode = Math.floor(
     1000 + Math.random() * 9000
@@ -177,7 +174,7 @@ const accountNumber =
 
         const expiryDate = "12/31";
 
-        const existingClient = await Customer.findOne({ clientId });
+        const existingClient = await Customer.findOne({ customerId });
 
 if (existingClient) {
     return res.status(500).json({
@@ -201,7 +198,7 @@ if (existingClient) {
             accountType,
             currency,
             password: hashedPassword,
-            clientId,
+            customerId,
             accessCode,
             accountNumber,
             balance: 0,
@@ -214,7 +211,7 @@ if (existingClient) {
     success: true,
     message: "Royal Bank Canada account successfully created.",
 
-    clientId,
+    customerId,
     accessCode,
 
     accountNumber,
@@ -246,9 +243,9 @@ app.post("/api/login", async (req, res) => {
 
     try {
 
-        const { clientId, accessCode, password } = req.body;
+        const { customerId, accessCode, password } = req.body;
 
-        if (!clientId || !accessCode || !password) {
+        if (!customerId || !accessCode || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Client ID, Access Code and Password are required."
@@ -256,7 +253,7 @@ app.post("/api/login", async (req, res) => {
         }
 
         const customer = await Customer.findOne({
-            clientId,
+            customerId,
             accessCode
         });
 
@@ -282,7 +279,7 @@ app.post("/api/login", async (req, res) => {
         const token = jwt.sign(
             {
                 id: customer._id,
-                clientId: customer.clientId
+                customerId: customer.customerId
             },
             JWT_SECRET,
             {
