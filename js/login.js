@@ -3,6 +3,8 @@ const API_URL = "https://canada-1.onrender.com";
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
 
+    if (!form) return;
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -31,13 +33,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             localStorage.setItem("token", result.token);
-            localStorage.setItem("currentUser", JSON.stringify(result.customer));
+            localStorage.setItem(
+                "currentUser",
+                JSON.stringify(result.customer)
+            );
 
             window.location.href = "dashboard.html";
 
         } catch (err) {
             console.error(err);
-            alert("Connexion impossible.");
+            alert("Erreur de connexion au serveur.");
         }
     });
 });
