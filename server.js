@@ -140,12 +140,17 @@ app.post("/api/open-account", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
        // Génération automatique du Client ID
-const lastCustomer = await Customer.findOne().sort({ createdAt: -1 });
+const lastCustomer = await Customer.findOne().sort({ clientId: -1 });
 
-let clientId = "100001";
+let clientId = "RBC100090001";
 
-if (lastCustomer && lastCustomer.clientId) {
-    clientId = (parseInt(lastCustomer.clientId) + 1).toString();
+if (
+    lastCustomer &&
+    lastCustomer.clientId &&
+    lastCustomer.clientId.startsWith("RBC")
+) {
+    const number = Number(lastCustomer.clientId.substring(3));
+    clientId = "RBC" + (number + 1);
 }
 
 // Génération automatique du Code d'accès
@@ -171,6 +176,15 @@ const accountNumber =
             Math.floor(100 + Math.random() * 900).toString();
 
         const expiryDate = "12/31";
+
+        const existingClient = await Customer.findOne({ clientId });
+
+if (existingClient) {
+    return res.status(500).json({
+        success: false,
+        message: "Unable to generate a unique Client ID. Please try again."
+    });
+}
 
         const customer = new Customer({
             firstName,
@@ -279,19 +293,6 @@ app.post("/api/login", async (req, res) => {
         return res.json({
             success: true,
             token,
-            customer: {
-                id: customer._id,
-                firstName: customer.firstName,
-                lastName: customer.lastName,
-                clientId: customer.clientId,
-                accessCode: customer.accessCode,
-                email: customer.email,
-                accountNumber: customer.accountNumber,
-                balance: customer.balance,
-                status: customer.status,
-                accountType: customer.accountType,
-                currency: customer.currency
-            }
         });
 
     } catch (error) {
