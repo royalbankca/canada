@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         e.preventDefault();
 
-        const clientId = document.getElementById("client").value.trim().toUpperCase();
+        const customerId = document.getElementById("client").value.trim().toUpperCase();
         const accessCode = document.getElementById("access").value.trim();
         const password = document.getElementById("password").value.trim();
 
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    clientId,
+                    customerId,
                     accessCode,
                     password
                 })
