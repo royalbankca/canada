@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         e.preventDefault();
 
-        const email = document.getElementById("client").value.trim().toLowerCase();
+        const clientId = document.getElementById("client").value.trim().toUpperCase();
+        const accessCode = document.getElementById("access").value.trim();
         const password = document.getElementById("password").value.trim();
 
         try {
@@ -23,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    email,
+                    clientId,
+                    accessCode,
                     password
                 })
             });
@@ -36,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             localStorage.setItem("token", result.token);
-            localStorage.setItem("customer", JSON.stringify(result.customer));
 
             alert("Login successful.");
 
