@@ -69,8 +69,8 @@ function renderTable(list) {
 <td>${customer.balance} ${customer.currency}</td>
 
 <td class="${customer.status === "Active"
-            ? "status-active"
-            : "status-blocked"}">
+? "status-active"
+: "status-blocked"}">
 
 ${customer.status}
 
@@ -106,14 +106,14 @@ Password
 
 <button
 class="${customer.status === "Active"
-            ? "block"
-            : "activate"}"
+? "block"
+: "activate"}"
 
 onclick="toggleStatus('${customer._id}')">
 
 ${customer.status === "Active"
-            ? "Block"
-            : "Activate"}
+? "Block"
+: "Activate"}
 
 </button>
 
@@ -128,7 +128,6 @@ ${customer.status === "Active"
     });
 
 }
-
 //==============================
 // SEARCH
 //==============================
@@ -160,9 +159,8 @@ search.addEventListener("keyup", () => {
 });
 
 //==============================
-// ACTIONS
+// EDIT CUSTOMER
 //==============================
-
 
 async function editCustomer(id) {
 
@@ -197,6 +195,7 @@ async function editCustomer(id) {
         if (result.success) {
 
             alert("Customer updated successfully.");
+
             loadCustomers();
 
         } else {
@@ -212,6 +211,10 @@ async function editCustomer(id) {
     }
 
 }
+
+//==============================
+// CREDIT ACCOUNT
+//==============================
 
 async function creditCustomer(id) {
 
@@ -236,7 +239,7 @@ async function creditCustomer(id) {
 
         const result = await response.json();
 
-        alert("New Balance: " + result.balance);
+        alert("New Balance : " + result.balance);
 
         loadCustomers();
 
@@ -247,6 +250,9 @@ async function creditCustomer(id) {
     }
 
 }
+//==============================
+// RESET PASSWORD
+//==============================
 
 async function resetPassword(id) {
 
@@ -271,7 +277,15 @@ async function resetPassword(id) {
 
         const result = await response.json();
 
-        alert(result.message);
+        if (result.success) {
+
+            alert(result.message);
+
+        } else {
+
+            alert(result.message);
+
+        }
 
     } catch (error) {
 
@@ -280,6 +294,10 @@ async function resetPassword(id) {
     }
 
 }
+
+//==============================
+// BLOCK / ACTIVATE CUSTOMER
+//==============================
 
 async function toggleStatus(id) {
 
@@ -294,9 +312,17 @@ async function toggleStatus(id) {
 
         const result = await response.json();
 
-        alert("Status: " + result.status);
+        if (result.success) {
 
-        loadCustomers();
+            alert("Status : " + result.status);
+
+            loadCustomers();
+
+        } else {
+
+            alert(result.message);
+
+        }
 
     } catch (error) {
 
@@ -306,6 +332,23 @@ async function toggleStatus(id) {
 
 }
 
+//==============================
+// LOGOUT
+//==============================
+
+function logout() {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("role");
+
+    window.location.href = "login.html";
+
+}
+
+//==============================
+// START
 //==============================
 
 loadCustomers();
