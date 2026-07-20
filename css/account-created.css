@@ -54,11 +54,9 @@ body{
 }
 
 .logo{
-
-    width:95px;
-
-    margin-bottom:15px;
-
+    width:60px;
+    height:auto;
+    margin-bottom:12px;
 }
 
 .header h1{
