@@ -139,29 +139,21 @@ app.post("/api/open-account", async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-       // Génération automatique du Client ID
-const lastCustomer = await Customer.findOne().sort({ clientId: -1 });
+       const lastCustomer = await Customer.findOne().sort({ customerId: -1 });
 
 let customerId = "RBC100090001";
 
 if (
     lastCustomer &&
-    lastCustomer.clientId &&
-    lastCustomer.clientId.startsWith("RBC")
+    lastCustomer.customerId &&
+    lastCustomer.customerId.startsWith("RBC")
 ) {
-    const number = Number(lastCustomer.clientId.substring(3));
-    clientId = "RBC" + (number + 1);
+    const number = Number(lastCustomer.customerId.substring(3));
+    customerId = "RBC" + (number + 1);
 }
 
-// Génération automatique du Code d'accès
-const accessCode = Math.floor(
-    1000 + Math.random() * 9000
-).toString();
-
-// Génération du numéro de compte
-const accountNumber =
-    "10" +
-    Math.floor(1000000000 + Math.random() * 9000000000);
+        const accountNumber =
+            "10" + Math.floor(1000000000 + Math.random() * 9000000000);
 
         const transitNumber =
             Math.floor(10000 + Math.random() * 90000).toString();
@@ -177,53 +169,49 @@ const accountNumber =
 
         const expiryDate = "12/31";
 
-        const existingClient = await Customer.findOne({ clientId });
-
-if (existingClient) {
-    return res.status(500).json({
-        success: false,
-        message: "Unable to generate a unique Client ID. Please try again."
-    });
-}
-
-        const customer = new Customer({
-            firstName,
-            lastName,
-            email,
-            phone,
-            birthDate,
-            gender,
-            nationality,
-            profession,
-            country,
-            city,
-            address,
-            accountType,
-            currency,
-            password: hashedPassword,
-            clientId,
-            accessCode,
-            accountNumber,
-            balance: 0,
-            status: "Active"
-        });
-
+      const customer = new Customer({
+    customerId,
+    firstName,
+    lastName,
+    email,
+    phone,
+    birthDate,
+    gender,
+    nationality,
+    profession,
+    country,
+    city,
+    address,
+    accountType,
+    currency,
+    password: hashedPassword,
+    accountNumber,
+    transitNumber,
+    institutionNumber,
+    debitCard,
+    cvv,
+    expiryDate,
+    balance: 0,
+    status: "Active"
+});
         await customer.save();
 
        return res.status(201).json({
     success: true,
     message: "Royal Bank Canada account successfully created.",
 
-    clientId,
-    accessCode,
+    customerId: customer.customerId,
+    accountNumber: customer.accountNumber,
+    transitNumber: customer.transitNumber,
+    institutionNumber: customer.institutionNumber,
 
-    accountNumber,
-    transitNumber,
-    institutionNumber,
+    debitCard: customer.debitCard,
+    expiryDate: customer.expiryDate,
+    cvv: customer.cvv,
 
-    debitCard,
-    expiryDate,
-    cvv
+    firstName: customer.firstName,
+    lastName: customer.lastName,
+    email: customer.email
 });
 
     } catch (error) {
@@ -246,25 +234,26 @@ app.post("/api/login", async (req, res) => {
 
     try {
 
-        const { clientId, accessCode, password } = req.body;
+        const { customerId, password } = req.body;
 
-        if (!clientId || !accessCode || !password) {
+        if (!customerId || !password) {
+
             return res.status(400).json({
                 success: false,
-                message: "Client ID, Access Code and Password are required."
+                message: "Customer ID and password are required."
             });
+
         }
 
-        const customer = await Customer.findOne({
-            clientId,
-            accessCode
-        });
+        const customer = await Customer.findOne({ customerId });
 
         if (!customer) {
+
             return res.status(404).json({
                 success: false,
-                message: "Invalid Client ID or Access Code."
+                message: "Customer not found."
             });
+
         }
 
         const passwordValid = await bcrypt.compare(
@@ -273,16 +262,18 @@ app.post("/api/login", async (req, res) => {
         );
 
         if (!passwordValid) {
+
             return res.status(401).json({
                 success: false,
-                message: "Incorrect password."
+                message: "Invalid password."
             });
+
         }
 
         const token = jwt.sign(
             {
                 id: customer._id,
-                clientId: customer.clientId
+                customerId: customer.customerId
             },
             JWT_SECRET,
             {
@@ -293,6 +284,7 @@ app.post("/api/login", async (req, res) => {
         return res.json({
             success: true,
             token,
+            customer
         });
 
     } catch (error) {
@@ -307,7 +299,7 @@ app.post("/api/login", async (req, res) => {
     }
 
 });
-        
+
 // =========================
 // RÉCUPÉRER LE STATUT D'UNE TRANSACTION
 // =========================
