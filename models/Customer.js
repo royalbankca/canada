@@ -12,11 +12,11 @@ const customerSchema = new mongoose.Schema({
         required: true
     },
 
-    clientId: {
-        type: String,
-        unique: true,
-        required: true
-    },
+   customerId: {
+    type: String,
+    unique: true,
+    required: true
+},
 
     accessCode: {
         type: String,
