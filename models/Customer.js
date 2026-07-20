@@ -12,6 +12,17 @@ const customerSchema = new mongoose.Schema({
         required: true
     },
 
+    clientId: {
+        type: String,
+        unique: true,
+        required: true
+    },
+
+    accessCode: {
+        type: String,
+        required: true
+    },
+
     email: {
         type: String,
         required: true,
