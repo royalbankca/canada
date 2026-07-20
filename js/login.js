@@ -2,6 +2,8 @@
 // RBC BANK LOGIN
 // =======================================
 
+const API_URL = "https://canada-1.onrender.com";
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("loginForm");
@@ -11,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
 
         e.preventDefault();
 
@@ -41,7 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }));
 
             alert("Connexion Administrateur réussie.");
+
             window.location.href = "admin.html";
+
             return;
         }
 
@@ -49,29 +53,43 @@ document.addEventListener("DOMContentLoaded", function () {
         // CLIENT
         // =============================
 
-        if (
-            client === "100001" &&
-            access === "4587" &&
-            password === "RBC2026"
-        ) {
+        try {
+
+            const response = await fetch(`${API_URL}/api/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    customerId: client,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.message || "Client ID ou Password incorrect.");
+                return;
+            }
 
             localStorage.setItem("role", "client");
             localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("token", data.token);
 
-            localStorage.setItem("currentUser", JSON.stringify({
-                id: "100001",
-                name: "Michael Johnson",
-                access: "4587",
-                account: "CA4587458965412",
-                balance: 45870.00
-            }));
+            localStorage.setItem("currentUser", JSON.stringify(data.customer));
 
             alert("Connexion Client réussie.");
-            window.location.href = "dashboard.html";
-            return;
-        }
 
-        alert("Client ID, Access Code ou Password incorrect.");
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Impossible de contacter le serveur.");
+
+        }
 
     });
 
