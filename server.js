@@ -139,16 +139,20 @@ app.post("/api/open-account", async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-       const lastCustomer = await Customer.findOne().sort({ customerId: -1 });
+      const lastCustomer = await Customer
+    .findOne({
+        customerId: { $regex: /^RBC\d+$/ }
+    })
+    .sort({ customerId: -1 });
 
 let customerId = "RBC100090001";
 
-if (
-    lastCustomer &&
-    lastCustomer.customerId &&
-    lastCustomer.customerId.startsWith("RBC")
-) {
-    const number = Number(lastCustomer.customerId.substring(3));
+if (lastCustomer) {
+    const number = parseInt(
+        lastCustomer.customerId.replace("RBC", ""),
+        10
+    );
+
     customerId = "RBC" + (number + 1);
 }
 
