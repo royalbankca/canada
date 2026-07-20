@@ -423,7 +423,143 @@ app.get("/api/admin/customers", async (req, res) => {
 
     }
 
+});// UPDATE CUSTOMER
+
+app.put("/api/admin/customers/:id", async (req, res) => {
+
+    try {
+
+        const customer = await Customer.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+
+        res.json({
+            success: true,
+            customer
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: "Unable to update customer."
+        });
+
+    }
+
 });
+// CHANGE STATUS
+
+app.put("/api/admin/customers/:id/status", async (req, res) => {
+
+    try {
+
+        const customer = await Customer.findById(req.params.id);
+
+        if (!customer) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found."
+            });
+
+        }
+
+        customer.status =
+            customer.status === "Active"
+            ? "Blocked"
+            : "Active";
+
+        await customer.save();
+
+        res.json({
+            success: true,
+            status: customer.status
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: "Unable to update status."
+        });
+
+    }
+
+});
+// CREDIT ACCOUNT
+
+app.put("/api/admin/customers/:id/credit", async (req, res) => {
+
+    try {
+
+        const { amount } = req.body;
+
+        const customer = await Customer.findById(req.params.id);
+
+        if (!customer) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found."
+            });
+
+        }
+
+        customer.balance += Number(amount);
+
+        await customer.save();
+
+        res.json({
+            success: true,
+            balance: customer.balance
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: "Unable to credit account."
+        });
+
+    }
+
+});
+// RESET PASSWORD
+
+app.put("/api/admin/customers/:id/password", async (req, res) => {
+
+    try {
+
+        const { password } = req.body;
+
+        const hashedPassword =
+            await bcrypt.hash(password, 10);
+
+        await Customer.findByIdAndUpdate(
+            req.params.id,
+            { password: hashedPassword }
+        );
+
+        res.json({
+            success: true,
+            message: "Password updated successfully."
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: "Unable to reset password."
+        });
+
+    }
+
+});
+
+
 
 app.listen(PORT, () => {
 
