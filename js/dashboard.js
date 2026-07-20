@@ -6,6 +6,33 @@
 let currentUser = null;
 let transactions = [];
 let balanceVisible = true;
+
+//===========================================
+// CHARGER LE CLIENT CONNECTÉ
+//===========================================
+
+try {
+
+    const savedUser = localStorage.getItem("currentUser");
+
+    if (savedUser) {
+
+        currentUser = JSON.parse(savedUser);
+
+    }
+
+} catch (error) {
+
+    console.error("Erreur lors du chargement du client :", error);
+
+}
+
+if (!currentUser) {
+
+    window.location.href = "login.html";
+
+}
+
 //====================================================
 // PAYS ET OPERATEURS SEBPAY
 //====================================================
@@ -238,39 +265,116 @@ function loadUser(){
 // TABLEAU DE BORD
 //====================================================
 
-function updateDashboard(){
+function updateDashboard() {
 
-    document.getElementById("welcomeTitle").textContent =
-        "Bonjour " + currentUser.name;
+    if (!currentUser) return;
 
-    document.getElementById("welcomeName").textContent =
-        "Bienvenue sur votre espace bancaire sécurisé.";
+    // Nom complet
+    const fullName =
+        `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim();
 
-    document.getElementById("clientName").textContent =
-        currentUser.name;
+    // Bonjour Michael
+    const welcomeTitle =
+        document.getElementById("welcomeTitle");
 
-    document.getElementById("cardHolder").textContent =
-        currentUser.name.toUpperCase();
+    if (welcomeTitle) {
 
-    document.getElementById("clientAccount").textContent =
-        currentUser.account;
+        welcomeTitle.textContent =
+            "Bonjour " + (currentUser.firstName || "Client");
 
-    document.getElementById("accountNumber").textContent =
-        currentUser.account;
+    }
 
-    document.getElementById("clientId").textContent =
-        currentUser.id;
+    // Message
+    const welcomeName =
+        document.getElementById("welcomeName");
 
-    document.getElementById("clientInfoId").textContent =
-        currentUser.id;
+    if (welcomeName) {
 
-    document.getElementById("cardNumber").textContent =
-        formatCard(currentUser.account);
+        welcomeName.textContent =
+            "Bienvenue sur votre espace bancaire sécurisé.";
 
-    refreshBalance(currentUser.balance);
+    }
+
+    // Nom du client
+    const clientName =
+        document.getElementById("clientName");
+
+    if (clientName) {
+
+        clientName.textContent = fullName;
+
+    }
+
+    // Titulaire de la carte
+    const cardHolder =
+        document.getElementById("cardHolder");
+
+    if (cardHolder) {
+
+        cardHolder.textContent =
+            fullName.toUpperCase();
+
+    }
+
+    // Numéro de compte
+    const account =
+        currentUser.accountNumber || "---------";
+
+    const clientAccount =
+        document.getElementById("clientAccount");
+
+    if (clientAccount) {
+
+        clientAccount.textContent = account;
+
+    }
+
+    const accountNumber =
+        document.getElementById("accountNumber");
+
+    if (accountNumber) {
+
+        accountNumber.textContent = account;
+
+    }
+
+    // Customer ID
+    const customerId =
+        currentUser.customerId || "---------";
+
+    const clientId =
+        document.getElementById("clientId");
+
+    if (clientId) {
+
+        clientId.textContent = customerId;
+
+    }
+
+    const infoId =
+        document.getElementById("clientInfoId");
+
+    if (infoId) {
+
+        infoId.textContent = customerId;
+
+    }
+
+    // Carte bancaire
+    const card =
+        document.getElementById("cardNumber");
+
+    if (card) {
+
+        card.textContent =
+            formatCard(account);
+
+    }
+
+    // Solde
+    refreshBalance(currentUser.balance || 0);
 
 }
-
 //====================================================
 // FORMAT CARTE
 //====================================================
@@ -289,19 +393,18 @@ function formatCard(number){
 
 function refreshBalance(balance){
 
-    currentUser.balance = Number(balance);
+    currentUser.balance = Number(balance) || 0;
 
-    if(balanceVisible){
+    const text = balanceVisible
+        ? Number(currentUser.balance).toLocaleString("en-CA",{
+            style:"currency",
+            currency: currentUser.currency || "CAD"
+        })
+        : "********";
 
-        document.getElementById("balance").textContent =
-            formatMoney(balance);
-
-    }else{
-
-        document.getElementById("balance").textContent =
-            "********";
-
-    }
+    document.querySelectorAll("#balance,.balance-value").forEach(el=>{
+        if(el) el.textContent = text;
+    });
 
 }
 
@@ -843,17 +946,16 @@ window.location.href="login.html";
 //====================================================
 // STATISTIQUES
 //====================================================
-
 function getStatistics(){
 
-    if(!currentUser){
-        return;
-    }
+    if(!currentUser) return;
 
     console.log({
-        client: currentUser.name,
-        compte: currentUser.account,
+        client: `${currentUser.firstName} ${currentUser.lastName}`,
+        customerId: currentUser.customerId,
+        compte: currentUser.accountNumber,
         solde: currentUser.balance,
+        devise: currentUser.currency || "CAD",
         operations: transactions.length
     });
 
