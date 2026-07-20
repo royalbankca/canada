@@ -163,27 +163,149 @@ search.addEventListener("keyup", () => {
 // ACTIONS
 //==============================
 
-function editCustomer(id){
+//==============================
+// ACTIONS
+//==============================
 
-    alert("Edit Customer : " + id);
+async function editCustomer(id) {
+
+    const firstName = prompt("First Name:");
+    if (firstName === null) return;
+
+    const lastName = prompt("Last Name:");
+    if (lastName === null) return;
+
+    const phone = prompt("Phone:");
+    if (phone === null) return;
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/admin/customers/${id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    phone
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+
+            alert("Customer updated successfully.");
+            loadCustomers();
+
+        } else {
+
+            alert(result.message);
+
+        }
+
+    } catch (error) {
+
+        alert("Unable to update customer.");
+
+    }
 
 }
 
-function creditCustomer(id){
+async function creditCustomer(id) {
 
-    alert("Credit Account : " + id);
+    const amount = prompt("Enter amount to credit:");
+
+    if (!amount) return;
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/admin/customers/${id}/credit`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    amount
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        alert("New Balance: " + result.balance);
+
+        loadCustomers();
+
+    } catch (error) {
+
+        alert("Unable to credit account.");
+
+    }
 
 }
 
-function resetPassword(id){
+async function resetPassword(id) {
 
-    alert("Reset Password : " + id);
+    const password = prompt("Enter new password:");
+
+    if (!password) return;
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/admin/customers/${id}/password`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    password
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        alert(result.message);
+
+    } catch (error) {
+
+        alert("Unable to reset password.");
+
+    }
 
 }
 
-function toggleStatus(id){
+async function toggleStatus(id) {
 
-    alert("Block / Activate : " + id);
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/admin/customers/${id}/status`,
+            {
+                method: "PUT"
+            }
+        );
+
+        const result = await response.json();
+
+        alert("Status: " + result.status);
+
+        loadCustomers();
+
+    } catch (error) {
+
+        alert("Unable to update status.");
+
+    }
 
 }
 
