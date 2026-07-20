@@ -139,11 +139,24 @@ app.post("/api/open-account", async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const customerId =
-            "RBC" + Math.floor(100000 + Math.random() * 900000);
+       // Génération automatique du Client ID
+const lastCustomer = await Customer.findOne().sort({ createdAt: -1 });
 
-        const accountNumber =
-            "10" + Math.floor(1000000000 + Math.random() * 9000000000);
+let clientId = "100001";
+
+if (lastCustomer && lastCustomer.clientId) {
+    clientId = (parseInt(lastCustomer.clientId) + 1).toString();
+}
+
+// Génération automatique du Code d'accès
+const accessCode = Math.floor(
+    1000 + Math.random() * 9000
+).toString();
+
+// Génération du numéro de compte
+const accountNumber =
+    "10" +
+    Math.floor(1000000000 + Math.random() * 9000000000);
 
         const transitNumber =
             Math.floor(10000 + Math.random() * 90000).toString();
@@ -174,6 +187,8 @@ app.post("/api/open-account", async (req, res) => {
             accountType,
             currency,
             password: hashedPassword,
+            clientId,
+            accessCode,
             accountNumber,
             balance: 0,
             status: "Active"
@@ -181,17 +196,21 @@ app.post("/api/open-account", async (req, res) => {
 
         await customer.save();
 
-        return res.status(201).json({
-            success: true,
-            message: "Royal Bank Canada account successfully created.",
-            customerId,
-            accountNumber,
-            transitNumber,
-            institutionNumber,
-            debitCard,
-            expiryDate,
-            cvv
-        });
+       return res.status(201).json({
+    success: true,
+    message: "Royal Bank Canada account successfully created.",
+
+    clientId,
+    accessCode,
+
+    accountNumber,
+    transitNumber,
+    institutionNumber,
+
+    debitCard,
+    expiryDate,
+    cvv
+});
 
     } catch (error) {
 
@@ -213,21 +232,24 @@ app.post("/api/login", async (req, res) => {
 
     try {
 
-        const { email, password } = req.body;
+        const { clientId, accessCode, password } = req.body;
 
-        if (!email || !password) {
+        if (!clientId || !accessCode || !password) {
             return res.status(400).json({
                 success: false,
-                message: "Email and password are required."
+                message: "Client ID, Access Code and Password are required."
             });
         }
 
-        const customer = await Customer.findOne({ email });
+        const customer = await Customer.findOne({
+            clientId,
+            accessCode
+        });
 
         if (!customer) {
             return res.status(404).json({
                 success: false,
-                message: "Account not found."
+                message: "Invalid Client ID or Access Code."
             });
         }
 
@@ -239,14 +261,14 @@ app.post("/api/login", async (req, res) => {
         if (!passwordValid) {
             return res.status(401).json({
                 success: false,
-                message: "Invalid password."
+                message: "Incorrect password."
             });
         }
 
         const token = jwt.sign(
             {
                 id: customer._id,
-                email: customer.email
+                clientId: customer.clientId
             },
             JWT_SECRET,
             {
@@ -261,6 +283,8 @@ app.post("/api/login", async (req, res) => {
                 id: customer._id,
                 firstName: customer.firstName,
                 lastName: customer.lastName,
+                clientId: customer.clientId,
+                accessCode: customer.accessCode,
                 email: customer.email,
                 accountNumber: customer.accountNumber,
                 balance: customer.balance,
@@ -274,7 +298,7 @@ app.post("/api/login", async (req, res) => {
 
         console.error(error);
 
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Internal server error."
         });
@@ -282,6 +306,7 @@ app.post("/api/login", async (req, res) => {
     }
 
 });
+        
 // =========================
 // RÉCUPÉRER LE STATUT D'UNE TRANSACTION
 // =========================
