@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: JSON.stringify({
                     customerId: client,
+                    accessCode: access,
                     password: password
                 })
             });
@@ -69,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await response.json();
 
             if (!response.ok) {
-                alert(data.message || "Client ID ou Password incorrect.");
+                alert(data.message || "Customer ID, Access Code ou Password incorrect.");
                 return;
             }
 
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             localStorage.setItem("currentUser", JSON.stringify(data.customer));
 
-            alert("Connexion Client réussie.");
+            alert(`Bienvenue ${data.customer.firstName} ${data.customer.lastName}`);
 
             window.location.href = "dashboard.html";
 
