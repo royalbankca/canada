@@ -173,8 +173,12 @@ if (lastCustomer) {
 
         const expiryDate = "12/31";
 
+        const accessCode =
+    Math.floor(1000 + Math.random() * 9000).toString();
+
       const customer = new Customer({
     customerId,
+    accessCode,
     firstName,
     lastName,
     email,
@@ -205,6 +209,7 @@ if (lastCustomer) {
     message: "Royal Bank Canada account successfully created.",
 
     customerId: customer.customerId,
+    accessCode: customer.accessCode,
     accountNumber: customer.accountNumber,
     transitNumber: customer.transitNumber,
     institutionNumber: customer.institutionNumber,
@@ -238,16 +243,16 @@ app.post("/api/login", async (req, res) => {
 
     try {
 
-        const { customerId, password } = req.body;
+        const { customerId, accessCode, password } = req.body;
 
-        if (!customerId || !password) {
+       if (!customerId || !accessCode || !password) {
 
-            return res.status(400).json({
-                success: false,
-                message: "Customer ID and password are required."
-            });
+    return res.status(400).json({
+        success: false,
+        message: "Customer ID, Access Code and Password are required."
+    });
 
-        }
+}
 
         const customer = await Customer.findOne({ customerId });
 
@@ -259,6 +264,15 @@ app.post("/api/login", async (req, res) => {
             });
 
         }
+
+        if (customer.accessCode !== accessCode) {
+
+    return res.status(401).json({
+        success: false,
+        message: "Invalid Access Code."
+    });
+
+}
 
         const passwordValid = await bcrypt.compare(
             password,
