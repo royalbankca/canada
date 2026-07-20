@@ -296,10 +296,17 @@ console.log({
             }
         );
 
-        return res.json({
-            success: true,
-            token,
-        });
+       return res.json({
+    success: true,
+    token,
+
+    customer: {
+        name: customer.firstName + " " + customer.lastName,
+        id: customer.customerId,
+        account: customer.accountNumber,
+        balance: customer.balance || 0
+    }
+});
 
     } catch (error) {
 
