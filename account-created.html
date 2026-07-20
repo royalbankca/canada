@@ -3,64 +3,104 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Royal Bank Canada | Account Created</title>
+    <title>Royal Bank Canada | Account Created</title>
 
-<link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/account-created.css">
 
 </head>
 
 <body>
 
-<div class="login-container">
+<div class="page">
 
-<div class="right">
+    <div class="card">
 
-<h1>Royal Bank Canada</h1>
+        <div class="header">
 
-<h2>Account Successfully Created</h2>
+            <img src="logo.png" alt="Royal Bank Canada Logo" class="logo">
 
-<p>
-Congratulations! Your account has been created successfully.
-</p>
+            <h1>ROYAL BANK CANADA</h1>
 
-<hr>
+            <h2>Account Successfully Created</h2>
 
-<p><strong>Customer ID:</strong> <span id="customerId"></span></p>
+            <p class="subtitle">
+                Congratulations! Your account has been created successfully.
+            </p>
 
-<p><strong>Account Number:</strong> <span id="accountNumber"></span></p>
+        </div>
 
-<p><strong>Transit Number:</strong> <span id="transitNumber"></span></p>
+        <hr>
 
-<p><strong>Institution Number:</strong> <span id="institutionNumber"></span></p>
+        <div class="account-details">
 
-<hr>
+            <div class="row">
+                <span>Customer ID</span>
+                <strong id="customerId"></strong>
+            </div>
 
-<p>
-For security reasons, your Access Code is not displayed online.
-</p>
+            <div class="row">
+                <span>Account Number</span>
+                <strong id="accountNumber"></strong>
+            </div>
 
-<p>
-Please contact Royal Bank Canada Customer Service to obtain your Access Code after verification of your identity.
-</p>
+            <div class="row">
+                <span>Transit Number</span>
+                <strong id="transitNumber"></strong>
+            </div>
 
-<p><strong>Phone:</strong> +1 902 600 0017</p>
+            <div class="row">
+                <span>Institution Number</span>
+                <strong id="institutionNumber"></strong>
+            </div>
 
-<p><strong>Email:</strong> clientsupport@rbc-montreal.com</p>
+        </div>
 
-<br>
+        <div class="security-box">
 
-<button onclick="window.print()">
-Print / Save as PDF
-</button>
+            <h3>Security Notice</h3>
 
-<button onclick="window.location.href='login.html'">
-Go to Sign In
-</button>
+            <p>
+                Your Access Code is intentionally not displayed online.
+            </p>
 
-</div>
+            <p>
+                Please contact Royal Bank Canada Customer Service to obtain your Access Code after verification of your identity.
+            </p>
+
+        </div>
+
+        <div class="contact">
+
+            <h3>Customer Support</h3>
+
+            <p><strong>Phone:</strong> +1 902 600 0017</p>
+
+            <p><strong>Email:</strong> clientsupport@rbc-montreal.com</p>
+
+        </div>
+
+        <div class="buttons">
+
+            <button onclick="window.print()">
+                🖨 Print / Save as PDF
+            </button>
+
+            <button onclick="window.location.href='login.html'">
+                🔐 Go to Sign In
+            </button>
+
+        </div>
+
+        <div class="footer">
+
+            © Royal Bank Canada
+
+        </div>
+
+    </div>
 
 </div>
 
