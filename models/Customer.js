@@ -18,6 +18,11 @@ const customerSchema = new mongoose.Schema({
         unique: true
     },
 
+    accessCode: {
+        type: String,
+        required: true
+    },
+
     email: {
         type: String,
         required: true,
