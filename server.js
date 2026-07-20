@@ -245,6 +245,13 @@ app.post("/api/login", async (req, res) => {
 
         const { customerId, accessCode, password } = req.body;
 
+console.log("=== LOGIN ===");
+console.log({
+    customerId,
+    accessCode,
+    password
+});
+        
         if (!customerId || !accessCode || !password) {
             return res.status(400).json({
                 success: false,
@@ -256,7 +263,9 @@ app.post("/api/login", async (req, res) => {
             customerId,
             accessCode
         });
-
+        
+       console.log("Customer trouvé :", customer);
+        
         if (!customer) {
             return res.status(404).json({
                 success: false,
