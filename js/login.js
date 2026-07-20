@@ -1,55 +1,90 @@
-// =======================================
-// RBC BANK LOGIN
-// =======================================
+// =========================
+// CONNEXION CLIENT
+// =========================
 
-const API_URL = "https://canada-1.onrender.com";
+app.post("/api/login", async (req, res) => {
 
-document.addEventListener("DOMContentLoaded", () => {
+    try {
 
-    const form = document.getElementById("loginForm");
+        const { customerId, accessCode, password } = req.body;
 
-    form.addEventListener("submit", async (e) => {
+        console.log("=== LOGIN ===");
+        console.log({
+            customerId,
+            accessCode,
+            password
+        });
 
-        e.preventDefault();
-
-        const customerId = document.getElementById("client").value.trim().toUpperCase();
-        const accessCode = document.getElementById("access").value.trim();
-        const password = document.getElementById("password").value.trim();
-
-        try {
-
-            const response = await fetch(`${API_URL}/api/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    customerId,
-                    accessCode,
-                    password
-                })
+        if (!customerId || !accessCode || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Client ID, Access Code and Password are required."
             });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                alert(result.message || "Login failed.");
-                return;
-            }
-
-            localStorage.setItem("token", result.token);
-
-            alert("Login successful.");
-
-            window.location.href = "dashboard.html";
-
-        } catch (error) {
-
-            console.error(error);
-            alert("Unable to contact the server.");
-
         }
 
-    });
+        const customer = await Customer.findOne({
+            customerId,
+            accessCode
+        });
+
+        console.log("Customer trouvé :", customer);
+
+        if (!customer) {
+            return res.status(404).json({
+                success: false,
+                message: "Invalid Client ID or Access Code."
+            });
+        }
+
+        const passwordValid = await bcrypt.compare(
+            password,
+            customer.password
+        );
+
+        if (!passwordValid) {
+            return res.status(401).json({
+                success: false,
+                message: "Incorrect password."
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                id: customer._id,
+                customerId: customer.customerId
+            },
+            JWT_SECRET,
+            {
+                expiresIn: "7d"
+            }
+        );
+
+        return res.json({
+            success: true,
+            token,
+
+            customer: {
+                name: customer.firstName + " " + customer.lastName,
+                id: customer.customerId,
+                account: customer.accountNumber,
+                balance: customer.balance || 0,
+                email: customer.email,
+                phone: customer.phone,
+                accountType: customer.accountType,
+                currency: customer.currency,
+                status: customer.status
+            }
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+
+    }
 
 });
