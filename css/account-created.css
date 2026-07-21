@@ -1,111 +1,235 @@
-<!DOCTYPE html>
-<html lang="en">
+/*====================================================
+  ROYAL BANK CANADA
+  ACCOUNT CREATED
+====================================================*/
 
-<head>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#edf3fb;
+    color:#222;
+}
 
-    <title>Royal Bank Canada | Account Created</title>
+.page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
 
-    <link rel="stylesheet" href="css/account-created.css">
+.card{
+    width:92%;
+    max-width:500px;
+    background:#ffffff;
+    border-radius:16px;
+    padding:28px;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
 
-</head>
+.header{
+    text-align:center;
+}
 
-<body>
+.logo{
+    width:60px;
+    height:auto;
+    margin-bottom:10px;
+}
 
-<div class="page">
+.header h1{
+    color:#0051a5;
+    font-size:26px;
+    margin-bottom:6px;
+}
 
-    <div class="card">
+.header h2{
+    color:#0070d2;
+    font-size:20px;
+    margin-bottom:10px;
+}
 
-        <div class="header">
+.subtitle{
+    font-size:15px;
+    color:#555;
+    line-height:1.5;
+}
 
-            <img src="logo.png" alt="Royal Bank Canada Logo" class="logo">
+hr{
+    margin:22px 0;
+    border:none;
+    border-top:1px solid #dcdcdc;
+}
 
-            <h1>ROYAL BANK CANADA</h1>
+.account-details{
+    margin-bottom:20px;
+}
 
-            <h2>Account Successfully Created</h2>
+.row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid #ececec;
+}
 
-            <p class="subtitle">
-                Congratulations! Your account has been created successfully.
-            </p>
+.row span{
+    font-weight:bold;
+    color:#444;
+}
 
-        </div>
+.row strong{
+    color:#0051a5;
+    font-size:16px;
+}
 
-        <hr>
+.security-box{
+    background:#fff8e6;
+    border-left:5px solid #f4b400;
+    padding:16px;
+    border-radius:10px;
+    margin:22px 0;
+}
 
-        <div class="account-details">
+.security-box h3{
+    color:#8a5a00;
+    margin-bottom:8px;
+    font-size:18px;
+}
 
-            <div class="row">
-                <span>Customer ID</span>
-                <strong id="customerId"></strong>
-            </div>
+.security-box p{
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:8px;
+}
 
-            <div class="row">
-                <span>Account Number</span>
-                <strong id="accountNumber"></strong>
-            </div>
+.contact{
+    background:#f4f9ff;
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:22px;
+}
 
-            <div class="row">
-                <span>Transit Number</span>
-                <strong id="transitNumber"></strong>
-            </div>
+.contact h3{
+    color:#0051a5;
+    margin-bottom:10px;
+    font-size:18px;
+}
 
-            <div class="row">
-                <span>Institution Number</span>
-                <strong id="institutionNumber"></strong>
-            </div>
+.contact p{
+    margin:6px 0;
+    font-size:14px;
+}
 
-        </div>
+.buttons{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
 
-        <div class="security-box">
+.buttons button{
+    border:none;
+    background:#0051a5;
+    color:#fff;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:14px;
+    cursor:pointer;
+    transition:.3s;
+}
 
-            <h3>Security Notice</h3>
+.buttons button:hover{
+    background:#003d7d;
+}
 
-            <p>
-                Your Access Code is intentionally not displayed online.
-            </p>
+.footer{
+    text-align:center;
+    margin-top:22px;
+    color:#666;
+    font-size:13px;
+}
 
-            <p>
-                Please contact Royal Bank Canada Customer Service to obtain your Access Code after verification of your identity.
-            </p>
+/*==========================
+   MOBILE
+==========================*/
 
-        </div>
+@media (max-width:700px){
 
-        <div class="contact">
+    .page{
+        padding:12px;
+    }
 
-            <h3>Customer Support</h3>
+    .card{
+        width:96%;
+        padding:20px;
+    }
 
-            <p><strong>Phone:</strong> +1 902 600 0017</p>
+    .logo{
+        width:48px;
+    }
 
-            <p><strong>Email:</strong> clientsupport@rbc-montreal.com</p>
+    .header h1{
+        font-size:21px;
+    }
 
-        </div>
+    .header h2{
+        font-size:17px;
+    }
 
-        <div class="buttons">
+    .subtitle{
+        font-size:14px;
+    }
 
-            <button onclick="window.print()">
-                🖨 Print / Save as PDF
-            </button>
+    .row{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:4px;
+    }
 
-            <button onclick="window.location.href='login.html'">
-                🔐 Go to Sign In
-            </button>
+    .row strong{
+        font-size:15px;
+    }
 
-        </div>
+    .buttons{
+        flex-direction:column;
+    }
 
-        <div class="footer">
+    .buttons button{
+        width:100%;
+    }
 
-            © Royal Bank Canada
+}
 
-        </div>
+/*==========================
+   PRINT
+==========================*/
 
-    </div>
+@media print{
 
-</div>
+    body{
+        background:#fff;
+    }
 
-<script src="js/account-created.js"></script>
+    .page{
+        padding:0;
+    }
 
-</body>
+    .card{
+        width:100%;
+        max-width:none;
+        box-shadow:none;
+        border:none;
+        border-radius:0;
+    }
 
-</html>
+    .buttons{
+        display:none;
+    }
+
+}
