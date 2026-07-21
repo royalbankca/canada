@@ -755,146 +755,81 @@ rechargeForm.addEventListener("submit",submitRecharge);
 
 async function submitRecharge(e){
 
-e.preventDefault();
+    e.preventDefault();
 
-const country=document.getElementById("countrySelect").value;
+    const country = document.getElementById("countrySelect").value;
+    const amount = Number(document.getElementById("depositAmount").value);
+    const operator = document.getElementById("mobileOperator").value;
+    const phone = document.getElementById("phoneNumber").value.trim();
 
-const amount=Number(document.getElementById("depositAmount").value);
-
-const operator=document.getElementById("mobileOperator").value;
-
-const phone=document.getElementById("phoneNumber").value.trim();
-
-if(country===""){
-
-alert("Veuillez choisir votre pays.");
-
-return;
-
-}
-
-if(operator===""){
-
-alert("Veuillez choisir votre opérateur.");
-
-return;
-
-}
-
-if(phone===""){
-
-alert("Veuillez saisir votre numéro Mobile Money.");
-
-return;
-
-}
-
-if(amount<=0){
-
-alert("Veuillez saisir un montant valide.");
-
-return;
-
-}
-
-const config=SEBPAY[country];
-
-try{
-
-const response=await fetch("https://canada-1.onrender.com/api/collections",{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-amount:amount,
-
-currency:config.currency,
-
-phone:phone,
-
-operator:operator,
-
-country:country,
-
-external_reference:"RBC-"+Date.now(),
-
-description:"Rechargement de compte RBC"
-
-})
-
-});
-
-const result=await response.json();
-
-if (response.ok) {
-
-    const transactionId =
-        result.data?.transaction_id || result.transaction_id;
-
-    if (!transactionId) {
-        alert("Impossible de récupérer l'identifiant de la transaction.");
+    if(country===""){
+        alert("Veuillez choisir votre pays.");
         return;
     }
 
-  // Fermer immédiatement le formulaire
-closeRecharge();
+    if(operator===""){
+        alert("Veuillez choisir votre opérateur.");
+        return;
+    }
 
-// Laisser le navigateur fermer le modal
-setTimeout(() => {
+    if(phone===""){
+        alert("Veuillez saisir votre numéro Mobile Money.");
+        return;
+    }
 
-   showPaymentStatus(
-    "Paiement en cours...",
-    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
-    "fas fa-spinner fa-spin",
-    "#0057a3"
-);
+    if(amount<=0){
+        alert("Veuillez saisir un montant valide.");
+        return;
+    }
 
-    verifierPaiement(transactionId, amount);
+    const config = SEBPAY[country];
 
-}, 300);
+    try{
 
-} else {
+        const response = await fetch(
+            "https://canada-1.onrender.com/api/collections",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    amount,
+                    currency:config.currency,
+                    phone,
+                    operator,
+                    country,
+                    external_reference:"RBC-"+Date.now(),
+                    description:"Rechargement de compte RBC"
+                })
+            }
+        );
 
-console.log(result);
+        const result = await response.json();
 
-alert(result.message||result.error||"Paiement refusé.");
+        if(response.ok){
+
+            closeRecharge();
+
+            alert(
+                "La demande de paiement a été envoyée.\n\nConfirmez le paiement sur votre téléphone Mobile Money.\n\nEnsuite, retournez dans l'administration et utilisez le bouton Credit pour créditer le client."
+            );
+
+        }else{
+
+            alert(result.message || result.error || "Paiement refusé.");
+
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        alert("Impossible de contacter le serveur.");
+
+    }
 
 }
-    
-}catch(err){
-
-console.error(err);
-
-alert("Impossible de contacter le serveur.");
-
-}
-
-}
-
-//====================================================
-// RAFRAÎCHISSEMENT AUTOMATIQUE
-//====================================================
-
-function refreshDashboard(){
-
-loadUser();
-
-refreshBalance(currentUser.balance);
-
-displayTransactions();
-
-updateSummary();
-
-}
-
-setInterval(refreshDashboard,10000);
 
 //====================================================
 // SYNCHRONISATION
@@ -971,73 +906,7 @@ function getStatistics(){
     });
 
 }
-async function verifierPaiement(transactionId, amount) {
 
-    const interval = setInterval(async () => {
-
-        try {
-
-            const response = await fetch(
-                `https://canada-1.onrender.com/api/collections/${transactionId}`
-            );
-
-            const result = await response.json();
-
-            const status = result.data?.status || result.status;
-
-            if (status === "approved") {
-
-                clearInterval(interval);
-
-                currentUser.balance += Number(amount);
-
-                refreshBalance(currentUser.balance);
-
-                saveCurrentUser();
-
-                addTransaction(
-                    "Recharge",
-                    "Paiement Mobile Money",
-                    amount
-                );
-
-           showPaymentStatus(
-    "Paiement confirmé",
-    "Votre compte a été crédité avec succès.",
-    "fas fa-circle-check",
-    "#16a34a",
-    true
-);
-
-                closeRecharge();
-
-            }
-
-            if (status === "rejected") {
-
-                clearInterval(interval);
-
-               showPaymentStatus(
-    "Paiement refusé",
-    "La transaction Mobile Money a été refusée.",
-    "fas fa-circle-xmark",
-    "#dc2626",
-    true
-);
-
-                closeRecharge();
-
-            }
-
-        } catch (err) {
-
-            console.error(err);
-
-        }
-
-    }, 5000);
-
-}
 getStatistics();
 
 //====================================================
