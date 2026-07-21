@@ -9,6 +9,7 @@ const token = localStorage.getItem("token");
 
 const table = document.getElementById("customerTable");
 const search = document.getElementById("search");
+let selectedCustomer = null;
 
 let customers = [];
 
@@ -94,32 +95,31 @@ ${customer.status}
 <button
 class="edit"
 onclick="editCustomer('${customer._id}')">
-
 Edit
-
 </button>
 
 <button
 class="credit"
 onclick="creditCustomer('${customer._id}')">
-
 Credit
+</button>
 
+<button
+class="recharge"
+onclick="openRecharge('${customer._id}')">
+Recharge
 </button>
 
 <button
 class="password"
 onclick="resetPassword('${customer._id}')">
-
 Password
-
 </button>
 
 <button
 class="${customer.status === "Active"
 ? "block"
 : "activate"}"
-
 onclick="toggleStatus('${customer._id}')">
 
 ${customer.status === "Active"
@@ -128,8 +128,13 @@ ${customer.status === "Active"
 
 </button>
 
-</div>
+<button
+class="delete"
+onclick="deleteCustomer('${customer._id}')">
+Delete
+</button>
 
+</div>
 </td>
 
 </tr>
@@ -372,3 +377,54 @@ function logout() {
 //==============================
 
 loadCustomers();
+function openRecharge(id){
+
+    selectedCustomer = id;
+
+    document.getElementById("rechargeModal").style.display = "block";
+
+}
+
+function closeRecharge(){
+
+    document.getElementById("rechargeModal").style.display = "none";
+
+}
+async function deleteCustomer(id){
+
+    if(!confirm("Delete this customer permanently ?"))
+        return;
+
+    try{
+
+        const response = await fetch(
+
+            `${API_URL}/api/admin/customers/${id}`,
+
+            {
+
+                method:"DELETE",
+
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+
+            }
+
+        );
+
+        const result = await response.json();
+
+        alert(result.message);
+
+        loadCustomers();
+
+    }
+
+    catch(error){
+
+        alert("Unable to delete customer.");
+
+    }
+
+}
