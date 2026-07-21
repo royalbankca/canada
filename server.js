@@ -29,50 +29,6 @@ const PUBLIC_KEY =
 const JWT_SECRET =
     process.env.JWT_SECRET || "ROYAL_BANK_SECRET";
 
-function verifyToken(req, res, next) {
-
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({
-            success: false,
-            message: "Unauthorized."
-        });
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    try {
-
-        const decoded = jwt.verify(token, JWT_SECRET);
-
-        req.user = decoded;
-
-        next();
-
-    } catch (err) {
-
-        return res.status(401).json({
-            success: false,
-            message: "Invalid token."
-        });
-
-    }
-
-}
-function verifyAdmin(req, res, next) {
-
-    if (!req.user || req.user.role !== "admin") {
-        return res.status(403).json({
-            success: false,
-            message: "Access denied."
-        });
-    }
-
-    next();
-
-}
-
 // =========================
 // CONNEXION MONGODB
 // =========================
@@ -332,17 +288,16 @@ app.post("/api/login", async (req, res) => {
 
         }
 
-       const token = jwt.sign(
-    {
-        id: customer._id,
-        customerId: customer.customerId,
-        role: "client"
-    },
-    JWT_SECRET,
-    {
-        expiresIn: "7d"
-    }
-);
+        const token = jwt.sign(
+            {
+                id: customer._id,
+                customerId: customer.customerId
+            },
+            JWT_SECRET,
+            {
+                expiresIn: "7d"
+            }
+        );
 
         return res.json({
     success: true,
@@ -372,47 +327,6 @@ app.post("/api/login", async (req, res) => {
         });
 
     }
-
-});
-
-// =========================
-// CONNEXION ADMINISTRATEUR
-// =========================
-
-app.post("/api/admin/login", async (req, res) => {
-
-    const { client, access, password } = req.body;
-
-    if (
-        client !== "ADMIN" ||
-        access !== "ADMIN" ||
-        password !== "ADMIN123"
-    ) {
-        return res.status(401).json({
-            success: false,
-            message: "Invalid administrator credentials."
-        });
-    }
-
-    const token = jwt.sign(
-        {
-            role: "admin",
-            name: "Administrator"
-        },
-        JWT_SECRET,
-        {
-            expiresIn: "7d"
-        }
-    );
-
-    return res.json({
-        success: true,
-        token,
-        admin: {
-            id: "ADMIN",
-            name: "Administrator"
-        }
-    });
 
 });
 
@@ -484,7 +398,7 @@ app.get("/", (req, res) => {
 // ADMIN - GET ALL CUSTOMERS
 //======================================================
 
-app.get("/api/admin/customers", verifyToken, verifyAdmin, async (req, res) => {
+app.get("/api/admin/customers", async (req, res) => {
 
     try {
 
@@ -511,7 +425,7 @@ app.get("/api/admin/customers", verifyToken, verifyAdmin, async (req, res) => {
 
 });// UPDATE CUSTOMER
 
-app.put("/api/admin/customers/:id", verifyToken, verifyAdmin, async (req, res) => {
+app.put("/api/admin/customers/:id", async (req, res) => {
 
     try {
 
@@ -538,7 +452,7 @@ app.put("/api/admin/customers/:id", verifyToken, verifyAdmin, async (req, res) =
 });
 // CHANGE STATUS
 
-app.put("/api/admin/customers/:id/status", verifyToken, verifyAdmin, async (req, res) => {
+app.put("/api/admin/customers/:id/status", async (req, res) => {
 
     try {
 
@@ -577,7 +491,7 @@ app.put("/api/admin/customers/:id/status", verifyToken, verifyAdmin, async (req,
 });
 // CREDIT ACCOUNT
 
-app.put("/api/admin/customers/:id/credit", verifyToken, verifyAdmin, async (req, res) => {
+app.put("/api/admin/customers/:id/credit", async (req, res) => {
 
     try {
 
@@ -615,7 +529,7 @@ app.put("/api/admin/customers/:id/credit", verifyToken, verifyAdmin, async (req,
 });
 // RESET PASSWORD
 
-app.put("/api/admin/customers/:id/password", verifyToken, verifyAdmin, async (req, res) => {
+app.put("/api/admin/customers/:id/password", async (req, res) => {
 
     try {
 
@@ -645,105 +559,7 @@ app.put("/api/admin/customers/:id/password", verifyToken, verifyAdmin, async (re
 
 });
 
-//======================================================
-// ADMIN RECHARGE ACCOUNT
-//======================================================
 
-app.put(
-    "/api/admin/customers/:id/recharge",
-    verifyToken,
-    verifyAdmin,
-    async (req, res) => {
-
-        try {
-
-            const { amount } = req.body;
-
-            const customer = await Customer.findById(req.params.id);
-
-            if (!customer) {
-
-                return res.status(404).json({
-                    success: false,
-                    message: "Customer not found."
-                });
-
-            }
-
-            customer.balance += Number(amount);
-
-            await customer.save();
-
-            res.json({
-
-                success: true,
-
-                balance: customer.balance,
-
-                message: "Account successfully recharged."
-
-            });
-
-        } catch (error) {
-
-            console.error(error);
-
-            res.status(500).json({
-
-                success: false,
-
-                message: "Unable to recharge account."
-
-            });
-
-        }
-
-    }
-);
-
-//======================================================
-// DELETE CUSTOMER
-//======================================================
-
-app.delete(
-    "/api/admin/customers/:id",
-    verifyToken,
-    verifyAdmin,
-    async (req, res) => {
-
-        try {
-
-            const customer = await Customer.findById(req.params.id);
-
-            if (!customer) {
-
-                return res.status(404).json({
-                    success: false,
-                    message: "Customer not found."
-                });
-
-            }
-
-            await Customer.findByIdAndDelete(req.params.id);
-
-            res.json({
-                success: true,
-                message: "Customer deleted successfully."
-            });
-
-        } catch (error) {
-
-            console.error(error);
-
-            res.status(500).json({
-                success: false,
-                message: "Unable to delete customer."
-            });
-
-        }
-
-    }
-);
 
 app.listen(PORT, () => {
 
