@@ -3,7 +3,18 @@
 // dashboard.js
 //====================================================
 
-let currentUser = null;
+// =============================
+// PROTECTION DE LA PAGE
+// =============================
+
+const token = localStorage.getItem("token");
+const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+if (!token || isLoggedIn !== "true" || !currentUser) {
+    window.location.replace("login.html");
+}
 let transactions = [];
 let balanceVisible = true;
 
@@ -933,14 +944,14 @@ now.toLocaleString("fr-CA");
 // DÉCONNEXION
 //====================================================
 
-function logout(){
+function logout() {
 
-localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("role");
+    localStorage.removeItem("isLoggedIn");
 
-localStorage.removeItem("isLoggedIn");
-
-window.location.href="login.html";
-
+    window.location.replace("login.html");
 }
 
 //====================================================
@@ -1188,3 +1199,8 @@ function showPaymentStatus(title, message, icon, color, showButton = false) {
 function closePaymentStatus() {
     document.getElementById("paymentStatusModal").style.display = "none";
 }
+window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+        window.location.replace("login.html");
+    }
+});
