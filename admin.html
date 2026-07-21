@@ -3,12 +3,15 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Royal Bank Canada | Customers</title>
+<title>Royal Bank Canada | Customers</title>
 
-    <link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/admin.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
@@ -16,61 +19,167 @@
 
 <div class="container">
 
-    <header>
+<header>
 
-        <button class="logout-btn" onclick="logout()">
-            Logout
-        </button>
+<button class="logout-btn" onclick="logout()">
+<i class="fas fa-right-from-bracket"></i>
+Logout
+</button>
 
-        <img src="logo.png" class="logo" alt="Royal Bank Canada Logo">
+<img src="logo.png"
+class="logo"
+alt="Royal Bank Canada Logo">
 
-        <h1>Royal Bank Canada</h1>
+<h1>Royal Bank Canada</h1>
 
-        <h2>Customer Management</h2>
+<h2>Customer Management</h2>
 
-    </header>
+</header>
 
-    <div class="toolbar">
+<div class="toolbar">
 
-        <input
-            type="text"
-            id="search"
-            placeholder="Search Customer..."
-        >
+<div class="search-box">
 
-    </div>
+<i class="fas fa-search"></i>
 
-    <table>
+<input
+type="text"
+id="search"
+placeholder="Search customer, phone, account or access code...">
 
-        <thead>
+</div>
 
-            <tr>
+</div>
 
-                <th>Customer ID</th>
+<table class="customer-table">
 
-                <th>Name</th>
+<thead>
 
-                <th>Phone</th>
+<tr>
 
-                <th>Access Code</th>
+<th>Customer ID</th>
 
-                <th>Account</th>
+<th>Name</th>
 
-                <th>Balance</th>
+<th>Phone</th>
 
-                <th>Status</th>
+<th>Access Code</th>
 
-                <th>Actions</th>
+<th>Account</th>
 
-            </tr>
+<th>Balance</th>
 
-        </thead>
+<th>Status</th>
 
-        <tbody id="customerTable">
+<th style="width:320px;">Actions</th>
 
-        </tbody>
+</tr>
 
-    </table>
+</thead>
+
+<tbody id="customerTable">
+
+<!-- admin.js ajoutera les clients ici -->
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- ===========================
+RECHARGE SEBPAY
+=========================== -->
+
+<div id="rechargeModal" class="modal">
+
+<div class="modal-content">
+
+<span class="close"
+onclick="closeRecharge()">&times;</span>
+
+<h2>Recharge Customer Account</h2>
+
+<p>
+
+Select Mobile Money information.
+
+</p>
+
+<form id="rechargeForm">
+
+<div class="form-group">
+
+<label>Country</label>
+
+<select id="countrySelect" required>
+
+<option value="">
+
+Select Country
+
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>Mobile Operator</label>
+
+<select
+id="mobileOperator"
+required
+disabled>
+
+<option value="">
+
+Select Country First
+
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>Phone Number</label>
+
+<input
+type="tel"
+id="phoneNumber"
+placeholder="Mobile Money Number"
+required
+disabled>
+
+</div>
+
+<div class="form-group">
+
+<label>Amount</label>
+
+<input
+type="number"
+id="depositAmount"
+placeholder="Amount"
+min="1"
+required>
+
+</div>
+
+<button
+type="submit"
+class="btn-primary">
+
+Continue
+
+</button>
+
+</form>
+
+</div>
 
 </div>
 
