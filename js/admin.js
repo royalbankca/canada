@@ -5,6 +5,8 @@
 
 const API_URL = "https://canada-1.onrender.com";
 
+const token = localStorage.getItem("token");
+
 const table = document.getElementById("customerTable");
 const search = document.getElementById("search");
 
@@ -18,9 +20,14 @@ async function loadCustomers() {
 
     try {
 
-        const response = await fetch(
-            `${API_URL}/api/admin/customers`
-        );
+      const response = await fetch(
+    `${API_URL}/api/admin/customers`,
+    {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+);
 
         const result = await response.json();
 
@@ -179,9 +186,10 @@ async function editCustomer(id) {
             `${API_URL}/api/admin/customers/${id}`,
             {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+              headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+},
                 body: JSON.stringify({
                     firstName,
                     lastName,
@@ -228,9 +236,10 @@ async function creditCustomer(id) {
             `${API_URL}/api/admin/customers/${id}/credit`,
             {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+           headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+},
                 body: JSON.stringify({
                     amount
                 })
@@ -267,8 +276,9 @@ async function resetPassword(id) {
             {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json"
-                },
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+},
                 body: JSON.stringify({
                     password
                 })
@@ -305,9 +315,12 @@ async function toggleStatus(id) {
 
         const response = await fetch(
             `${API_URL}/api/admin/customers/${id}/status`,
-            {
-                method: "PUT"
-            }
+           {
+    method: "PUT",
+    headers: {
+        Authorization: `Bearer ${token}`
+    }
+}
         );
 
         const result = await response.json();
