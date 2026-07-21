@@ -646,6 +646,62 @@ app.put("/api/admin/customers/:id/password", verifyToken, verifyAdmin, async (re
 });
 
 //======================================================
+// ADMIN RECHARGE ACCOUNT
+//======================================================
+
+app.put(
+    "/api/admin/customers/:id/recharge",
+    verifyToken,
+    verifyAdmin,
+    async (req, res) => {
+
+        try {
+
+            const { amount } = req.body;
+
+            const customer = await Customer.findById(req.params.id);
+
+            if (!customer) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "Customer not found."
+                });
+
+            }
+
+            customer.balance += Number(amount);
+
+            await customer.save();
+
+            res.json({
+
+                success: true,
+
+                balance: customer.balance,
+
+                message: "Account successfully recharged."
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            res.status(500).json({
+
+                success: false,
+
+                message: "Unable to recharge account."
+
+            });
+
+        }
+
+    }
+);
+
+//======================================================
 // DELETE CUSTOMER
 //======================================================
 
