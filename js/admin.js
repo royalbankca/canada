@@ -71,6 +71,10 @@ function renderTable(list) {
 
 <td>${customer.firstName} ${customer.lastName}</td>
 
+<td>${customer.phone || "-"}</td>
+
+<td>${customer.accessCode || "-"}</td>
+
 <td>${customer.accountNumber}</td>
 
 <td>${customer.balance} ${customer.currency}</td>
@@ -143,24 +147,27 @@ search.addEventListener("keyup", () => {
 
     const keyword = search.value.toLowerCase();
 
-    const filtered = customers.filter(customer =>
+   const filtered = customers.filter(customer =>
 
-        customer.customerId.toLowerCase().includes(keyword)
+    customer.customerId.toLowerCase().includes(keyword)
 
-        ||
+    ||
 
-        customer.firstName.toLowerCase().includes(keyword)
+    customer.firstName.toLowerCase().includes(keyword)
 
-        ||
+    ||
 
-        customer.lastName.toLowerCase().includes(keyword)
+    customer.lastName.toLowerCase().includes(keyword)
 
-        ||
+    ||
 
-        customer.email.toLowerCase().includes(keyword)
+    (customer.phone || "").toLowerCase().includes(keyword)
 
-    );
+    ||
 
+    (customer.accessCode || "").toLowerCase().includes(keyword)
+
+);
     renderTable(filtered);
 
 });
