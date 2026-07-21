@@ -5,28 +5,21 @@
 
 const API_URL = "https://canada-1.onrender.com";
 
-const token = localStorage.getItem("token");
-
 const table = document.getElementById("customerTable");
 const search = document.getElementById("search");
 
 let customers = [];
 
-//======================================================
+//==============================
 // LOAD CUSTOMERS
-//======================================================
+//==============================
 
 async function loadCustomers() {
 
     try {
 
         const response = await fetch(
-            `${API_URL}/api/admin/customers`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
+            `${API_URL}/api/admin/customers`
         );
 
         const result = await response.json();
@@ -34,6 +27,7 @@ async function loadCustomers() {
         if (result.success) {
 
             customers = result.customers;
+
             renderTable(customers);
 
         } else {
@@ -45,15 +39,16 @@ async function loadCustomers() {
     } catch (error) {
 
         console.error(error);
+
         alert("Unable to load customers.");
 
     }
 
 }
 
-//======================================================
+//==============================
 // RENDER TABLE
-//======================================================
+//==============================
 
 function renderTable(list) {
 
@@ -69,53 +64,57 @@ function renderTable(list) {
 
 <td>${customer.firstName} ${customer.lastName}</td>
 
-<td>${customer.phone || "-"}</td>
-
-<td>${customer.accessCode || "-"}</td>
-
 <td>${customer.accountNumber}</td>
 
 <td>${customer.balance} ${customer.currency}</td>
 
-<td class="${customer.status === "Active" ? "status-active" : "status-blocked"}">
+<td class="${customer.status === "Active"
+? "status-active"
+: "status-blocked"}">
+
 ${customer.status}
+
 </td>
 
 <td>
 
 <div class="actions">
 
-<button class="edit"
+<button
+class="edit"
 onclick="editCustomer('${customer._id}')">
+
 Edit
-</button>
 
-<button class="credit"
-onclick="creditCustomer('${customer._id}')">
-Credit
-</button>
-
-<button class="recharge"
-onclick="openRecharge()">
-Recharge
-</button>
-
-<button class="password"
-onclick="resetPassword('${customer._id}')">
-Password
 </button>
 
 <button
-class="${customer.status === "Active" ? "block" : "activate"}"
-onclick="toggleStatus('${customer._id}')">
+class="credit"
+onclick="creditCustomer('${customer._id}')">
 
-${customer.status === "Active" ? "Block" : "Activate"}
+Credit
 
 </button>
 
-<button class="delete"
-onclick="deleteCustomer('${customer._id}')">
-Delete
+<button
+class="password"
+onclick="resetPassword('${customer._id}')">
+
+Password
+
+</button>
+
+<button
+class="${customer.status === "Active"
+? "block"
+: "activate"}"
+
+onclick="toggleStatus('${customer._id}')">
+
+${customer.status === "Active"
+? "Block"
+: "Activate"}
+
 </button>
 
 </div>
@@ -129,10 +128,9 @@ Delete
     });
 
 }
-
-//======================================================
+//==============================
 // SEARCH
-//======================================================
+//==============================
 
 search.addEventListener("keyup", () => {
 
@@ -152,20 +150,17 @@ search.addEventListener("keyup", () => {
 
         ||
 
-        (customer.phone || "").toLowerCase().includes(keyword)
-
-        ||
-
-        (customer.accessCode || "").toLowerCase().includes(keyword)
+        customer.email.toLowerCase().includes(keyword)
 
     );
 
     renderTable(filtered);
 
 });
-//======================================================
+
+//==============================
 // EDIT CUSTOMER
-//======================================================
+//==============================
 
 async function editCustomer(id) {
 
@@ -185,8 +180,7 @@ async function editCustomer(id) {
             {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     firstName,
@@ -201,6 +195,7 @@ async function editCustomer(id) {
         if (result.success) {
 
             alert("Customer updated successfully.");
+
             loadCustomers();
 
         } else {
@@ -217,9 +212,9 @@ async function editCustomer(id) {
 
 }
 
-//======================================================
+//==============================
 // CREDIT ACCOUNT
-//======================================================
+//==============================
 
 async function creditCustomer(id) {
 
@@ -234,8 +229,7 @@ async function creditCustomer(id) {
             {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     amount
@@ -245,16 +239,9 @@ async function creditCustomer(id) {
 
         const result = await response.json();
 
-        if (result.success) {
+        alert("New Balance : " + result.balance);
 
-            alert("New Balance : " + result.balance);
-            loadCustomers();
-
-        } else {
-
-            alert(result.message);
-
-        }
+        loadCustomers();
 
     } catch (error) {
 
@@ -263,20 +250,9 @@ async function creditCustomer(id) {
     }
 
 }
-
-//======================================================
-// OPEN RECHARGE PAGE
-//======================================================
-
-function openRecharge() {
-
-    window.open("dashboard.html", "_blank");
-
-}
-
-//======================================================
+//==============================
 // RESET PASSWORD
-//======================================================
+//==============================
 
 async function resetPassword(id) {
 
@@ -291,8 +267,7 @@ async function resetPassword(id) {
             {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     password
@@ -302,7 +277,15 @@ async function resetPassword(id) {
 
         const result = await response.json();
 
-        alert(result.message);
+        if (result.success) {
+
+            alert(result.message);
+
+        } else {
+
+            alert(result.message);
+
+        }
 
     } catch (error) {
 
@@ -311,9 +294,10 @@ async function resetPassword(id) {
     }
 
 }
-//======================================================
+
+//==============================
 // BLOCK / ACTIVATE CUSTOMER
-//======================================================
+//==============================
 
 async function toggleStatus(id) {
 
@@ -322,10 +306,7 @@ async function toggleStatus(id) {
         const response = await fetch(
             `${API_URL}/api/admin/customers/${id}/status`,
             {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+                method: "PUT"
             }
         );
 
@@ -351,44 +332,9 @@ async function toggleStatus(id) {
 
 }
 
-//======================================================
-// DELETE CUSTOMER
-//======================================================
-
-async function deleteCustomer(id) {
-
-    if (!confirm("Delete this customer permanently?"))
-        return;
-
-    try {
-
-        const response = await fetch(
-            `${API_URL}/api/admin/customers/${id}`,
-            {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
-
-        const result = await response.json();
-
-        alert(result.message);
-
-        loadCustomers();
-
-    } catch (error) {
-
-        alert("Unable to delete customer.");
-
-    }
-
-}
-
-//======================================================
+//==============================
 // LOGOUT
-//======================================================
+//==============================
 
 function logout() {
 
@@ -400,8 +346,9 @@ function logout() {
     window.location.href = "login.html";
 
 }
-//======================================================
-// START APPLICATION
-//======================================================
+
+//==============================
+// START
+//==============================
 
 loadCustomers();
