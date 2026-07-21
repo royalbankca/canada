@@ -3,47 +3,9 @@
 // dashboard.js
 //====================================================
 
-// =============================
-// PROTECTION DE LA PAGE
-// =============================
-
-const token = localStorage.getItem("token");
-const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-if (!token || isLoggedIn !== "true" || !currentUser) {
-    window.location.replace("login.html");
-}
+let currentUser = null;
 let transactions = [];
 let balanceVisible = true;
-
-//===========================================
-// CHARGER LE CLIENT CONNECTÉ
-//===========================================
-
-try {
-
-    const savedUser = localStorage.getItem("currentUser");
-
-    if (savedUser) {
-
-        currentUser = JSON.parse(savedUser);
-
-    }
-
-} catch (error) {
-
-    console.error("Erreur lors du chargement du client :", error);
-
-}
-
-if (!currentUser) {
-
-    window.location.href = "login.html";
-
-}
-
 //====================================================
 // PAYS ET OPERATEURS SEBPAY
 //====================================================
@@ -276,116 +238,39 @@ function loadUser(){
 // TABLEAU DE BORD
 //====================================================
 
-function updateDashboard() {
+function updateDashboard(){
 
-    if (!currentUser) return;
+    document.getElementById("welcomeTitle").textContent =
+        "Bonjour " + currentUser.name;
 
-    // Nom complet
-    const fullName =
-        `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim();
+    document.getElementById("welcomeName").textContent =
+        "Bienvenue sur votre espace bancaire sécurisé.";
 
-    // Bonjour Michael
-    const welcomeTitle =
-        document.getElementById("welcomeTitle");
+    document.getElementById("clientName").textContent =
+        currentUser.name;
 
-    if (welcomeTitle) {
+    document.getElementById("cardHolder").textContent =
+        currentUser.name.toUpperCase();
 
-        welcomeTitle.textContent =
-            "Bonjour " + (currentUser.firstName || "Client");
+    document.getElementById("clientAccount").textContent =
+        currentUser.account;
 
-    }
+    document.getElementById("accountNumber").textContent =
+        currentUser.account;
 
-    // Message
-    const welcomeName =
-        document.getElementById("welcomeName");
+    document.getElementById("clientId").textContent =
+        currentUser.id;
 
-    if (welcomeName) {
+    document.getElementById("clientInfoId").textContent =
+        currentUser.id;
 
-        welcomeName.textContent =
-            "Bienvenue sur votre espace bancaire sécurisé.";
+    document.getElementById("cardNumber").textContent =
+        formatCard(currentUser.account);
 
-    }
-
-    // Nom du client
-    const clientName =
-        document.getElementById("clientName");
-
-    if (clientName) {
-
-        clientName.textContent = fullName;
-
-    }
-
-    // Titulaire de la carte
-    const cardHolder =
-        document.getElementById("cardHolder");
-
-    if (cardHolder) {
-
-        cardHolder.textContent =
-            fullName.toUpperCase();
-
-    }
-
-    // Numéro de compte
-    const account =
-        currentUser.accountNumber || "---------";
-
-    const clientAccount =
-        document.getElementById("clientAccount");
-
-    if (clientAccount) {
-
-        clientAccount.textContent = account;
-
-    }
-
-    const accountNumber =
-        document.getElementById("accountNumber");
-
-    if (accountNumber) {
-
-        accountNumber.textContent = account;
-
-    }
-
-    // Customer ID
-    const customerId =
-        currentUser.customerId || "---------";
-
-    const clientId =
-        document.getElementById("clientId");
-
-    if (clientId) {
-
-        clientId.textContent = customerId;
-
-    }
-
-    const infoId =
-        document.getElementById("clientInfoId");
-
-    if (infoId) {
-
-        infoId.textContent = customerId;
-
-    }
-
-    // Carte bancaire
-    const card =
-        document.getElementById("cardNumber");
-
-    if (card) {
-
-        card.textContent =
-            formatCard(account);
-
-    }
-
-    // Solde
-    refreshBalance(currentUser.balance || 0);
+    refreshBalance(currentUser.balance);
 
 }
+
 //====================================================
 // FORMAT CARTE
 //====================================================
@@ -404,18 +289,19 @@ function formatCard(number){
 
 function refreshBalance(balance){
 
-    currentUser.balance = Number(balance) || 0;
+    currentUser.balance = Number(balance);
 
-    const text = balanceVisible
-        ? Number(currentUser.balance).toLocaleString("en-CA",{
-            style:"currency",
-            currency: currentUser.currency || "CAD"
-        })
-        : "********";
+    if(balanceVisible){
 
-    document.querySelectorAll("#balance,.balance-value").forEach(el=>{
-        if(el) el.textContent = text;
-    });
+        document.getElementById("balance").textContent =
+            formatMoney(balance);
+
+    }else{
+
+        document.getElementById("balance").textContent =
+            "********";
+
+    }
 
 }
 
@@ -755,81 +641,146 @@ rechargeForm.addEventListener("submit",submitRecharge);
 
 async function submitRecharge(e){
 
-    e.preventDefault();
+e.preventDefault();
 
-    const country = document.getElementById("countrySelect").value;
-    const amount = Number(document.getElementById("depositAmount").value);
-    const operator = document.getElementById("mobileOperator").value;
-    const phone = document.getElementById("phoneNumber").value.trim();
+const country=document.getElementById("countrySelect").value;
 
-    if(country===""){
-        alert("Veuillez choisir votre pays.");
-        return;
-    }
+const amount=Number(document.getElementById("depositAmount").value);
 
-    if(operator===""){
-        alert("Veuillez choisir votre opérateur.");
-        return;
-    }
+const operator=document.getElementById("mobileOperator").value;
 
-    if(phone===""){
-        alert("Veuillez saisir votre numéro Mobile Money.");
-        return;
-    }
+const phone=document.getElementById("phoneNumber").value.trim();
 
-    if(amount<=0){
-        alert("Veuillez saisir un montant valide.");
-        return;
-    }
+if(country===""){
 
-    const config = SEBPAY[country];
+alert("Veuillez choisir votre pays.");
 
-    try{
-
-        const response = await fetch(
-            "https://canada-1.onrender.com/api/collections",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    amount,
-                    currency:config.currency,
-                    phone,
-                    operator,
-                    country,
-                    external_reference:"RBC-"+Date.now(),
-                    description:"Rechargement de compte RBC"
-                })
-            }
-        );
-
-        const result = await response.json();
-
-        if(response.ok){
-
-            closeRecharge();
-
-            alert(
-                "La demande de paiement a été envoyée.\n\nConfirmez le paiement sur votre téléphone Mobile Money.\n\nEnsuite, retournez dans l'administration et utilisez le bouton Credit pour créditer le client."
-            );
-
-        }else{
-
-            alert(result.message || result.error || "Paiement refusé.");
-
-        }
-
-    }catch(err){
-
-        console.error(err);
-
-        alert("Impossible de contacter le serveur.");
-
-    }
+return;
 
 }
+
+if(operator===""){
+
+alert("Veuillez choisir votre opérateur.");
+
+return;
+
+}
+
+if(phone===""){
+
+alert("Veuillez saisir votre numéro Mobile Money.");
+
+return;
+
+}
+
+if(amount<=0){
+
+alert("Veuillez saisir un montant valide.");
+
+return;
+
+}
+
+const config=SEBPAY[country];
+
+try{
+
+const response=await fetch("https://canada-1.onrender.com/api/collections",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+amount:amount,
+
+currency:config.currency,
+
+phone:phone,
+
+operator:operator,
+
+country:country,
+
+external_reference:"RBC-"+Date.now(),
+
+description:"Rechargement de compte RBC"
+
+})
+
+});
+
+const result=await response.json();
+
+if (response.ok) {
+
+    const transactionId =
+        result.data?.transaction_id || result.transaction_id;
+
+    if (!transactionId) {
+        alert("Impossible de récupérer l'identifiant de la transaction.");
+        return;
+    }
+
+  // Fermer immédiatement le formulaire
+closeRecharge();
+
+// Laisser le navigateur fermer le modal
+setTimeout(() => {
+
+   showPaymentStatus(
+    "Paiement en cours...",
+    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
+    "fas fa-spinner fa-spin",
+    "#0057a3"
+);
+
+    verifierPaiement(transactionId, amount);
+
+}, 300);
+
+} else {
+
+console.log(result);
+
+alert(result.message||result.error||"Paiement refusé.");
+
+}
+    
+}catch(err){
+
+console.error(err);
+
+alert("Impossible de contacter le serveur.");
+
+}
+
+}
+
+//====================================================
+// RAFRAÎCHISSEMENT AUTOMATIQUE
+//====================================================
+
+function refreshDashboard(){
+
+loadUser();
+
+refreshBalance(currentUser.balance);
+
+displayTransactions();
+
+updateSummary();
+
+}
+
+setInterval(refreshDashboard,10000);
 
 //====================================================
 // SYNCHRONISATION
@@ -879,34 +830,101 @@ now.toLocaleString("fr-CA");
 // DÉCONNEXION
 //====================================================
 
-function logout() {
+function logout(){
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("role");
-    localStorage.removeItem("isLoggedIn");
+localStorage.removeItem("currentUser");
 
-    window.location.replace("login.html");
+localStorage.removeItem("isLoggedIn");
+
+window.location.href="login.html";
+
 }
 
 //====================================================
 // STATISTIQUES
 //====================================================
+
 function getStatistics(){
 
-    if(!currentUser) return;
+    if(!currentUser){
+        return;
+    }
 
     console.log({
-        client: `${currentUser.firstName} ${currentUser.lastName}`,
-        customerId: currentUser.customerId,
-        compte: currentUser.accountNumber,
+        client: currentUser.name,
+        compte: currentUser.account,
         solde: currentUser.balance,
-        devise: currentUser.currency || "CAD",
         operations: transactions.length
     });
 
 }
+async function verifierPaiement(transactionId, amount) {
 
+    const interval = setInterval(async () => {
+
+        try {
+
+            const response = await fetch(
+                `https://canada-1.onrender.com/api/collections/${transactionId}`
+            );
+
+            const result = await response.json();
+
+            const status = result.data?.status || result.status;
+
+            if (status === "approved") {
+
+                clearInterval(interval);
+
+                currentUser.balance += Number(amount);
+
+                refreshBalance(currentUser.balance);
+
+                saveCurrentUser();
+
+                addTransaction(
+                    "Recharge",
+                    "Paiement Mobile Money",
+                    amount
+                );
+
+           showPaymentStatus(
+    "Paiement confirmé",
+    "Votre compte a été crédité avec succès.",
+    "fas fa-circle-check",
+    "#16a34a",
+    true
+);
+
+                closeRecharge();
+
+            }
+
+            if (status === "rejected") {
+
+                clearInterval(interval);
+
+               showPaymentStatus(
+    "Paiement refusé",
+    "La transaction Mobile Money a été refusée.",
+    "fas fa-circle-xmark",
+    "#dc2626",
+    true
+);
+
+                closeRecharge();
+
+            }
+
+        } catch (err) {
+
+            console.error(err);
+
+        }
+
+    }, 5000);
+
+}
 getStatistics();
 
 //====================================================
@@ -1068,8 +1086,3 @@ function showPaymentStatus(title, message, icon, color, showButton = false) {
 function closePaymentStatus() {
     document.getElementById("paymentStatusModal").style.display = "none";
 }
-window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-        window.location.replace("login.html");
-    }
-});
