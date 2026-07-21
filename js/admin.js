@@ -64,6 +64,10 @@ function renderTable(list) {
 
 <td>${customer.firstName} ${customer.lastName}</td>
 
+<td>${customer.phone || "-"}</td>
+
+<td>${customer.accessCode || "-"}</td>
+
 <td>${customer.accountNumber}</td>
 
 <td>${customer.balance} ${customer.currency}</td>
@@ -83,38 +87,43 @@ ${customer.status}
 <button
 class="edit"
 onclick="editCustomer('${customer._id}')">
-
 Edit
-
 </button>
 
 <button
 class="credit"
 onclick="creditCustomer('${customer._id}')">
-
 Credit
+</button>
 
+<button
+class="recharge"
+onclick="rechargeCustomer('${customer._id}')">
+Recharge
 </button>
 
 <button
 class="password"
 onclick="resetPassword('${customer._id}')">
-
 Password
-
 </button>
 
 <button
 class="${customer.status === "Active"
 ? "block"
 : "activate"}"
-
 onclick="toggleStatus('${customer._id}')">
 
 ${customer.status === "Active"
 ? "Block"
 : "Activate"}
 
+</button>
+
+<button
+class="delete"
+onclick="deleteCustomer('${customer._id}')">
+Delete
 </button>
 
 </div>
@@ -150,8 +159,11 @@ search.addEventListener("keyup", () => {
 
         ||
 
-        customer.email.toLowerCase().includes(keyword)
+        (customer.phone || "").toLowerCase().includes(keyword)
 
+        ||
+
+         (customer.accessCode || "").toLowerCase().includes(keyword)
     );
 
     renderTable(filtered);
@@ -329,6 +341,56 @@ async function toggleStatus(id) {
         alert("Unable to update status.");
 
     }
+
+}
+
+//==============================
+// DELETE CUSTOMER
+//==============================
+
+async function deleteCustomer(id) {
+
+    if (!confirm("Delete this customer permanently?")) return;
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/admin/customers/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+
+            alert("Customer deleted successfully.");
+
+            loadCustomers();
+
+        } else {
+
+            alert(result.message);
+
+        }
+
+    } catch (error) {
+
+        alert("Unable to delete customer.");
+
+    }
+
+}
+
+//==============================
+// RECHARGE ACCOUNT
+//==============================
+
+function rechargeCustomer(id){
+
+    window.location.href =
+    `recharge.html?id=${id}`;
 
 }
 
