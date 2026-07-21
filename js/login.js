@@ -21,33 +21,54 @@ document.addEventListener("DOMContentLoaded", function () {
         const access = document.getElementById("access").value.trim();
         const password = document.getElementById("password").value.trim();
 
-        // =============================
-        // ADMIN
-        // =============================
+// =============================
+// ADMIN
+// =============================
 
-        if (
-            client === "ADMIN" &&
-            access === "ADMIN" &&
-            password === "ADMIN123"
-        ) {
+if (client === "ADMIN") {
 
-            localStorage.setItem("role", "admin");
-            localStorage.setItem("isLoggedIn", "true");
+    try {
 
-            localStorage.setItem("currentUser", JSON.stringify({
-                id: "ADMIN",
-                name: "Administrator",
-                access: "ADMIN",
-                account: "ADMIN",
-                balance: 0
-            }));
+        const response = await fetch(`${API_URL}/api/admin/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                client,
+                access,
+                password
+            })
+        });
 
-            alert("Connexion Administrateur réussie.");
+        const data = await response.json();
 
-            window.location.href = "admin.html";
-
+        if (!response.ok) {
+            alert(data.message || "Identifiants administrateur incorrects.");
             return;
         }
+
+        localStorage.setItem("role", "admin");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("token", data.token);
+
+        localStorage.setItem("currentUser", JSON.stringify(data.admin));
+
+        alert("Connexion Administrateur réussie.");
+
+        window.location.href = "admin.html";
+
+        return;
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Impossible de contacter le serveur.");
+        return;
+
+    }
+
+}
 
         // =============================
         // CLIENT
