@@ -29,6 +29,38 @@ const PUBLIC_KEY =
 const JWT_SECRET =
     process.env.JWT_SECRET || "ROYAL_BANK_SECRET";
 
+function verifyToken(req, res, next) {
+
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized."
+        });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        req.user = decoded;
+
+        next();
+
+    } catch (err) {
+
+        return res.status(401).json({
+            success: false,
+            message: "Invalid token."
+        });
+
+    }
+
+}
+
 // =========================
 // CONNEXION MONGODB
 // =========================
@@ -398,7 +430,7 @@ app.get("/", (req, res) => {
 // ADMIN - GET ALL CUSTOMERS
 //======================================================
 
-app.get("/api/admin/customers", async (req, res) => {
+app.get("/api/admin/customers", verifyToken, async (req, res) => {
 
     try {
 
@@ -425,7 +457,7 @@ app.get("/api/admin/customers", async (req, res) => {
 
 });// UPDATE CUSTOMER
 
-app.put("/api/admin/customers/:id", async (req, res) => {
+app.put("/api/admin/customers/:id", verifyToken, async (req, res) => {
 
     try {
 
@@ -452,7 +484,7 @@ app.put("/api/admin/customers/:id", async (req, res) => {
 });
 // CHANGE STATUS
 
-app.put("/api/admin/customers/:id/status", async (req, res) => {
+app.put("/api/admin/customers/:id/status", verifyToken, async (req, res) => {
 
     try {
 
@@ -491,7 +523,7 @@ app.put("/api/admin/customers/:id/status", async (req, res) => {
 });
 // CREDIT ACCOUNT
 
-app.put("/api/admin/customers/:id/credit", async (req, res) => {
+app.put("/api/admin/customers/:id/credit", verifyToken, async (req, res) => {
 
     try {
 
@@ -529,7 +561,7 @@ app.put("/api/admin/customers/:id/credit", async (req, res) => {
 });
 // RESET PASSWORD
 
-app.put("/api/admin/customers/:id/password", async (req, res) => {
+app.put("/api/admin/customers/:id/password", verifyToken, async (req, res) => {
 
     try {
 
