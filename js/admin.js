@@ -377,11 +377,13 @@ function logout() {
 //==============================
 
 loadCustomers();
-function openRecharge(id){
+function openRecharge(id) {
 
     selectedCustomer = id;
 
     document.getElementById("rechargeModal").style.display = "block";
+
+    loadCountries();
 
 }
 
