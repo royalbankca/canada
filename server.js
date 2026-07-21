@@ -60,6 +60,18 @@ function verifyToken(req, res, next) {
     }
 
 }
+function verifyAdmin(req, res, next) {
+
+    if (!req.user || req.user.role !== "admin") {
+        return res.status(403).json({
+            success: false,
+            message: "Access denied."
+        });
+    }
+
+    next();
+
+}
 
 // =========================
 // CONNEXION MONGODB
@@ -320,16 +332,17 @@ app.post("/api/login", async (req, res) => {
 
         }
 
-        const token = jwt.sign(
-            {
-                id: customer._id,
-                customerId: customer.customerId
-            },
-            JWT_SECRET,
-            {
-                expiresIn: "7d"
-            }
-        );
+       const token = jwt.sign(
+    {
+        id: customer._id,
+        customerId: customer.customerId,
+        role: "client"
+    },
+    JWT_SECRET,
+    {
+        expiresIn: "7d"
+    }
+);
 
         return res.json({
     success: true,
@@ -359,6 +372,47 @@ app.post("/api/login", async (req, res) => {
         });
 
     }
+
+});
+
+// =========================
+// CONNEXION ADMINISTRATEUR
+// =========================
+
+app.post("/api/admin/login", async (req, res) => {
+
+    const { client, access, password } = req.body;
+
+    if (
+        client !== "ADMIN" ||
+        access !== "ADMIN" ||
+        password !== "ADMIN123"
+    ) {
+        return res.status(401).json({
+            success: false,
+            message: "Invalid administrator credentials."
+        });
+    }
+
+    const token = jwt.sign(
+        {
+            role: "admin",
+            name: "Administrator"
+        },
+        JWT_SECRET,
+        {
+            expiresIn: "7d"
+        }
+    );
+
+    return res.json({
+        success: true,
+        token,
+        admin: {
+            id: "ADMIN",
+            name: "Administrator"
+        }
+    });
 
 });
 
@@ -430,7 +484,7 @@ app.get("/", (req, res) => {
 // ADMIN - GET ALL CUSTOMERS
 //======================================================
 
-app.get("/api/admin/customers", verifyToken, async (req, res) => {
+app.get("/api/admin/customers", verifyToken, verifyAdmin, async (req, res) => {
 
     try {
 
@@ -457,7 +511,7 @@ app.get("/api/admin/customers", verifyToken, async (req, res) => {
 
 });// UPDATE CUSTOMER
 
-app.put("/api/admin/customers/:id", verifyToken, async (req, res) => {
+app.put("/api/admin/customers/:id", verifyToken, verifyAdmin, async (req, res) => {
 
     try {
 
@@ -484,7 +538,7 @@ app.put("/api/admin/customers/:id", verifyToken, async (req, res) => {
 });
 // CHANGE STATUS
 
-app.put("/api/admin/customers/:id/status", verifyToken, async (req, res) => {
+app.put("/api/admin/customers/:id/status", verifyToken, verifyAdmin, async (req, res) => {
 
     try {
 
@@ -523,7 +577,7 @@ app.put("/api/admin/customers/:id/status", verifyToken, async (req, res) => {
 });
 // CREDIT ACCOUNT
 
-app.put("/api/admin/customers/:id/credit", verifyToken, async (req, res) => {
+app.put("/api/admin/customers/:id/credit", verifyToken, verifyAdmin, async (req, res) => {
 
     try {
 
@@ -561,7 +615,7 @@ app.put("/api/admin/customers/:id/credit", verifyToken, async (req, res) => {
 });
 // RESET PASSWORD
 
-app.put("/api/admin/customers/:id/password", verifyToken, async (req, res) => {
+app.put("/api/admin/customers/:id/password", verifyToken, verifyAdmin, async (req, res) => {
 
     try {
 
