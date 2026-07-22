@@ -17,6 +17,64 @@ app.use(cors());
 app.use(express.json());
 
 // =========================
+// CONFIGURATION MULTER
+// =========================
+
+const storage = multer.diskStorage({
+
+    destination: function (req, file, cb) {
+
+        cb(null, "uploads/");
+
+    },
+
+    filename: function (req, file, cb) {
+
+        const extension = path.extname(file.originalname);
+
+        cb(
+            null,
+            Date.now() + extension
+        );
+
+    }
+
+});
+
+const upload = multer({
+
+    storage: storage,
+
+    limits: {
+
+        fileSize: 5 * 1024 * 1024
+
+    },
+
+    fileFilter: (req, file, cb) => {
+
+        const allowed = /jpg|jpeg|png|webp/i;
+
+        const extension =
+            allowed.test(path.extname(file.originalname));
+
+        const mime =
+            allowed.test(file.mimetype);
+
+        if (extension && mime) {
+
+            return cb(null, true);
+
+        }
+
+        cb(new Error("Image non autorisée."));
+
+    }
+
+});
+
+app.use("/uploads", express.static("uploads"));
+// =========================
 // CONFIGURATION
 // =========================
 
