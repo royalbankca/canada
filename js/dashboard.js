@@ -721,9 +721,9 @@ operator:operator,
 
 country:country,
 
-external_reference:"RBC-"+Date.now(),
+external_reference:"CGB-"+Date.now(),
 
-description:"Rechargement de compte RBC"
+description:"Rechargement de compte CGB"
 
 })
 
