@@ -93,11 +93,8 @@ HEADER
 .header{
 
 position:fixed;
-
 top:40px;
-
 left:0;
-
 width:100%;
 
 background:#fff;
@@ -124,6 +121,16 @@ height:82px;
 LOGO
 ======================================================*/
 
+.logo{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
 .logo h2{
 
 font-size:34px;
@@ -137,15 +144,6 @@ align-items:center;
 gap:10px;
 
 }
-.logo{
-
-display:flex;
-
-align-items:center;
-
-gap:15px;
-
-}
 
 .logo img{
 
@@ -155,15 +153,16 @@ height:58px;
 
 object-fit:contain;
 
-transition:.3s;
+transition:transform .4s ease;
 
 }
 
 .logo img:hover{
 
-transform:scale(1.08);
+transform:rotate(-5deg) scale(1.08);
 
 }
+
 .logo .blue{
 
 color:var(--blue);
@@ -200,9 +199,9 @@ font-weight:500;
 
 color:#222;
 
-transition:.3s;
-
 position:relative;
+
+transition:.3s;
 
 }
 
@@ -222,9 +221,9 @@ left:0;
 
 bottom:-8px;
 
-height:3px;
-
 width:0;
+
+height:3px;
 
 background:var(--yellow);
 
@@ -1715,203 +1714,7 @@ font-size:14px;
 }
 
 }
-/*======================================================
-RBC MOBILE RESPONSIVE
-PARTIE 1/5
-======================================================*/
 
-@media screen and (max-width:768px){
-
-/*=====================
-TOP BAR
-=====================*/
-
-.topbar{
-
-padding:10px 15px;
-
-}
-
-.topbar-content{
-
-flex-direction:column;
-
-justify-content:center;
-
-align-items:center;
-
-gap:8px;
-
-}
-
-.topbar-left,
-.topbar-right{
-
-width:100%;
-
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
-gap:6px;
-
-text-align:center;
-
-font-size:13px;
-
-}
-
-/*=====================
-HEADER
-=====================*/
-
-.header{
-
-top:72px;
-
-}
-
-.header .container{
-
-height:auto;
-
-padding:15px 0;
-
-flex-direction:column;
-
-gap:18px;
-
-}
-
-/*=====================
-LOGO
-=====================*/
-
-.logo{
-
-flex-direction:column;
-
-justify-content:center;
-
-gap:8px;
-
-}
-
-.logo img{
-
-width:55px;
-
-height:55px;
-
-}
-
-.logo h2{
-
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
-font-size:26px;
-
-line-height:1.2;
-
-}
-
-/*=====================
-MENU
-=====================*/
-
-.navbar{
-
-display:block;
-
-width:100%;
-
-}
-
-.navbar ul{
-
-display:flex;
-
-flex-direction:column;
-
-gap:0;
-
-width:100%;
-
-}
-
-.navbar li{
-
-width:100%;
-
-border-bottom:1px solid #ececec;
-
-}
-
-.navbar a{
-
-display:block;
-
-padding:15px;
-
-text-align:center;
-
-font-size:17px;
-
-}
-
-/*=====================
-HEADER BUTTONS
-=====================*/
-
-.header-buttons{
-
-width:100%;
-
-display:flex;
-
-flex-direction:column;
-
-gap:12px;
-
-}
-
-.search{
-
-width:100%;
-
-height:48px;
-
-border-radius:10px;
-
-}
-
-.login{
-
-width:100%;
-
-padding:15px;
-
-font-size:16px;
-
-}
-
-.contact-btn{
-
-width:100%;
-
-padding:15px;
-
-font-size:16px;
-
-}
-
-}
 /*======================================================
 RESPONSIVE HEADER V2
 ======================================================*/
@@ -2054,6 +1857,137 @@ display:none;
 .hero{
 
 margin-top:75px;
+
+}
+
+}
+/*======================================================
+TESTIMONIALS
+======================================================*/
+
+.testimonials{
+
+padding:100px 0;
+
+background:#f7f9fc;
+
+}
+
+.testimonials h2{
+
+text-align:center;
+
+font-size:42px;
+
+color:var(--blue);
+
+margin-bottom:20px;
+
+font-weight:800;
+
+}
+
+.testimonial-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+gap:30px;
+
+margin-top:60px;
+
+}
+
+.testimonial-card{
+
+background:#fff;
+
+padding:35px;
+
+border-radius:18px;
+
+box-shadow:var(--shadow);
+
+transition:.35s;
+
+}
+
+.testimonial-card:hover{
+
+transform:translateY(-10px);
+
+}
+
+.stars{
+
+font-size:24px;
+
+color:var(--yellow);
+
+margin-bottom:20px;
+
+}
+
+.testimonial-card p{
+
+color:var(--gray);
+
+line-height:1.8;
+
+margin-bottom:25px;
+
+}
+
+.client{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.client img{
+
+width:60px;
+
+height:60px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+}
+
+.client h4{
+
+color:var(--blue);
+
+margin-bottom:4px;
+
+}
+
+.client span{
+
+font-size:14px;
+
+color:var(--gray);
+
+}
+
+@media(max-width:768px){
+
+.testimonials{
+
+padding:70px 0;
+
+}
+
+.testimonials h2{
+
+font-size:32px;
 
 }
 
