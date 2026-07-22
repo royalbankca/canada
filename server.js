@@ -201,19 +201,19 @@ app.post("/api/open-account", async (req, res) => {
 
       const lastCustomer = await Customer
     .findOne({
-        customerId: { $regex: /^RBC\d+$/ }
+        customerId: { $regex: /^CGB\d+$/ }
     })
     .sort({ customerId: -1 });
 
-let customerId = "RBC100090001";
+let customerId = "CGB100090001";
 
 if (lastCustomer) {
     const number = parseInt(
-        lastCustomer.customerId.replace("RBC", ""),
+        lastCustomer.customerId.replace("CGB", ""),
         10
     );
 
-    customerId = "RBC" + (number + 1);
+    customerId = "CGB" + (number + 1);
 }
 
         const accountNumber =
@@ -266,7 +266,7 @@ if (lastCustomer) {
 
        return res.status(201).json({
     success: true,
-    message: "Royal Bank Canada account successfully created.",
+    message: "Canada Global Bank account successfully created.",
 
     customerId: customer.customerId,
     accessCode: customer.accessCode,
@@ -457,7 +457,7 @@ app.post("/api/webhook", (req, res) => {
 
 app.get("/", (req, res) => {
 
-    res.send("RBC Royal Bank API - Serveur opérationnel");
+    res.send("CGB Canada Global Bank API - Serveur opérationnel");
 
 });
 
