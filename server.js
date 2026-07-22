@@ -372,6 +372,7 @@ if (customer.status === "Blocked") {
     success: true,
     token,
     customer: {
+        _id: customer._id,
         customerId: customer.customerId,
         firstName: customer.firstName,
         lastName: customer.lastName,
