@@ -19,8 +19,8 @@
     ];
 
     if (publicPages.includes(page)) {
-        return;
-    }
+    return;
+}
 
     // Vérification de la session
     if (!loggedIn || loggedIn !== "true") {
@@ -60,15 +60,41 @@
 
     }
 
-    // Empêcher le retour via le cache
-    window.addEventListener("pageshow", function (event) {
+    //==================================================
+// GESTION DU CACHE DU NAVIGATEUR
+//==================================================
 
-        if (event.persisted) {
+window.addEventListener("pageshow", function (event) {
 
-            window.location.reload();
+    const loggedIn = localStorage.getItem("isLoggedIn");
 
-        }
+    if (event.persisted || loggedIn !== "true") {
 
-    });
+        window.location.replace("login.html");
 
+    }
+
+});
+//==================================================
+// EMPÊCHER LE RETOUR APRÈS DÉCONNEXION
+//==================================================
+
+window.history.pushState(null, "", window.location.href);
+
+window.onpopstate = function () {
+
+    const loggedIn = localStorage.getItem("isLoggedIn");
+
+    if (loggedIn !== "true") {
+
+        window.location.replace("login.html");
+
+    } else {
+
+        window.history.pushState(null, "", window.location.href);
+
+    }
+
+};
+    
 })();
