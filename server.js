@@ -292,7 +292,7 @@ if (customer.status === "Blocked") {
 
     return res.status(403).json({
         success: false,
-        message: "Votre compte est bloqué. Veuillez contacter votre administrateur."
+        message: "Votre compte a été temporairement bloqué. Pour obtenir de l'aide ou réactiver votre accès, veuillez contacter notre service clientèle au +1 902 600 0017."
     });
 
 }
