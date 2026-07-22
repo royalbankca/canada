@@ -273,7 +273,13 @@ function updateDashboard(){
         formatCard(currentUser.accountNumber);
 
     refreshBalance(currentUser.balance);
+    
+if (currentUser.profileImage) {
 
+    document.getElementById("clientAvatar").src =
+        "https://canada-1.onrender.com" +
+        currentUser.profileImage;
+    
 }
 
 //====================================================
