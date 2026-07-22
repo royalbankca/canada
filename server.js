@@ -6,6 +6,8 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 
 const Customer = require("./models/Customer");
 
