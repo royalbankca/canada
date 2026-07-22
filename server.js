@@ -375,6 +375,7 @@ if (customer.status === "Blocked") {
         customerId: customer.customerId,
         firstName: customer.firstName,
         lastName: customer.lastName,
+        profileImage: customer.profileImage,
         email: customer.email,
         phone: customer.phone,
         accountNumber: customer.accountNumber,
@@ -661,6 +662,46 @@ app.delete("/api/admin/customers/:id", async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Unable to delete customer."
+        });
+
+    }
+
+});
+//======================================================
+// UPLOAD PHOTO DE PROFIL
+//======================================================
+
+app.post("/api/customers/:id/photo", upload.single("photo"), async (req, res) => {
+
+    try {
+
+        const customer = await Customer.findById(req.params.id);
+
+        if (!customer) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found."
+            });
+
+        }
+
+        customer.profileImage = "/uploads/" + req.file.filename;
+
+        await customer.save();
+
+        res.json({
+            success: true,
+            image: customer.profileImage
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Impossible d'enregistrer la photo."
         });
 
     }
