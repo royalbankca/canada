@@ -288,6 +288,15 @@ app.post("/api/login", async (req, res) => {
 
         }
 
+if (customer.status === "Blocked") {
+
+    return res.status(403).json({
+        success: false,
+        message: "Votre compte est bloqué. Veuillez contacter votre administrateur."
+    });
+
+}
+        
         const token = jwt.sign(
             {
                 id: customer._id,
