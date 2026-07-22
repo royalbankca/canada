@@ -31,12 +31,30 @@ function changeAgencyImage(imageSrc) {
 const menuToggle = document.getElementById("menuToggle");
 const navbar = document.querySelector(".navbar");
 
-if(menuToggle){
+if (menuToggle && navbar) {
 
-menuToggle.addEventListener("click",()=>{
+    menuToggle.addEventListener("click", () => {
 
-navbar.classList.toggle("active");
+        navbar.classList.toggle("active");
 
-});
+    });
 
 }
+
+// ====================================================
+// FAQ
+// ====================================================
+
+const faqButtons = document.querySelectorAll(".faq-question");
+
+faqButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const item = button.parentElement;
+
+        item.classList.toggle("active");
+
+    });
+
+});
