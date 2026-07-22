@@ -830,13 +830,17 @@ now.toLocaleString("fr-CA");
 // DÉCONNEXION
 //====================================================
 
-function logout(){
+function logout() {
 
-localStorage.removeItem("currentUser");
+    // Supprimer toutes les données de session
+    localStorage.clear();
+    sessionStorage.clear();
 
-localStorage.removeItem("isLoggedIn");
+    // Empêcher le navigateur de conserver la page
+    window.history.pushState(null, "", "login.html");
 
-window.location.href="login.html";
+    // Redirection sans conserver la page dans l'historique
+    window.location.replace("login.html");
 
 }
 
