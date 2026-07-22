@@ -28,3 +28,15 @@ function changeAgencyImage(imageSrc) {
     }, 200);
 
 }
+const menuToggle = document.getElementById("menuToggle");
+const navbar = document.querySelector(".navbar");
+
+if(menuToggle){
+
+menuToggle.addEventListener("click",()=>{
+
+navbar.classList.toggle("active");
+
+});
+
+}
