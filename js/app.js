@@ -1,10 +1,10 @@
 // ====================================================
-// RBC Royal Bank
+// CGB Canada Global Bank
 // Fichier JavaScript principal
 // ====================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("RBC Royal Bank - Application chargée.");
+    console.log("CGB Canada Global Bank - Application chargée.");
 });
 
 // ====================================================
