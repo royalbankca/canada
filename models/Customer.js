@@ -55,6 +55,11 @@ const customerSchema = new mongoose.Schema({
         default: "CAD"
     },
 
+    profileImage: {
+    type: String,
+    default: ""
+},
+
     password: {
         type: String,
         required: true
