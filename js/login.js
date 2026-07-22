@@ -1,5 +1,5 @@
 // =======================================
-// RBC BANK LOGIN
+// CGB BANK LOGIN
 // =======================================
 
 const API_URL = "https://canada-1.onrender.com";
