@@ -1666,3 +1666,52 @@ font-size:38px;
 }
 
 }
+/*======================================================
+HEADER CONTACT BUTTON
+======================================================*/
+
+.contact-btn{
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+padding:12px 22px;
+
+height:48px;
+
+background:#ffffff;
+
+border:2px solid #e5e5e5;
+
+border-radius:10px;
+
+font-size:15px;
+font-weight:600;
+
+color:#222;
+
+white-space:nowrap;
+
+transition:.3s;
+
+}
+
+.contact-btn:hover{
+
+background:#0051A5;
+color:#fff;
+border-color:#0051A5;
+
+}
+
+@media(max-width:768px){
+
+.contact-btn{
+
+padding:10px 16px;
+font-size:14px;
+
+}
+
+}
