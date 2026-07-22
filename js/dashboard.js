@@ -281,6 +281,7 @@ if (currentUser.profileImage) {
         currentUser.profileImage;
     
 }
+}
 
 //====================================================
 // FORMAT CARTE
@@ -1105,4 +1106,70 @@ function showPaymentStatus(title, message, icon, color, showButton = false) {
 
 function closePaymentStatus() {
     document.getElementById("paymentStatusModal").style.display = "none";
+}
+//====================================================
+// PHOTO DE PROFIL
+//====================================================
+
+const photoInput = document.getElementById("photoInput");
+const changePhotoBtn = document.getElementById("changePhotoBtn");
+
+if (photoInput && changePhotoBtn) {
+
+    changePhotoBtn.addEventListener("click", () => {
+
+        photoInput.click();
+
+    });
+
+    photoInput.addEventListener("change", async () => {
+
+        if (!photoInput.files.length) return;
+
+        const formData = new FormData();
+
+        formData.append("photo", photoInput.files[0]);
+
+        try {
+
+            const response = await fetch(
+                `https://canada-1.onrender.com/api/customers/${currentUser._id}/photo`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+
+                currentUser.profileImage = data.image;
+
+                localStorage.setItem(
+                    "currentUser",
+                    JSON.stringify(currentUser)
+                );
+
+                document.getElementById("clientAvatar").src =
+                    "https://canada-1.onrender.com" + data.image;
+
+                alert("Photo de profil mise à jour.");
+
+            } else {
+
+                alert(data.message);
+
+            }
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert("Erreur lors de l'envoi de la photo.");
+
+        }
+
+    });
+
 }
