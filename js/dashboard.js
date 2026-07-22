@@ -242,32 +242,35 @@ function loadUser(){
 
 function updateDashboard(){
 
+    const fullName =
+        `${currentUser.firstName} ${currentUser.lastName}`;
+
     document.getElementById("welcomeTitle").textContent =
-        "Bonjour " + currentUser.name;
+        "Bonjour " + currentUser.firstName;
 
     document.getElementById("welcomeName").textContent =
         "Bienvenue sur votre espace bancaire sécurisé.";
 
     document.getElementById("clientName").textContent =
-        currentUser.name;
+        fullName;
 
     document.getElementById("cardHolder").textContent =
-        currentUser.name.toUpperCase();
+        fullName.toUpperCase();
 
     document.getElementById("clientAccount").textContent =
-        currentUser.account;
+        currentUser.accountNumber;
 
     document.getElementById("accountNumber").textContent =
-        currentUser.account;
+        currentUser.accountNumber;
 
     document.getElementById("clientId").textContent =
-        currentUser.id;
+        currentUser.customerId;
 
     document.getElementById("clientInfoId").textContent =
-        currentUser.id;
+        currentUser.customerId;
 
     document.getElementById("cardNumber").textContent =
-        formatCard(currentUser.account);
+        formatCard(currentUser.accountNumber);
 
     refreshBalance(currentUser.balance);
 
@@ -857,10 +860,15 @@ function getStatistics(){
     }
 
     console.log({
-        client: currentUser.name,
-        compte: currentUser.account,
+
+        client: currentUser.firstName + " " + currentUser.lastName,
+
+        compte: currentUser.accountNumber,
+
         solde: currentUser.balance,
+
         operations: transactions.length
+
     });
 
 }
