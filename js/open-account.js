@@ -1,5 +1,5 @@
 //======================================================
-// ROYAL BANK CANADA
+// Canada Global Bank
 // OPEN ACCOUNT
 //======================================================
 
@@ -75,7 +75,7 @@ async function createAccount(e) {
     } catch (error) {
 
         console.error(error);
-        alert("Unable to contact the Royal Bank Canada server.");
+        alert("Unable to contact the Canada Global Bank server.");
 
     }
 
