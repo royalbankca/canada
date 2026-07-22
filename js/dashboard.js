@@ -223,13 +223,15 @@ function loadUser(){
 
     const data = localStorage.getItem("currentUser");
 
-    if(!data){
+    if (!data) {
 
-        window.location.href="login.html";
-        return;
+    localStorage.clear();
+    sessionStorage.clear();
 
-    }
+    window.location.replace("login.html");
+    return;
 
+}
     currentUser = JSON.parse(data);
 
 }
