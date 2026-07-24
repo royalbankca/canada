@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
+const { randomUUID } = require("crypto");
 
 const Customer = require("./models/Customer");
 
@@ -80,11 +81,8 @@ app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 3000;
 
-const SECRET_KEY =
-    process.env.SEBPAY_SECRET_KEY || "VOTRE_SECRET_KEY";
-
-const PUBLIC_KEY =
-    process.env.SEBPAY_PUBLIC_KEY || "VOTRE_PUBLIC_KEY";
+const PAWAPAY_API_KEY =
+    process.env.PAWAPAY_API_KEY;
 
 const JWT_SECRET =
     process.env.JWT_SECRET || "ROYAL_BANK_SECRET";
