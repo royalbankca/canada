@@ -186,31 +186,31 @@ app.post("/api/collections", async (req, res) => {
         
     // Tu pourras ajouter les autres pays progressivement.
         
+const CORRESPONDENTS = {
+    BJ: {
+        mtn: "MTN_MOMO_BEN",
+        moov: "MOOV_MONEY_BEN"
+    }
+};
+
 const payload = {
     depositId: randomUUID(),
     amount: String(localAmount),
     currency: config.currency,
     country: config.code,
+    correspondent: CORRESPONDENTS[country][operator],
     customerTimestamp: new Date().toISOString(),
     statementDescription: "Canada Global Bank",
     metadata: {
         customerId
     },
-
     payer: {
-
         type: "MSISDN",
-
         address: {
-
             value: phone
-
         }
-
     }
-
 };
-
         const customer = await Customer.findOne({ customerId });
 
 if (!customer) {
