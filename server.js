@@ -107,38 +107,174 @@ app.post("/api/collections", async (req, res) => {
 
     try {
 
-        const payload = {
-            amount: req.body.amount,
-            currency: req.body.currency,
-            phone: req.body.phone,
-            operator: req.body.operator,
-            country: req.body.country,
-            external_reference: req.body.external_reference,
-            description: req.body.description,
-            callback_url:
-                "https://canada-1.onrender.com/api/webhook"
+        const {
+
+            usdAmount,
+
+            phone,
+
+            operator,
+
+            country
+
+        } = req.body;
+
+        const COUNTRIES = {
+
+            BJ: { code: "BEN", currency: "XOF" },
+            BF: { code: "BFA", currency: "XOF" },
+            CI: { code: "CIV", currency: "XOF" },
+            SN: { code: "SEN", currency: "XOF" },
+            TG: { code: "TGO", currency: "XOF" },
+            GW: { code: "GNB", currency: "XOF" },
+            ML: { code: "MLI", currency: "XOF" },
+            NE: { code: "NER", currency: "XOF" },
+
+            CM: { code: "CMR", currency: "XAF" },
+            CG: { code: "COG", currency: "XAF" },
+            GA: { code: "GAB", currency: "XAF" },
+            TD: { code: "TCD", currency: "XAF" },
+
+            CD: { code: "COD", currency: "CDF" },
+
+            GH: { code: "GHA", currency: "GHS" },
+
+            GM: { code: "GMB", currency: "GMD" },
+
+            GN: { code: "GIN", currency: "GNF" },
+
+            NG: { code: "NGA", currency: "NGN" }
+
         };
 
-        const response = await axios.post(
-            "https://newapi.sebpay.bj/api/v1/collections",
-            payload,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Secret-Key": SECRET_KEY,
-                    "X-Public-Key": PUBLIC_KEY
-                }
-            }
+        const USD_RATES = {
+
+            XOF: 600,
+
+            XAF: 600,
+
+            CDF: 2850,
+
+            GHS: 12,
+
+            GMD: 72,
+
+            GNF: 8700,
+
+            NGN: 1650
+
+        };
+
+        const config = COUNTRIES[country];
+
+        if (!config) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message: "Pays non pris en charge."
+
+            });
+
+        }
+
+        const localAmount = Math.round(
+
+            Number(usdAmount) *
+
+            USD_RATES[config.currency]
+
         );
 
-        res.status(200).json(response.data);
+        const CORRESPONDENTS = {
+
+    BJ: {
+        mtn: "MTN_MOMO_BEN",
+        moov: "MOOV_BEN"
+    },
+
+    CM: {
+        mtn: "MTN_MOMO_CMR",
+        orange: "ORANGE_CMR"
+    }
+
+    // Tu pourras ajouter les autres pays progressivement.
+};
+
+const correspondent =
+    CORRESPONDENTS[country]?.[operator];
+
+if (!correspondent) {
+
+    return res.status(400).json({
+
+        success: false,
+
+        message: "Opérateur non pris en charge."
+
+    });
+
+}
+
+const payload = {
+
+    depositId: randomUUID(),
+
+    amount: String(localAmount),
+
+    currency: config.currency,
+
+    country: config.code,
+
+    correspondent,
+
+    customerTimestamp: new Date().toISOString(),
+
+    statementDescription: "Canada Global Bank",
+
+    payer: {
+
+        type: "MSISDN",
+
+        address: {
+
+            value: phone
+
+        }
+
+    }
+
+};
+
+const response = await axios.post(
+
+    "https://api.pawapay.io/v1/deposits",
+
+    payload,
+
+    {
+
+        headers: {
+
+            Authorization: `Bearer ${PAWAPAY_API_KEY}`,
+
+            "Content-Type": "application/json"
+
+        }
+
+    }
+
+);
+
+return res.status(200).json(response.data);
 
     } catch (error) {
 
         console.error(
-            "Erreur SebPay :",
-            error.response?.data || error.message
-        );
+    "Erreur PawaPay :",
+    error.response?.data || error.message
+);
 
         res.status(500).json({
             success: false,
