@@ -319,28 +319,32 @@ console.log("correspondent =", CORRESPONDENTS[country]?.[operator]);
 
 console.log("Payload :", JSON.stringify(payload, null, 2));
 const response = await axios.post(
-
     "https://api.pawapay.io/v1/deposits",
-
     payload,
-
     {
-
         headers: {
-
             Authorization: `Bearer ${PAWAPAY_API_KEY}`,
-
             "Content-Type": "application/json"
-
         }
-
     }
-
 );
 
 console.log("STATUS :", response.status);
 console.log("BODY :", JSON.stringify(response.data, null, 2));
-        
+
+// Si PawaPay rejette immédiatement le dépôt
+if (response.data.status === "REJECTED") {
+
+    await Transaction.updateOne(
+        { depositId: payload.depositId },
+        {
+            status: "FAILED"
+        }
+    );
+
+    return res.status(400).json(response.data);
+}
+
 return res.status(200).json(response.data);
 
    } catch (error) {
