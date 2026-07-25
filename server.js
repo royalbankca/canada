@@ -12,6 +12,8 @@ const { randomUUID } = require("crypto");
 
 const Customer = require("./models/Customer");
 
+const Transaction = require("./models/Transaction");
+
 const app = express();
 
 app.use(cors());
@@ -110,17 +112,13 @@ app.post("/api/collections", async (req, res) => {
         const {
 
     usdAmount,
-
     phone,
-
     operator,
-
     country,
-
     customerId
-
 } = req.body;
-
+        
+       
         const COUNTRIES = {
 
             BJ: { code: "BEN", currency: "XOF" },
@@ -182,28 +180,11 @@ app.post("/api/collections", async (req, res) => {
         }
 
         const localAmount = Math.round(
-
-            Number(usdAmount) *
-
-            USD_RATES[config.currency]
-
-        );
-
-        const CORRESPONDENTS = {
-
-    BJ: {
-        mtn: "MTN_MOMO_BEN",
-        moov: "MOOV_BEN"
-    },
-
-    CM: {
-        mtn: "MTN_MOMO_CMR",
-        orange: "ORANGE_CMR"
-    }
-
+    Number(usdAmount) *
+    USD_RATES[config.currency]
+);
+        
     // Tu pourras ajouter les autres pays progressivement.
-};
-
 const correspondent =
     CORRESPONDENTS[country]?.[operator];
 
@@ -252,6 +233,31 @@ const payload = {
     }
 
 };
+
+        const customer = await Customer.findOne({ customerId });
+
+if (!customer) {
+
+    return res.status(404).json({
+        success: false,
+        message: "Customer not found."
+    });
+
+}
+
+    await Transaction.create({
+
+    depositId: payload.depositId,
+
+    customerId,
+
+    amount: Number(usdAmount),
+
+    currency: customer.currency,
+
+    status: "PENDING"
+
+});
 
 const response = await axios.post(
 
@@ -456,16 +462,16 @@ app.post("/api/login", async (req, res) => {
 
         const customer = await Customer.findOne({ customerId });
 
-        if (!customer) {
+if (!customer) {
 
-            return res.status(404).json({
-                success: false,
-                message: "Customer not found."
-            });
+    return res.status(404).json({
+        success: false,
+        message: "Customer not found."
+    });
 
-        }
+}
 
-        if (customer.accessCode !== accessCode) {
+if (customer.accessCode !== accessCode) {
 
     return res.status(401).json({
         success: false,
@@ -473,7 +479,7 @@ app.post("/api/login", async (req, res) => {
     });
 
 }
-
+        
         const passwordValid = await bcrypt.compare(
             password,
             customer.password
@@ -597,16 +603,33 @@ app.post("/api/webhook", async (req, res) => {
 
 const customerId = metadata?.customerId;
 
-        const customer = await Customer.findOne({ customerId });
+       const transaction = await Transaction.findOne({ depositId });
 
-if (customer) {
+if (!transaction) {
 
-    customer.balance += Number(amount);
+    return res.sendStatus(404);
+
+}
+
+const customer = await Customer.findOne({
+    customerId: transaction.customerId
+});
+
+if (
+    customer &&
+    status === "COMPLETED" &&
+    transaction.status !== "COMPLETED"
+) {
+    customer.balance += transaction.amount;
 
     await customer.save();
 
+    transaction.status = "COMPLETED";
+
+    await transaction.save();
+
     console.log(
-        `Compte ${customer.customerId} crédité de ${amount} ${currency}`
+        `Compte ${customer.customerId} crédité de ${transaction.amount} ${transaction.currency}`
     );
 
 }
