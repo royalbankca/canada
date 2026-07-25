@@ -608,20 +608,28 @@ document.getElementById("rechargeModal").style.display="flex";
 
 function closeRecharge(){
 
-document.getElementById("rechargeModal").style.display="none";
+    document.getElementById("rechargeModal").style.display = "none";
 
-document.getElementById("rechargeForm").reset();
+    document.getElementById("rechargeForm").reset();
 
-document.getElementById("mobileOperator").innerHTML=
-'<option value="">Choisissez d\'abord un pays</option>';
+    document.getElementById("mobileOperator").innerHTML =
+    '<option value="">Choisissez d\'abord un pays</option>';
 
-document.getElementById("mobileOperator").disabled=true;
+    document.getElementById("mobileOperator").disabled = true;
 
-document.getElementById("phoneNumber").disabled=true;
+    document.getElementById("phoneNumber").disabled = true;
 
-document.getElementById("phoneNumber").placeholder="Numéro Mobile Money";
+    document.getElementById("phoneNumber").placeholder = "Numéro Mobile Money";
+
+    const submitButton = document.querySelector("#rechargeForm button[type='submit']");
+
+    if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Confirmer";
+    }
 
 }
+
 
 //====================================================
 // SERVICES VERROUILLÉS
@@ -682,7 +690,17 @@ async function submitRecharge(e){
 
     const config = SEBPAY[country];
 
-    try{
+// Bloquer les doubles clics
+const submitButton = rechargeForm.querySelector('button[type="submit"]');
+
+if (submitButton.disabled) {
+    return;
+}
+
+submitButton.disabled = true;
+submitButton.textContent = "Traitement...";
+
+try{
 
         console.log("currentUser =", currentUser);
         console.log("customerId =", currentUser.customerId);
@@ -726,34 +744,34 @@ if (!transactionId) {
     return;
 }
 
-            closeRecharge();
+          showPaymentStatus(
+    "Paiement en cours...",
+    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
+    "fas fa-spinner fa-spin",
+    "#0057a3"
+);
 
-            setTimeout(() => {
-
-                showPaymentStatus(
-                    "Paiement en cours...",
-                    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
-                    "fas fa-spinner fa-spin",
-                    "#0057a3"
-                );
-
-                verifierPaiement(transactionId, amount);
-
-            },300);
+verifierPaiement(transactionId, amount);
 
         }else{
 
-            console.log(result);
-            alert(result.message || result.error || "Paiement refusé.");
+    submitButton.disabled = false;
+    submitButton.textContent = "Confirmer";
 
-        }
+    console.log(result);
+    alert(result.message || result.error || "Paiement refusé.");
+
+}
 
     }catch(err){
 
-        console.error(err);
-        alert("Impossible de contacter le serveur.");
+    submitButton.disabled = false;
+    submitButton.textContent = "Confirmer";
 
-    }
+    console.error(err);
+    alert("Impossible de contacter le serveur.");
+
+}
 
 }
 
