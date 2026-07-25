@@ -263,6 +263,20 @@ if (!customer) {
 
 }
 
+        // Vérifie si un paiement est déjà en cours
+const existingTransaction = await Transaction.findOne({
+    customerId,
+    status: "PENDING"
+});
+
+if (existingTransaction) {
+    return res.status(409).json({
+        success: false,
+        message: "Un paiement est déjà en cours. Veuillez patienter."
+    });
+}
+        
+
     await Transaction.create({
 
     depositId: payload.depositId,
