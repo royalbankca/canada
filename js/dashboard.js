@@ -53,27 +53,14 @@ currency:"EUR",
 prefix:"+352",
 operators:[]
 },
-    
+
 BJ:{
 name:"Bénin",
 currency:"XOF",
 prefix:"+229",
 operators:[
 {name:"MTN Money",slug:"mtn"},
-{name:"Moov Money",slug:"moov"},
-{name:"Celtiis Money",slug:"celtiis"},
-{name:"Coris Money",slug:"coris"}
-]
-},
-
-BF:{
-name:"Burkina Faso",
-currency:"XOF",
-prefix:"+226",
-operators:[
-{name:"Moov Money",slug:"moov"},
-{name:"Orange Money",slug:"orange"},
-{name:"Wallet LigdiCash",slug:"wligdicash"}
+{name:"Moov Money",slug:"moov"}
 ]
 },
 
@@ -82,8 +69,7 @@ name:"Cameroun",
 currency:"XAF",
 prefix:"+237",
 operators:[
-{name:"MTN Money",slug:"mtn"},
-{name:"Orange Money",slug:"orange"}
+{name:"MTN Money",slug:"mtn"}
 ]
 },
 
@@ -92,6 +78,7 @@ name:"Congo",
 currency:"XAF",
 prefix:"+242",
 operators:[
+{name:"Airtel Money",slug:"airtel"},
 {name:"MTN Money",slug:"mtn"}
 ]
 },
@@ -102,19 +89,7 @@ currency:"XOF",
 prefix:"+225",
 operators:[
 {name:"MTN Money",slug:"mtn"},
-{name:"Orange Money",slug:"orange"},
-{name:"Moov Money",slug:"moov"},
-{name:"Wave Money",slug:"wave"}
-]
-},
-
-GA:{
-name:"Gabon",
-currency:"XAF",
-prefix:"+241",
-operators:[
-{name:"Airtel Money",slug:"airtel"},
-{name:"Moov Money",slug:"moov"}
+{name:"Orange Money",slug:"orange"}
 ]
 },
 
@@ -190,29 +165,45 @@ operators:[
 {name:"MTN Money",slug:"mtn"}
 ]
 },
-
+    
+GA:{
+name:"Gabon",
+currency:"XAF",
+prefix:"+241",
+operators:[
+{name:"Airtel Money",slug:"airtel"}
+]
+},
+    
 CD:{
-name:"RDC",
+name:"RDC (CDF)",
 currency:"CDF",
 prefix:"+243",
 operators:[
-{name:"Afri Money",slug:"afrimoney"},
 {name:"Airtel Money",slug:"airtel"},
-{name:"Mpesa",slug:"mpesa"},
 {name:"Orange Money",slug:"orange"},
 {name:"Vodacom",slug:"vodacom"}
 ]
 },
 
+CDUSD:{
+name:"RDC (USD)",
+currency:"USD",
+prefix:"+243",
+operators:[
+{name:"Airtel Money",slug:"airtel"},
+{name:"Orange Money",slug:"orange"},
+{name:"Vodacom",slug:"vodacom"}
+]
+},
+    
 SN:{
 name:"Sénégal",
 currency:"XOF",
 prefix:"+221",
 operators:[
-{name:"E-money",slug:"emoney"},
 {name:"Free Money",slug:"free"},
-{name:"Orange Money",slug:"orange"},
-{name:"Wave Money",slug:"wave"}
+{name:"Orange Money",slug:"orange"}
 ]
 },
 
