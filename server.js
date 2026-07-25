@@ -235,7 +235,9 @@ if (!customer) {
     status: "PENDING"
 
 });
-
+console.log("===== REQUÊTE PAWAPAY =====");
+console.log("API KEY :", PAWAPAY_API_KEY ? "OK" : "MANQUANTE");
+console.log("Payload :", JSON.stringify(payload, null, 2));
 const response = await axios.post(
 
     "https://api.pawapay.io/v1/deposits",
@@ -258,19 +260,22 @@ const response = await axios.post(
 
 return res.status(200).json(response.data);
 
-    } catch (error) {
+   } catch (error) {
 
-        console.error(
-    "Erreur PawaPay :",
-    error.response?.data || error.message
-);
+    console.error("===== ERREUR COMPLÈTE =====");
+    console.error("Message :", error.message);
 
-        res.status(500).json({
-            success: false,
-            error: error.response?.data || error.message
-        });
-
+    if (error.response) {
+        console.error("Status :", error.response.status);
+        console.error("Data :", JSON.stringify(error.response.data, null, 2));
     }
+
+    res.status(500).json({
+        success: false,
+        error: error.response?.data || error.message
+    });
+
+}
 
 });
 // =========================
