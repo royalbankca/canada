@@ -707,16 +707,24 @@ async function submitRecharge(e){
         );
 
         const result = await response.json();
+        
+        console.log(result);
 
         if(response.ok){
 
-            const transactionId =
-                result.data?.transaction_id || result.transaction_id;
+           console.log("Réponse serveur :", result);
 
-            if(!transactionId){
-                alert("Impossible de récupérer l'identifiant de la transaction.");
-                return;
-            }
+const transactionId =
+    result.depositId ||
+    result.data?.depositId ||
+    result.transaction_id ||
+    result.data?.transaction_id;
+
+if (!transactionId) {
+    console.log(result);
+    alert("Impossible de récupérer l'identifiant de la transaction.");
+    return;
+}
 
             closeRecharge();
 
