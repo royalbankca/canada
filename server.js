@@ -318,6 +318,9 @@ const response = await axios.post(
 
 );
 
+console.log("STATUS :", response.status);
+console.log("BODY :", JSON.stringify(response.data, null, 2));
+        
 return res.status(200).json(response.data);
 
    } catch (error) {
