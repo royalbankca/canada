@@ -874,49 +874,49 @@ async function verifierPaiement(transactionId, amount) {
 
             const status = result.data?.status || result.status;
 
-            if (status === "approved") {
+console.log("Statut :", status);
 
-                clearInterval(interval);
+if (status === "COMPLETED") {
 
-                currentUser.balance += Number(amount);
+    clearInterval(interval);
 
-                refreshBalance(currentUser.balance);
+    currentUser.balance += Number(amount);
 
-                saveCurrentUser();
+    refreshBalance(currentUser.balance);
 
-                addTransaction(
-                    "Recharge",
-                    "Paiement Mobile Money",
-                    amount
-                );
+    saveCurrentUser();
 
-           showPaymentStatus(
-    "Paiement confirmé",
-    "Votre compte a été crédité avec succès.",
-    "fas fa-circle-check",
-    "#16a34a",
-    true
-);
+    addTransaction(
+        "Recharge",
+        "Paiement Mobile Money",
+        amount
+    );
 
-                closeRecharge();
+    showPaymentStatus(
+        "Paiement confirmé",
+        "Votre compte a été crédité avec succès.",
+        "fas fa-circle-check",
+        "#16a34a",
+        true
+    );
 
-            }
+    closeRecharge();
+}
 
-            if (status === "rejected") {
+if (status === "FAILED") {
 
-                clearInterval(interval);
+    clearInterval(interval);
 
-               showPaymentStatus(
-    "Paiement refusé",
-    "La transaction Mobile Money a été refusée.",
-    "fas fa-circle-xmark",
-    "#dc2626",
-    true
-);
+    showPaymentStatus(
+        "Paiement refusé",
+        "La transaction Mobile Money a été refusée.",
+        "fas fa-circle-xmark",
+        "#dc2626",
+        true
+    );
 
-                closeRecharge();
-
-            }
+    closeRecharge();
+}
 
         } catch (err) {
 
