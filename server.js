@@ -579,6 +579,7 @@ if (customer.status === "Blocked") {
 // RÉCUPÉRER LE STATUT D'UN DÉPÔT PAWAPAY
 // =========================
 app.get("/api/collections/:id", async (req, res) => {
+
     try {
 
         const response = await axios.get(
@@ -590,6 +591,58 @@ app.get("/api/collections/:id", async (req, res) => {
                 }
             }
         );
+
+        console.log("===== RÉPONSE PAWAPAY =====");
+console.log(JSON.stringify(response.data, null, 2));
+
+        const deposit = response.data.data;
+
+        console.log("Deposit =", deposit);
+
+const transaction = await Transaction.findOne({
+    depositId: req.params.id
+});
+
+console.log("Transaction =", transaction);
+
+        if (
+            transaction &&
+            deposit &&
+            deposit.status === "COMPLETED" &&
+            transaction.status !== "COMPLETED"
+        ) {
+
+            const customer = await Customer.findOne({
+                customerId: transaction.customerId
+            });
+
+            if (customer) {
+
+                customer.balance += transaction.amount;
+
+                await customer.save();
+
+                transaction.status = "COMPLETED";
+
+                await transaction.save();
+
+                console.log(
+                    `Compte ${customer.customerId} crédité de ${transaction.amount}`
+                );
+            }
+        }
+
+        if (
+            transaction &&
+            deposit &&
+            deposit.status === "FAILED" &&
+            transaction.status !== "FAILED"
+        ) {
+
+            transaction.status = "FAILED";
+            await transaction.save();
+
+        }
 
         res.json(response.data);
 
@@ -606,6 +659,7 @@ app.get("/api/collections/:id", async (req, res) => {
         });
 
     }
+
 });
 
 // =========================
