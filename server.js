@@ -109,15 +109,17 @@ app.post("/api/collections", async (req, res) => {
 
         const {
 
-            usdAmount,
+    usdAmount,
 
-            phone,
+    phone,
 
-            operator,
+    operator,
 
-            country
+    country,
 
-        } = req.body;
+    customerId
+
+} = req.body;
 
         const COUNTRIES = {
 
@@ -232,6 +234,10 @@ const payload = {
     customerTimestamp: new Date().toISOString(),
 
     statementDescription: "Canada Global Bank",
+
+    metadata: {
+    customerId
+},
 
     payer: {
 
@@ -536,19 +542,17 @@ if (customer.status === "Blocked") {
 });
 
 // =========================
-// RÉCUPÉRER LE STATUT D'UNE TRANSACTION
+// RÉCUPÉRER LE STATUT D'UN DÉPÔT PAWAPAY
 // =========================
-
 app.get("/api/collections/:id", async (req, res) => {
-
     try {
 
         const response = await axios.get(
-            `https://newapi.sebpay.bj/api/v1/collections/${req.params.id}`,
+            `https://api.pawapay.io/v2/deposits/${req.params.id}`,
             {
                 headers: {
-                    "X-Public-Key": PUBLIC_KEY,
-                    "X-Secret-Key": SECRET_KEY
+                    Authorization: `Bearer ${PAWAPAY_API_KEY}`,
+                    Accept: "application/json"
                 }
             }
         );
@@ -558,6 +562,7 @@ app.get("/api/collections/:id", async (req, res) => {
     } catch (error) {
 
         console.error(
+            "Erreur statut PawaPay :",
             error.response?.data || error.message
         );
 
@@ -567,21 +572,62 @@ app.get("/api/collections/:id", async (req, res) => {
         });
 
     }
-
 });
 
 // =========================
-// WEBHOOK SEBPAY
+// WEBHOOK PAWAPAY
 // =========================
 
-app.post("/api/webhook", (req, res) => {
+app.post("/api/webhook", async (req, res) => {
 
-    console.log("Notification SebPay :", req.body);
+    try {
 
-    // Ici tu pourras traiter automatiquement
-    // les paiements validés, refusés ou expirés.
+        console.log("Notification PawaPay :", req.body);
 
-    res.sendStatus(200);
+       const {
+
+    depositId,
+    status,
+    amount,
+    currency,
+    country,
+    metadata
+
+} = req.body;
+
+const customerId = metadata?.customerId;
+
+        const customer = await Customer.findOne({ customerId });
+
+if (customer) {
+
+    customer.balance += Number(amount);
+
+    await customer.save();
+
+    console.log(
+        `Compte ${customer.customerId} crédité de ${amount} ${currency}`
+    );
+
+}
+
+        if (status === "FAILED") {
+
+            console.log(
+                `Dépôt ${depositId} échoué.`
+            );
+
+        }
+
+        res.sendStatus(200);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.sendStatus(500);
+
+    }
 
 });
 
