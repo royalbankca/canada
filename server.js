@@ -111,11 +111,13 @@ app.post("/api/collections", async (req, res) => {
 
         const {
 
-    usdAmount,
+    amount,
     phone,
     operator,
     country,
+    currency,
     customerId
+
 } = req.body;
         
        
@@ -155,6 +157,8 @@ app.post("/api/collections", async (req, res) => {
 
             CDF: 2850,
 
+            USD: 1,
+
             GHS: 12,
 
             GMD: 72,
@@ -166,6 +170,10 @@ app.post("/api/collections", async (req, res) => {
         };
 
         const config = COUNTRIES[country];
+
+        if (country === "CD" && currency === "USD") {
+    config.currency = "USD";
+}
 
         if (!config) {
 
@@ -179,10 +187,7 @@ app.post("/api/collections", async (req, res) => {
 
         }
 
-        const localAmount = Math.round(
-    Number(usdAmount) *
-    USD_RATES[config.currency]
-);
+        const localAmount = Number(amount);
         
     // Tu pourras ajouter les autres pays progressivement.
         
@@ -233,13 +238,19 @@ const CORRESPONDENTS = {
     TG: {
         moov: "MOOV_TGO",
         tmoney: "TMONEY_TGO"
-    }
+    },
+
+    CD: {
+    airtel: "AIRTEL_COD",
+    orange: "ORANGE_COD",
+    vodacom: "VODACOM_COD"
+}
 };
 
 const payload = {
     depositId: randomUUID(),
     amount: String(localAmount),
-    currency: config.currency,
+    currency: currency,
     country: config.code,
     correspondent: CORRESPONDENTS[country][operator],
     customerTimestamp: new Date().toISOString(),
@@ -277,15 +288,15 @@ if (existingTransaction) {
 }
         
 
-    await Transaction.create({
+   await Transaction.create({
 
     depositId: payload.depositId,
 
     customerId,
 
-    amount: Number(usdAmount),
+    amount: Number(amount),
 
-    currency: customer.currency,
+    currency: currency,
 
     status: "PENDING"
 
