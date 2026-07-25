@@ -653,124 +653,99 @@ rechargeForm.addEventListener("submit",submitRecharge);
 
 async function submitRecharge(e){
 
-e.preventDefault();
+    e.preventDefault();
 
-const country=document.getElementById("countrySelect").value;
+    const country = document.getElementById("countrySelect").value;
+    const amount = Number(document.getElementById("depositAmount").value);
+    const operator = document.getElementById("mobileOperator").value;
+    const phone = document.getElementById("phoneNumber").value.trim();
 
-const amount=Number(document.getElementById("depositAmount").value);
-
-const operator=document.getElementById("mobileOperator").value;
-
-const phone=document.getElementById("phoneNumber").value.trim();
-
-if(country===""){
-
-alert("Veuillez choisir votre pays.");
-
-return;
-
-}
-
-if(operator===""){
-
-alert("Veuillez choisir votre opérateur.");
-
-return;
-
-}
-
-if(phone===""){
-
-alert("Veuillez saisir votre numéro Mobile Money.");
-
-return;
-
-}
-
-if(amount<=0){
-
-alert("Veuillez saisir un montant valide.");
-
-return;
-
-}
-
-const config=SEBPAY[country];
-
-try{
-
-const response=await fetch("https://canada-1.onrender.com/api/collections",{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body: JSON.stringify({
-
-    usdAmount: amount,
-
-    amount: amount,
-
-    currency: config.currency,
-
-    phone: phone,
-
-    operator: operator,
-
-    country: country
-
-})
-
-});
-
-const result=await response.json();
-
-if (response.ok) {
-
-    const transactionId =
-        result.data?.transaction_id || result.transaction_id;
-
-    if (!transactionId) {
-        alert("Impossible de récupérer l'identifiant de la transaction.");
+    if(country===""){
+        alert("Veuillez choisir votre pays.");
         return;
     }
 
-  // Fermer immédiatement le formulaire
-closeRecharge();
+    if(operator===""){
+        alert("Veuillez choisir votre opérateur.");
+        return;
+    }
 
-// Laisser le navigateur fermer le modal
-setTimeout(() => {
+    if(phone===""){
+        alert("Veuillez saisir votre numéro Mobile Money.");
+        return;
+    }
 
-   showPaymentStatus(
-    "Paiement en cours...",
-    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
-    "fas fa-spinner fa-spin",
-    "#0057a3"
-);
+    if(amount<=0){
+        alert("Veuillez saisir un montant valide.");
+        return;
+    }
 
-    verifierPaiement(transactionId, amount);
+    const config = SEBPAY[country];
 
-}, 300);
+    try{
 
-} else {
+        console.log("currentUser =", currentUser);
+        console.log("customerId =", currentUser.customerId);
 
-console.log(result);
+        const response = await fetch(
+            "https://canada-1.onrender.com/api/collections",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+                    usdAmount: amount,
+                    amount: amount,
+                    currency: config.currency,
+                    phone: phone,
+                    operator: operator,
+                    country: country,
+                    customerId: currentUser.customerId
+                })
+            }
+        );
 
-alert(result.message||result.error||"Paiement refusé.");
+        const result = await response.json();
 
-}
-    
-}catch(err){
+        if(response.ok){
 
-console.error(err);
+            const transactionId =
+                result.data?.transaction_id || result.transaction_id;
 
-alert("Impossible de contacter le serveur.");
+            if(!transactionId){
+                alert("Impossible de récupérer l'identifiant de la transaction.");
+                return;
+            }
 
-}
+            closeRecharge();
+
+            setTimeout(() => {
+
+                showPaymentStatus(
+                    "Paiement en cours...",
+                    "Veuillez confirmer le paiement sur votre téléphone Mobile Money.",
+                    "fas fa-spinner fa-spin",
+                    "#0057a3"
+                );
+
+                verifierPaiement(transactionId, amount);
+
+            },300);
+
+        }else{
+
+            console.log(result);
+            alert(result.message || result.error || "Paiement refusé.");
+
+        }
+
+    }catch(err){
+
+        console.error(err);
+        alert("Impossible de contacter le serveur.");
+
+    }
 
 }
 
@@ -882,7 +857,7 @@ async function verifierPaiement(transactionId, amount) {
     const interval = setInterval(async () => {
 
         try {
-
+            
             const response = await fetch(
                 `https://canada-1.onrender.com/api/collections/${transactionId}`
             );
