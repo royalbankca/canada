@@ -189,7 +189,50 @@ app.post("/api/collections", async (req, res) => {
 const CORRESPONDENTS = {
     BJ: {
         mtn: "MTN_MOMO_BEN",
-        moov: "MOOV_MONEY_BEN"
+        moov: "MOOV_MONEY_BEN",
+        celtiis: "CELTIIS_CASH_BEN",
+        coris: "CORIS_MONEY_BEN"
+    },
+
+    BF: {
+        moov: "MOOV_BFA",
+        orange: "ORANGE_BFA"
+    },
+
+    CM: {
+        mtn: "MTN_MOMO_CMR",
+        orange: "ORANGE_CMR"
+    },
+
+    CI: {
+        mtn: "MTN_MOMO_CIV",
+        orange: "ORANGE_CIV",
+        moov: "MOOV_CIV"
+    },
+
+    GH: {
+        mtn: "MTN_MOMO_GHA",
+        airtel: "AIRTELTIGO_GHA"
+    },
+
+    GN: {
+        mtn: "MTN_GIN",
+        orange: "ORANGE_GIN"
+    },
+
+    ML: {
+        moov: "MOOV_MLI",
+        orange: "ORANGE_MLI"
+    },
+
+    SN: {
+        orange: "ORANGE_SEN",
+        free: "FREE_SEN"
+    },
+
+    TG: {
+        moov: "MOOV_TGO",
+        tmoney: "TMONEY_TGO"
     }
 };
 
@@ -237,6 +280,11 @@ if (!customer) {
 });
 console.log("===== REQUÊTE PAWAPAY =====");
 console.log("API KEY :", PAWAPAY_API_KEY ? "OK" : "MANQUANTE");
+
+console.log("country =", country);
+console.log("operator =", operator);
+console.log("correspondent =", CORRESPONDENTS[country]?.[operator]);
+
 console.log("Payload :", JSON.stringify(payload, null, 2));
 const response = await axios.post(
 
