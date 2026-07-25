@@ -244,9 +244,6 @@ const payload = {
     correspondent: CORRESPONDENTS[country][operator],
     customerTimestamp: new Date().toISOString(),
     statementDescription: "Canada Global Bank",
-    metadata: {
-        customerId
-    },
     payer: {
         type: "MSISDN",
         address: {
@@ -254,6 +251,7 @@ const payload = {
         }
     }
 };
+        
         const customer = await Customer.findOne({ customerId });
 
 if (!customer) {
