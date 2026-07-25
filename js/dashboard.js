@@ -750,7 +750,7 @@ try{
                     currency: config.currency,
                     phone: phone,
                     operator: operator,
-                    country: country,
+                    country: country === "CDUSD" ? "CD" : country,
                     customerId: currentUser.customerId
                 })
             }
