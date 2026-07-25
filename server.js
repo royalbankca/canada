@@ -185,40 +185,17 @@ app.post("/api/collections", async (req, res) => {
 );
         
     // Tu pourras ajouter les autres pays progressivement.
-const correspondent =
-    CORRESPONDENTS[country]?.[operator];
-
-if (!correspondent) {
-
-    return res.status(400).json({
-
-        success: false,
-
-        message: "Opérateur non pris en charge."
-
-    });
-
-}
-
+        
 const payload = {
-
     depositId: randomUUID(),
-
     amount: String(localAmount),
-
     currency: config.currency,
-
     country: config.code,
-
-    correspondent,
-
     customerTimestamp: new Date().toISOString(),
-
     statementDescription: "Canada Global Bank",
-
     metadata: {
-    customerId
-},
+        customerId
+    },
 
     payer: {
 
