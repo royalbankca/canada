@@ -193,7 +193,49 @@ operators:[
 {name:"T-Money",slug:"tmoney"}
 ]
 }
+,
 
+CA:{
+name:"Canada",
+currency:"CAD",
+prefix:"+1",
+operators:[]
+},
+
+US:{
+name:"États-Unis",
+currency:"USD",
+prefix:"+1",
+operators:[]
+},
+
+FR:{
+name:"France",
+currency:"EUR",
+prefix:"+33",
+operators:[]
+},
+
+BE:{
+name:"Belgique",
+currency:"EUR",
+prefix:"+32",
+operators:[]
+},
+
+CH:{
+name:"Suisse",
+currency:"CHF",
+prefix:"+41",
+operators:[]
+},
+
+LU:{
+name:"Luxembourg",
+currency:"EUR",
+prefix:"+352",
+operators:[]
+}
 };
 //====================================================
 // INITIALISATION
@@ -1006,6 +1048,22 @@ return;
 //====================================================
 
     
+if(SEBPAY[country].operators.length===0){
+
+operator.disabled=true;
+
+operator.innerHTML='<option value="">Aucun opérateur disponible</option>';
+
+phone.disabled=true;
+
+alert(
+"Vous etre pas autorisé a recharger depuis ce pays.\n\nVeuillez contacter votre conseiller bancaire."
+);
+
+return;
+
+}
+
 operator.disabled=false;
 
 operator.innerHTML='<option value="">Choisissez un opérateur</option>';
