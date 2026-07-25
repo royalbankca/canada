@@ -709,21 +709,19 @@ headers:{
 
 },
 
-body:JSON.stringify({
+body: JSON.stringify({
 
-amount:amount,
+    usdAmount: amount,
 
-currency:config.currency,
+    amount: amount,
 
-phone:phone,
+    currency: config.currency,
 
-operator:operator,
+    phone: phone,
 
-country:country,
+    operator: operator,
 
-external_reference:"CGB-"+Date.now(),
-
-description:"Rechargement de compte CGB"
+    country: country
 
 })
 
