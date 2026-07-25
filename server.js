@@ -187,7 +187,16 @@ app.post("/api/collections", async (req, res) => {
 
         }
 
-        const localAmount = Number(amount);
+        const rate = USD_RATES[config.currency];
+
+if (!rate) {
+    return res.status(400).json({
+        success: false,
+        message: "Devise non prise en charge."
+    });
+}
+
+const localAmount = Math.round(Number(amount) * rate);
         
     // Tu pourras ajouter les autres pays progressivement.
         
@@ -250,7 +259,7 @@ const CORRESPONDENTS = {
 const payload = {
     depositId: randomUUID(),
     amount: String(localAmount),
-    currency: currency,
+    currency: config.currency,
     country: config.code,
     correspondent: CORRESPONDENTS[country][operator],
     customerTimestamp: new Date().toISOString(),
