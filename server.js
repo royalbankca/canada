@@ -243,7 +243,7 @@ const payload = {
     country: config.code,
     correspondent: CORRESPONDENTS[country][operator],
     customerTimestamp: new Date().toISOString(),
-    statementDescription: "Canada Global Bank",
+    statementDescription: "Purchase",
     payer: {
         type: "MSISDN",
         address: {
