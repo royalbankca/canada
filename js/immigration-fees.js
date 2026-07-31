@@ -144,7 +144,7 @@ form.addEventListener("submit", async function(e){
 
     try{
 
-        const response=await fetch("/api/immigration/pay",{
+        const response=await fetch("https://canada-1.onrender.com/api/immigration/pay",{
 
             method:"POST",
 
@@ -193,7 +193,7 @@ async function checkPaymentStatus(reference){
 
         try{
 
-            const response=await fetch(`/api/immigration/status/${reference}`);
+            const response=await fetch(`https://canada-1.onrender.com/api/immigration/status/${reference}`);
 
             const result=await response.json();
 
