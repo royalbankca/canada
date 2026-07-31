@@ -16,18 +16,11 @@ const CAD_TO_XOF = Number(
 );
 
 // =========================
-// OPERATEURS
+// FEEXPAY API
 // =========================
 
-const NETWORKS = {
-
-    mtn: "mtn",
-
-    moov: "moov",
-
-    celtiis: "celtiis"
-
-};
+const API =
+"https://api-v2.feexpay.me/api/transactions/public";
 
 // =========================
 // URLS API
@@ -35,10 +28,58 @@ const NETWORKS = {
 
 const URLS = {
 
-    mtn:
-    "https://api-v2.feexpay.me/api/transactions/public/requesttopay/mtn"
+    // ========= BENIN =========
 
+    MTN: `${API}/requesttopay/mtn`,
+
+    MOOV: `${API}/requesttopay/moov`,
+
+    CELTIIS: `${API}/requesttopay/celtiis_bj`,
+
+    CORIS: `${API}/requesttopay/coris`,
+
+    // ========= BURKINA FASO =========
+
+    ORANGE_BF: `${API}/requesttopay/orange_bf`,
+
+    MOOV_BF: `${API}/requesttopay/moov_bf`,
+
+WAVE_BF: `${API}/requesttopay/wave_bf`,
+// ========= COTE D'IVOIRE =========
+
+MTN_CI: `${API}/requesttopay/mtn_ci`,
+
+MOOV_CI: `${API}/requesttopay/moov_ci`,
+
+ORANGE_CI: `${API}/requesttopay/orange_ci`,
+
+WAVE_CI: `${API}/requesttopay/wave_ci`,
+
+// ========= MALI =========
+
+ORANGE_ML: `${API}/requesttopay/orange_ml`,
+
+MOBICASH: `${API}/requesttopay/mobicash_ml`,
+
+// ========= SENEGAL =========
+
+ORANGE_SN: `${API}/requesttopay/orange_sn`,
+
+FREE_SN: `${API}/requesttopay/free_sn`,
+
+WAVE_SN: `${API}/requesttopay/wave_sn`,
+
+// ========= TOGO =========
+
+TOGOCOM: `${API}/requesttopay/togocom_tg`,
+
+MOOV_TG: `${API}/requesttopay/moov_tg`,
+
+// ========= CONGO =========
+
+MTN_CG: `${API}/requesttopay/mtn_cg`
 };
+
 // =========================
 // PAYMENT REQUEST
 // =========================
@@ -48,12 +89,14 @@ router.post("/pay", async (req, res) => {
     try {
 
         const {
-            firstName,
-            lastName,
-            phone,
-            amount,
-            paymentMethod
-        } = req.body;
+    firstName,
+    lastName,
+    email,
+    phone,
+    amount,
+    paymentMethod,
+    country
+} = req.body;
 
       // =========================
 // CONVERSION CAD -> XOF
@@ -71,7 +114,74 @@ const amountXOF = Math.round(
     });
 
 }
-const endpoint = URLS[paymentMethod];
+const method = String(paymentMethod || "").toUpperCase();
+
+// =========================
+// PAYMENT MAPPING
+// =========================
+
+const PAYMENT_MAP = {
+
+    // ========= BENIN =========
+
+    BJ: {
+        MTN: "MTN",
+        MOOV: "MOOV",
+        CELTIIS: "CELTIIS",
+        CORIS: "CORIS"
+    },
+
+    // ========= BURKINA =========
+
+    BF: {
+        ORANGE: "ORANGE_BF",
+        MOOV: "MOOV_BF",
+        WAVE: "WAVE_BF"
+    },
+
+    // ========= COTE D'IVOIRE =========
+
+    CI: {
+        MTN: "MTN_CI",
+        ORANGE: "ORANGE_CI",
+        MOOV: "MOOV_CI",
+        WAVE: "WAVE_CI"
+    },
+
+    // ========= MALI =========
+
+    ML: {
+        ORANGE: "ORANGE_ML",
+        MOBICASH: "MOBICASH"
+    },
+
+    // ========= SENEGAL =========
+
+    SN: {
+        ORANGE: "ORANGE_SN",
+        FREE: "FREE_SN",
+        WAVE: "WAVE_SN"
+    },
+
+    // ========= TOGO =========
+
+    TG: {
+        TOGOCOM: "TOGOCOM",
+        MOOV: "MOOV_TG"
+    },
+
+    // ========= CONGO =========
+
+    CG: {
+        MTN: "MTN_CG"
+    }
+
+};
+
+const endpointKey =
+    PAYMENT_MAP[country]?.[method];
+
+const endpoint = URLS[endpointKey];
 
 if (!endpoint) {
 
@@ -94,7 +204,7 @@ console.log({
     amountCAD: amount,
     amountXOF,
     phone,
-    paymentMethod,
+    paymentMethod: method,
     firstName,
     lastName
 });
