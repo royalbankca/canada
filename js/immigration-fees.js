@@ -180,7 +180,7 @@ form.addEventListener("submit", async function(e){
 
     e.preventDefault();
 
-    if(currentAmount<=0){
+    if(currentAmount <= 0){
 
         alert("Please select an immigration service.");
 
@@ -190,43 +190,41 @@ form.addEventListener("submit", async function(e){
 
     showLoading();
 
-    const payload={
+    const payload = {
 
-    firstName:document.getElementById("firstName").value.trim(),
+        firstName: document.getElementById("firstName").value.trim(),
 
-    lastName:document.getElementById("lastName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
 
-    email:document.getElementById("email").value.trim(),
+        email: document.getElementById("email").value.trim(),
 
-    phone:document.getElementById("phone").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
 
-    country:country.value,
+        country: country.value,
 
-    service:service.value,
+        service: service.value,
 
-    amount:currentAmount,
+        amount: currentAmount,
 
-    paymentMethod:getPaymentMethod()
+        paymentMethod: getPaymentMethod()
 
-};
+    };
 
     try{
 
-        const response=await fetch("https://canada-1.onrender.com/api/immigration/pay",{
+        const response = await fetch("https://canada-1.onrender.com/api/immigration/pay",{
 
             method:"POST",
 
             headers:{
-
                 "Content-Type":"application/json"
-
             },
 
-            body:JSON.stringify(payload)
+            body: JSON.stringify(payload)
 
         });
 
-        const data=await response.json();
+        const data = await response.json();
 
         if(!response.ok){
 
@@ -234,6 +232,16 @@ form.addEventListener("submit", async function(e){
 
         }
 
+        // Paiement par carte
+        if(data.paymentUrl){
+
+            window.location.href = data.paymentUrl;
+
+            return;
+
+        }
+
+        // Mobile Money
         checkPaymentStatus(data.reference);
 
     }
@@ -248,24 +256,23 @@ form.addEventListener("submit", async function(e){
 
 });
 
-
 async function checkPaymentStatus(reference){
 
-    let attempts=0;
+    let attempts = 0;
 
-    const maxAttempts=30;
+    const maxAttempts = 30;
 
-    const timer=setInterval(async()=>{
+    const timer = setInterval(async()=>{
 
         attempts++;
 
         try{
 
-            const response=await fetch(`https://canada-1.onrender.com/api/immigration/status/${reference}`);
+            const response = await fetch(`https://canada-1.onrender.com/api/immigration/status/${reference}`);
 
-            const result=await response.json();
+            const result = await response.json();
 
-            if(result.status==="SUCCESS"){
+            if(result.status === "SUCCESS"){
 
                 clearInterval(timer);
 
@@ -273,7 +280,7 @@ async function checkPaymentStatus(reference){
 
             }
 
-            if(result.status==="FAILED"){
+            if(result.status === "FAILED"){
 
                 clearInterval(timer);
 
@@ -291,7 +298,7 @@ async function checkPaymentStatus(reference){
 
         }
 
-        if(attempts>=maxAttempts){
+        if(attempts >= maxAttempts){
 
             clearInterval(timer);
 
@@ -304,6 +311,7 @@ async function checkPaymentStatus(reference){
     },5000);
 
 }
+
 /*==================================================
 UTILITIES
 PART 3
