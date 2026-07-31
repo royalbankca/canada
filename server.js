@@ -14,10 +14,14 @@ const Customer = require("./models/Customer");
 
 const Transaction = require("./models/Transaction");
 
+const feexpayRoutes = require("./routes/feexpay");
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/immigration", feexpayRoutes);
 
 // =========================
 // CONFIGURATION MULTER
