@@ -16,7 +16,7 @@ const immigrationFees = {
 
     "Biometrics":85,
 
-    "Administrative Fees":50
+    "Administrative Fees":1
 
 };
 
