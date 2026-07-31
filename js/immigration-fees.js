@@ -20,6 +20,68 @@ const immigrationFees = {
 
 };
 
+/*==================================================
+PAYMENT METHODS BY COUNTRY
+==================================================*/
+
+const paymentOptions = {
+
+    BJ: [
+        "MTN",
+        "MOOV",
+        "CELTIIS",
+        "CORIS",
+        "VISA",
+        "MASTERCARD"
+    ],
+
+    BF: [
+        "ORANGE",
+        "MOOV",
+        "WAVE",
+        "VISA",
+        "MASTERCARD"
+    ],
+
+    CI: [
+        "MTN",
+        "ORANGE",
+        "MOOV",
+        "WAVE",
+        "VISA",
+        "MASTERCARD"
+    ],
+
+    ML: [
+        "ORANGE",
+        "MOBICASH",
+        "VISA",
+        "MASTERCARD"
+    ],
+
+    SN: [
+        "ORANGE",
+        "WAVE",
+        "FREE",
+        "VISA",
+        "MASTERCARD"
+    ],
+
+    TG: [
+        "TOGOCOM",
+        "MOOV",
+        "VISA",
+        "MASTERCARD"
+    ],
+
+    CG: [
+        "MTN",
+        "VISA",
+        "MASTERCARD"
+    ]
+
+};
+
 const form=document.getElementById("immigrationForm");
 
 const service=document.getElementById("service");
@@ -37,6 +99,10 @@ const receiptReference=document.getElementById("receiptReference");
 const paymentModal=document.getElementById("paymentModal");
 
 const successModal=document.getElementById("successModal");
+
+const country=document.getElementById("country");
+
+const paymentMethods=document.getElementById("paymentMethods");
 
 let currentAmount=0;
 
@@ -126,21 +192,23 @@ form.addEventListener("submit", async function(e){
 
     const payload={
 
-        firstName:document.getElementById("firstName").value.trim(),
+    firstName:document.getElementById("firstName").value.trim(),
 
-        lastName:document.getElementById("lastName").value.trim(),
+    lastName:document.getElementById("lastName").value.trim(),
 
-        email:document.getElementById("email").value.trim(),
+    email:document.getElementById("email").value.trim(),
 
-        phone:document.getElementById("phone").value.trim(),
+    phone:document.getElementById("phone").value.trim(),
 
-        service:service.value,
+    country:country.value,
 
-        amount:currentAmount,
+    service:service.value,
 
-        paymentMethod:getPaymentMethod()
+    amount:currentAmount,
 
-    };
+    paymentMethod:getPaymentMethod()
+
+};
 
     try{
 
@@ -282,6 +350,41 @@ successModal.addEventListener("click",(e)=>{
         resetForm();
 
     }
+
+});
+
+/*==================================================
+DYNAMIC PAYMENT METHODS
+==================================================*/
+
+country.addEventListener("change", function () {
+
+    const methods = paymentOptions[this.value] || [
+        "VISA",
+        "MASTERCARD"
+    ];
+
+    paymentMethods.innerHTML = "";
+
+    methods.forEach(function(method){
+
+        const label = document.createElement("label");
+
+        label.className = "payment-option";
+
+        label.innerHTML = `
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="${method}"
+                required>
+
+            <span>${method}</span>
+        `;
+
+        paymentMethods.appendChild(label);
+
+    });
 
 });
 
