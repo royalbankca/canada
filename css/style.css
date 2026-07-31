@@ -1992,3 +1992,42 @@ font-size:32px;
 }
 
 }
+/*==========================================
+IMMIGRATION BUTTON
+==========================================*/
+
+.immigration-btn{
+
+    background:#0f8b4c;
+    color:#fff;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    padding:15px 35px;
+
+    border-radius:8px;
+
+    font-weight:700;
+
+    transition:.3s;
+
+}
+
+.immigration-btn:hover{
+
+    background:#0a6b39;
+
+    transform:translateY(-3px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
+
+}
+
+.immigration-btn i{
+
+    font-size:18px;
+
+}
