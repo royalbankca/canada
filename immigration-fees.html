@@ -194,6 +194,86 @@ required>
 
 </div>
 
+    <!-- ===========================
+COUNTRY
+=========================== -->
+
+<div class="form-group full">
+
+<label>Country</label>
+
+<select id="country" required>
+
+<option value="">Select your country</option>
+
+<optgroup label="Africa">
+
+<option value="BJ">🇧🇯 Benin</option>
+
+<option value="BF">🇧🇫 Burkina Faso</option>
+
+<option value="CI">🇨🇮 Côte d'Ivoire</option>
+
+<option value="CG">🇨🇬 Congo Brazzaville</option>
+
+<option value="ML">🇲🇱 Mali</option>
+
+<option value="SN">🇸🇳 Senegal</option>
+
+<option value="TG">🇹🇬 Togo</option>
+
+<option value="ZA">🇿🇦 South Africa</option>
+
+<option value="NG">🇳🇬 Nigeria</option>
+
+<option value="GH">🇬🇭 Ghana</option>
+
+<option value="KE">🇰🇪 Kenya</option>
+
+</optgroup>
+
+<optgroup label="North America">
+
+<option value="CA">🇨🇦 Canada</option>
+
+<option value="US">🇺🇸 United States</option>
+
+<option value="MX">🇲🇽 Mexico</option>
+
+</optgroup>
+
+<optgroup label="Europe">
+
+<option value="FR">🇫🇷 France</option>
+
+<option value="BE">🇧🇪 Belgium</option>
+
+<option value="DE">🇩🇪 Germany</option>
+
+<option value="IT">🇮🇹 Italy</option>
+
+<option value="ES">🇪🇸 Spain</option>
+
+<option value="GB">🇬🇧 United Kingdom</option>
+
+</optgroup>
+
+<optgroup label="Asia">
+
+<option value="CN">🇨🇳 China</option>
+
+<option value="IN">🇮🇳 India</option>
+
+<option value="JP">🇯🇵 Japan</option>
+
+<option value="AE">🇦🇪 United Arab Emirates</option>
+
+</optgroup>
+
+</select>
+
+</div>
+    
 <div class="form-group">
 
 <label>Last Name</label>
@@ -273,77 +353,23 @@ Administrative Fees
 PAYMENT METHOD
 =========================== -->
 
+<!-- ===========================
+PAYMENT METHOD
+=========================== -->
+
 <div class="form-group full">
 
 <label>Payment Method</label>
 
-<div class="payment-methods">
+<div
+id="paymentMethods"
+class="payment-methods">
 
-<label class="method-card">
+<p style="padding:15px;color:#666;">
 
-<input
-type="radio"
-name="paymentMethod"
-value="mtn"
-checked>
+Please select your country first.
 
-<i class="fa-solid fa-mobile-screen-button"></i>
-
-MTN Mobile Money
-
-</label>
-
-<label class="method-card">
-
-<input
-type="radio"
-name="paymentMethod"
-value="moov">
-
-<i class="fa-solid fa-mobile-screen-button"></i>
-
-MOOV Money
-
-</label>
-
-<label class="method-card">
-
-<input
-type="radio"
-name="paymentMethod"
-value="celtiis">
-
-<i class="fa-solid fa-mobile-screen-button"></i>
-
-CELTIIS Money
-
-</label>
-
-<label class="method-card">
-
-<input
-type="radio"
-name="paymentMethod"
-value="visa">
-
-<i class="fa-brands fa-cc-visa"></i>
-
-Visa
-
-</label>
-
-<label class="method-card">
-
-<input
-type="radio"
-name="paymentMethod"
-value="mastercard">
-
-<i class="fa-brands fa-cc-mastercard"></i>
-
-Mastercard
-
-</label>
+</p>
 
 </div>
 
