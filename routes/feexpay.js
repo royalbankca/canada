@@ -116,6 +116,60 @@ const amountXOF = Math.round(
 }
 const method = String(paymentMethod || "").toUpperCase();
 
+        // =========================
+// CARD PAYMENT (VISA / MASTERCARD)
+// =========================
+
+if (method === "VISA" || method === "MASTERCARD") {
+
+    const response = await axios.post(
+
+        "https://api-v2.feexpay.me/api/feexlink/api-create",
+
+        {
+
+            shop: FEEXPAY_SHOP_ID,
+
+            amount: amountXOF,
+
+            description: "Canada Immigration Fees",
+
+            paymentMethod: "CARD",
+
+            range: 1,
+
+            expireIn: 30,
+
+            callback_url: "https://cgbfinance.com/payment-success.html",
+
+            callback_error: "https://cgbfinance.com/payment-error.html"
+
+        },
+
+        {
+
+            headers: {
+
+                Authorization: `Bearer ${FEEXPAY_API_KEY}`,
+
+                "Content-Type": "application/json"
+
+            }
+
+        }
+
+    );
+
+    return res.json({
+
+        success: true,
+
+        paymentUrl: response.data.urlPay
+
+    });
+
+}
+
 // =========================
 // PAYMENT MAPPING
 // =========================
