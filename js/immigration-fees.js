@@ -233,7 +233,7 @@ form.addEventListener("submit",async function(e){
 
         if(data.paymentUrl){
 
-            window.open(data.paymentUrl,"_blank");
+            window.location.href = data.paymentUrl;
 
             hideLoading();
 
