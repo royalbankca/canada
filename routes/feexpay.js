@@ -294,8 +294,10 @@ switch (country) {
 
 console.log("==================================");
 console.log("Country :", country);
+console.log("Operator :", method);
 console.log("Original :", phone);
 console.log("Sent :", phoneNumber);
+console.log("Endpoint :", endpoint);
 console.log("==================================");
 
 const response = await axios.post(
@@ -353,8 +355,10 @@ console.log(response.data);
 
     catch(error){
 
-        console.error(error.response?.data || error.message);
-
+console.error("========== FEEXPAY ERROR ==========");
+console.error(error.response?.status);
+console.error(JSON.stringify(error.response?.data, null, 2));
+console.error("===================================");
         return res.status(500).json({
 
             success:false,
