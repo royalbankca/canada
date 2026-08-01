@@ -1,7 +1,7 @@
 /*==================================================
 CANADA GLOBAL BANK
 IMMIGRATION PAYMENT
-PART 1
+PART 1 / 4
 ==================================================*/
 
 const immigrationFees = {
@@ -20,65 +20,21 @@ const immigrationFees = {
 
 };
 
-/*==================================================
-PAYMENT METHODS BY COUNTRY
-==================================================*/
-
 const paymentOptions = {
 
-    BJ: [
-        "MTN",
-        "MOOV",
-        "CELTIIS",
-        "CORIS",
-        "VISA",
-        "MASTERCARD"
-    ],
+    BJ:["MTN","MOOV","CELTIIS","CORIS","VISA","MASTERCARD"],
 
-    BF: [
-        "ORANGE",
-        "MOOV",
-        "WAVE",
-        "VISA",
-        "MASTERCARD"
-    ],
+    BF:["ORANGE","MOOV","WAVE","VISA","MASTERCARD"],
 
-    CI: [
-        "MTN",
-        "ORANGE",
-        "MOOV",
-        "WAVE",
-        "VISA",
-        "MASTERCARD"
-    ],
+    CI:["MTN","ORANGE","MOOV","WAVE","VISA","MASTERCARD"],
 
-    ML: [
-        "ORANGE",
-        "MOBICASH",
-        "VISA",
-        "MASTERCARD"
-    ],
+    ML:["ORANGE","MOBICASH","VISA","MASTERCARD"],
 
-    SN: [
-        "ORANGE",
-        "WAVE",
-        "FREE",
-        "VISA",
-        "MASTERCARD"
-    ],
+    SN:["ORANGE","FREE","WAVE","VISA","MASTERCARD"],
 
-    TG: [
-        "TOGOCOM",
-        "MOOV",
-        "VISA",
-        "MASTERCARD"
-    ],
+    TG:["TOGOCOM","MOOV","VISA","MASTERCARD"],
 
-    CG: [
-        "MTN",
-        "VISA",
-        "MASTERCARD"
-    ]
+    CG:["MTN","VISA","MASTERCARD"]
 
 };
 
@@ -86,7 +42,17 @@ const form=document.getElementById("immigrationForm");
 
 const service=document.getElementById("service");
 
+const country=document.getElementById("country");
+
+const paymentMethod=document.getElementById("paymentMethod");
+
 const amountDisplay=document.getElementById("amountDisplay");
+
+const amountView=document.getElementById("amountView");
+
+const serviceName=document.getElementById("serviceName");
+
+const networkName=document.getElementById("networkName");
 
 const receiptAmount=document.getElementById("receiptAmount");
 
@@ -100,29 +66,56 @@ const paymentModal=document.getElementById("paymentModal");
 
 const successModal=document.getElementById("successModal");
 
-const country=document.getElementById("country");
-
-const paymentMethods=document.getElementById("paymentMethods");
-
 let currentAmount=0;
 
 service.addEventListener("change",()=>{
 
-    currentAmount=immigrationFees[service.value]||0;
+currentAmount=immigrationFees[service.value]||0;
 
-    amountDisplay.innerHTML=currentAmount+" CAD";
+amountDisplay.innerHTML=currentAmount+" CAD";
 
-    receiptAmount.innerHTML=currentAmount+" CAD";
+amountView.value=currentAmount+" CAD";
+
+receiptAmount.innerHTML=currentAmount+" CAD";
+
+serviceName.innerHTML=service.value||"Not selected";
 
 });
 
-function getPaymentMethod(){
+country.addEventListener("change",()=>{
 
-    const method=document.querySelector("input[name='paymentMethod']:checked");
+paymentMethod.innerHTML="<option value=''>Select payment network</option>";
 
-    return method?method.value:null;
+const methods=paymentOptions[country.value]||[];
 
-}
+methods.forEach(method=>{
+
+const option=document.createElement("option");
+
+option.value=method;
+
+option.textContent=method;
+
+paymentMethod.appendChild(option);
+
+});
+
+networkName.innerHTML="Not selected";
+
+});
+
+paymentMethod.addEventListener("change",()=>{
+
+networkName.innerHTML=
+
+paymentMethod.value||"Not selected";
+
+});
+/*==================================================
+CANADA GLOBAL BANK
+IMMIGRATION PAYMENT
+PART 2 / 4
+==================================================*/
 
 function showLoading(){
 
@@ -142,7 +135,7 @@ function showSuccess(reference){
 
     receiptReference.innerHTML=reference;
 
-    receiptMethod.innerHTML=getPaymentMethod().toUpperCase();
+    receiptMethod.innerHTML=paymentMethod.value;
 
     receiptDate.innerHTML=new Date().toLocaleString();
 
@@ -171,16 +164,12 @@ document.getElementById("printReceipt").addEventListener("click",()=>{
     window.print();
 
 });
-/*==================================================
-PAYMENT REQUEST
-PART 2
-==================================================*/
 
-form.addEventListener("submit", async function(e){
+form.addEventListener("submit",async function(e){
 
     e.preventDefault();
 
-    if(currentAmount <= 0){
+    if(currentAmount<=0){
 
         alert("Please select an immigration service.");
 
@@ -188,69 +177,70 @@ form.addEventListener("submit", async function(e){
 
     }
 
+    if(!paymentMethod.value){
+
+        alert("Please select a payment network.");
+
+        return;
+
+    }
+
     showLoading();
 
-    const payload = {
+    const payload={
 
-        firstName: document.getElementById("firstName").value.trim(),
+        firstName:document.getElementById("firstName").value.trim(),
 
-        lastName: document.getElementById("lastName").value.trim(),
+        lastName:document.getElementById("lastName").value.trim(),
 
-        email: document.getElementById("email").value.trim(),
+        email:document.getElementById("email").value.trim(),
 
-        phone: document.getElementById("phone").value.trim(),
+        phone:document.getElementById("phone").value.trim(),
 
-        country: country.value,
+        country:country.value,
 
-        service: service.value,
+        service:service.value,
 
-        amount: currentAmount,
+        amount:currentAmount,
 
-        paymentMethod: getPaymentMethod()
+        paymentMethod:paymentMethod.value
 
     };
 
     try{
 
-        const response = await fetch("https://canada-1.onrender.com/api/immigration/pay",{
+        const response=await fetch("https://canada-1.onrender.com/api/immigration/pay",{
 
             method:"POST",
 
             headers:{
+
                 "Content-Type":"application/json"
+
             },
 
-            body: JSON.stringify(payload)
+            body:JSON.stringify(payload)
 
         });
 
-        const data = await response.json();
+        const data=await response.json();
 
         if(!response.ok){
 
-            throw new Error(data.message || "Payment error");
+            throw new Error(data.message||"Payment error");
 
         }
 
-        // Paiement par carte
-       // Paiement par carte
-if (data.paymentUrl) {
+        if(data.paymentUrl){
 
-    const popup = window.open(
-        data.paymentUrl,
-        "FeexPay",
-        "width=520,height=750,resizable=yes,scrollbars=yes"
-    );
+            window.open(data.paymentUrl,"_blank");
 
-    if (!popup) {
-        // Si le navigateur bloque la fenêtre
-        window.location.href = data.paymentUrl;
-    }
+            hideLoading();
 
-    return;
-}
+            return;
 
-        // Mobile Money
+        }
+
         checkPaymentStatus(data.reference);
 
     }
@@ -264,32 +254,43 @@ if (data.paymentUrl) {
     }
 
 });
+/*==================================================
+CANADA GLOBAL BANK
+IMMIGRATION PAYMENT
+PART 3 / 4
+==================================================*/
 
 async function checkPaymentStatus(reference){
 
-    let attempts = 0;
+    let attempts=0;
 
-    const maxAttempts = 30;
+    const maxAttempts=30;
 
-    const timer = setInterval(async()=>{
+    const timer=setInterval(async()=>{
 
         attempts++;
 
         try{
 
-            const response = await fetch(`https://canada-1.onrender.com/api/immigration/status/${reference}`);
+            const response=await fetch(
 
-            const result = await response.json();
+                `https://canada-1.onrender.com/api/immigration/status/${reference}`
 
-            if(result.status === "SUCCESS"){
+            );
+
+            const result=await response.json();
+
+            if(result.status==="SUCCESS"){
 
                 clearInterval(timer);
 
                 showSuccess(reference);
 
+                return;
+
             }
 
-            if(result.status === "FAILED"){
+            if(result.status==="FAILED"){
 
                 clearInterval(timer);
 
@@ -297,17 +298,19 @@ async function checkPaymentStatus(reference){
 
                 alert("Payment failed.");
 
+                return;
+
             }
 
         }
 
-        catch(err){
+        catch(error){
 
-            console.error(err);
+            console.error(error);
 
         }
 
-        if(attempts >= maxAttempts){
+        if(attempts>=maxAttempts){
 
             clearInterval(timer);
 
@@ -321,11 +324,6 @@ async function checkPaymentStatus(reference){
 
 }
 
-/*==================================================
-UTILITIES
-PART 3
-==================================================*/
-
 function resetForm(){
 
     form.reset();
@@ -334,9 +332,44 @@ function resetForm(){
 
     amountDisplay.innerHTML="0 CAD";
 
+    amountView.value="0 CAD";
+
     receiptAmount.innerHTML="0 CAD";
 
+    serviceName.innerHTML="Not selected";
+
+    networkName.innerHTML="Not selected";
+
+    paymentMethod.innerHTML=`
+
+        <option value="">
+
+            Select payment network
+
+        </option>
+
+    `;
+
 }
+/*==================================================
+CANADA GLOBAL BANK
+IMMIGRATION PAYMENT
+PART 4 / 4
+==================================================*/
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    amountDisplay.innerHTML="0 CAD";
+
+    amountView.value="0 CAD";
+
+    receiptAmount.innerHTML="0 CAD";
+
+    serviceName.innerHTML="Not selected";
+
+    networkName.innerHTML="Not selected";
+
+});
 
 document.addEventListener("keydown",(e)=>{
 
@@ -347,14 +380,6 @@ document.addEventListener("keydown",(e)=>{
         hideSuccess();
 
     }
-
-});
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    amountDisplay.innerHTML="0 CAD";
-
-    receiptAmount.innerHTML="0 CAD";
 
 });
 
@@ -370,39 +395,24 @@ successModal.addEventListener("click",(e)=>{
 
 });
 
-/*==================================================
-DYNAMIC PAYMENT METHODS
-==================================================*/
+window.addEventListener("pageshow",()=>{
 
-country.addEventListener("change", function () {
-
-    const methods = paymentOptions[this.value] || [
-        "VISA",
-        "MASTERCARD"
-    ];
-
-    paymentMethods.innerHTML = "";
-
-    methods.forEach(function(method){
-
-        const label = document.createElement("label");
-
-        label.className = "payment-option";
-
-        label.innerHTML = `
-            <input
-                type="radio"
-                name="paymentMethod"
-                value="${method}"
-                required>
-
-            <span>${method}</span>
-        `;
-
-        paymentMethods.appendChild(label);
-
-    });
+    hideLoading();
 
 });
 
-console.log("Immigration Payment Portal Loaded Successfully");
+window.addEventListener("focus",()=>{
+
+    hideLoading();
+
+});
+
+console.log("========================================");
+
+console.log("Canada Global Bank");
+
+console.log("Immigration Payment Portal");
+
+console.log("Version 2.0 Loaded Successfully");
+
+console.log("========================================");
