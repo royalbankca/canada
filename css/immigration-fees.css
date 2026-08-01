@@ -692,3 +692,20 @@ outline:none;
 box-shadow:none !important;
 border:none !important;
 }
+.form-group .phone-box{
+display:flex !important;
+flex-direction:row !important;
+align-items:center !important;
+}
+
+.form-group .phone-box #countryCode{
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+}
+
+.form-group .phone-box input{
+display:block !important;
+flex:1 !important;
+width:100% !important;
+}
