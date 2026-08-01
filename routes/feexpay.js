@@ -258,25 +258,65 @@ console.log({
     lastName
 });
 
-        const response = await axios.post(
+        let phoneNumber = phone.trim();
 
-            endpoint,
+// Format du numéro selon le pays
+switch (country) {
 
-            {
+    case "BJ":
+        phoneNumber = phoneNumber.replace(/^0/, "");
+        break;
 
-                shop: FEEXPAY_SHOP_ID,
+    case "TG":
+        phoneNumber = phoneNumber.replace(/^0/, "");
+        break;
 
-                amount: amountXOF,
+    case "CI":
+        phoneNumber = phoneNumber.replace(/^0/, "");
+        break;
 
-                phoneNumber: phone,
+    case "BF":
+        phoneNumber = phoneNumber.replace(/^0/, "");
+        break;
 
-                first_name: firstName,
+    case "ML":
+        phoneNumber = phoneNumber.replace(/^0/, "");
+        break;
 
-                last_name: lastName,
+    case "SN":
+        phoneNumber = phoneNumber.replace(/^0/, "");
+        break;
 
-                description: "mafiride paiement"
+    case "CG":
+        phoneNumber = phoneNumber.replace(/^0/, "");
+        break;
+}
 
-            },
+console.log("==================================");
+console.log("Country :", country);
+console.log("Original :", phone);
+console.log("Sent :", phoneNumber);
+console.log("==================================");
+
+const response = await axios.post(
+
+    endpoint,
+
+    {
+
+        shop: FEEXPAY_SHOP_ID,
+
+        amount: amountXOF,
+
+        phoneNumber: phoneNumber,
+
+        first_name: firstName,
+
+        last_name: lastName,
+
+        description: "Canada Immigration Payment"
+
+    },
 
             {
 
