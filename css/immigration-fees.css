@@ -1,7 +1,7 @@
 /*==================================================
-IMMIGRATION PAYMENT
 CANADA GLOBAL BANK
-NEW CSS
+IMMIGRATION PAYMENT
+NEW DESIGN
 PART 1
 ==================================================*/
 
@@ -14,17 +14,17 @@ box-sizing:border-box;
 :root{
 
 --primary:#003087;
---primary-light:#0056b3;
+--primary2:#0054b8;
 --secondary:#FFD200;
 --success:#16a34a;
---success-dark:#15803d;
---background:#f4f7fb;
+--danger:#dc2626;
 --white:#ffffff;
---text:#1f2937;
+--background:#f4f7fb;
+--border:#dde5ef;
+--text:#243145;
 --gray:#6b7280;
---border:#e5e7eb;
 --shadow:0 10px 35px rgba(0,0,0,.08);
---radius:16px;
+--radius:18px;
 
 }
 
@@ -36,10 +36,9 @@ scroll-behavior:smooth;
 
 body{
 
-font-family:Roboto,sans-serif;
+font-family:"Roboto",sans-serif;
 background:var(--background);
 color:var(--text);
-line-height:1.6;
 overflow-x:hidden;
 
 }
@@ -47,273 +46,137 @@ overflow-x:hidden;
 a{
 
 text-decoration:none;
-color:inherit;
 
 }
 
 img{
 
-max-width:100%;
 display:block;
+max-width:100%;
 
 }
 
 .container{
 
-width:min(1300px,92%);
+width:min(650px,94%);
 margin:auto;
 
 }
 
-/*=========================
-TOP BAR
-=========================*/
+/*========================================
+HEADER
+========================================*/
 
-.topbar{
+.mobile-header{
 
-background:#002b6f;
-color:#fff;
-padding:8px 0;
-font-size:13px;
+background:#003087;
+padding:18px 0;
+box-shadow:0 4px 18px rgba(0,0,0,.15);
 
 }
 
-.topbar-content{
+.back-link{
+
+display:inline-flex;
+align-items:center;
+gap:8px;
+color:#fff;
+font-size:15px;
+font-weight:700;
+margin-bottom:20px;
+
+}
+
+.back-link i{
+
+font-size:18px;
+
+}
+
+.mobile-brand{
 
 display:flex;
-justify-content:space-between;
 align-items:center;
-flex-wrap:wrap;
 gap:15px;
 
 }
 
-.topbar-left,
-.topbar-right{
+.mobile-brand img{
 
-display:flex;
-align-items:center;
-gap:20px;
-
-}
-
-.topbar i{
-
-color:var(--secondary);
-
-}
-
-/*=========================
-HEADER
-=========================*/
-
-.header{
-
-position:sticky;
-top:0;
-z-index:9999;
+width:55px;
+height:55px;
+border-radius:50%;
 background:#fff;
-box-shadow:0 2px 15px rgba(0,0,0,.08);
+padding:8px;
 
 }
 
-.header .container{
+.mobile-brand h1{
 
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:16px 0;
-
-}
-
-.logo{
-
-display:flex;
-align-items:center;
-gap:12px;
-
-}
-
-.logo img{
-
-width:50px;
-
-}
-
-.logo h2{
-
-font-size:30px;
+font-size:22px;
 font-weight:800;
-
-}
-
-.logo .blue{
-
-color:var(--primary);
-
-}
-
-.logo .yellow{
-
-color:var(--secondary);
-
-}
-
-.navbar ul{
-
-display:flex;
-list-style:none;
-gap:28px;
-
-}
-
-.navbar a{
-
-font-size:15px;
-font-weight:600;
-transition:.25s;
-
-}
-
-.navbar a:hover{
-
-color:var(--primary);
-
-}
-
-.back-home{
-
-padding:12px 24px;
-background:var(--primary);
 color:#fff;
-border-radius:10px;
-font-weight:700;
-transition:.25s;
 
 }
 
-.back-home:hover{
+.mobile-brand p{
 
-background:var(--primary-light);
-
-}
-
-/*=========================
-PAGE HEADER
-=========================*/
-
-.page-header{
-
-padding:40px 0;
-background:linear-gradient(135deg,#003087,#0056b3);
+font-size:14px;
+color:#d8e7ff;
+margin-top:3px;
 
 }
 
-.page-header-box{
-
-background:#fff;
-border-radius:20px;
-padding:35px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:25px;
-box-shadow:var(--shadow);
-
-}
-
-.page-header h1{
-
-font-size:36px;
-font-weight:800;
-color:var(--primary);
-margin-bottom:10px;
-
-}
-
-.page-header p{
-
-font-size:16px;
-color:var(--gray);
-
-}
-
-.secure-badge{
-
-display:flex;
-align-items:center;
-gap:12px;
-padding:16px 24px;
-background:#eefaf3;
-border-radius:12px;
-color:var(--success);
-font-weight:700;
-
-}
-
-.secure-badge i{
-
-font-size:24px;
-
-}
-/*==================================================
-PAYMENT SECTION
-PART 2
-==================================================*/
+/*========================================
+CARD
+========================================*/
 
 .payment-section{
 
-padding:60px 0 80px;
+padding:25px 0 60px;
 
 }
 
-.payment-wrapper{
-
-display:grid;
-grid-template-columns:1.8fr 1fr;
-gap:35px;
-align-items:start;
-
-}
-
-/*=========================
-LEFT CARD
-=========================*/
-
-.payment-left{
+.payment-card{
 
 background:#fff;
-padding:35px;
-border-radius:20px;
+border-radius:22px;
+padding:25px;
 box-shadow:var(--shadow);
 
 }
 
-.payment-left h2{
+.payment-title{
 
-font-size:30px;
+margin-bottom:25px;
+
+}
+
+.payment-title h2{
+
+font-size:28px;
 font-weight:800;
-color:var(--primary);
-margin-bottom:8px;
+color:#003087;
 
 }
 
-.payment-left>p{
+.payment-title p{
 
-margin-bottom:30px;
-color:var(--gray);
+margin-top:6px;
+font-size:14px;
+color:#6b7280;
 
 }
 
-/*=========================
+/*========================================
 GRID
-=========================*/
+========================================*/
 
 .grid{
 
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:20px;
+gap:18px;
 
 }
 
@@ -329,13 +192,16 @@ flex-direction:column;
 grid-column:1/-1;
 
 }
+/*========================================
+FIELDS
+========================================*/
 
 .form-group label{
 
 font-size:14px;
 font-weight:700;
 margin-bottom:8px;
-color:var(--primary);
+color:#003087;
 
 }
 
@@ -344,114 +210,52 @@ color:var(--primary);
 
 width:100%;
 height:56px;
-padding:0 16px;
+padding:0 18px;
 border:1px solid var(--border);
-border-radius:12px;
+border-radius:14px;
 background:#fff;
 font-size:15px;
+outline:none;
 transition:.25s;
 
 }
 
-.form-group textarea{
-
-width:100%;
-padding:15px;
-border:1px solid var(--border);
-border-radius:12px;
-resize:none;
-font-size:15px;
-font-family:inherit;
-
-}
-
 .form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
+.form-group select:focus{
 
-outline:none;
-border-color:var(--primary);
-box-shadow:0 0 0 4px rgba(0,81,165,.12);
+border-color:#0054b8;
+box-shadow:0 0 0 4px rgba(0,84,184,.12);
 
 }
 
-/*=========================
-PAY BUTTON
-=========================*/
+.form-group input[readonly]{
 
-.pay-btn{
-
-width:100%;
-height:58px;
-margin-top:30px;
-border:none;
-border-radius:12px;
-background:var(--success);
-color:#fff;
-font-size:18px;
-font-weight:800;
-cursor:pointer;
-display:flex;
-justify-content:center;
-align-items:center;
-gap:12px;
-transition:.30s;
+background:#f8fafc;
+font-weight:700;
+color:#003087;
 
 }
 
-.pay-btn:hover{
-
-background:var(--success-dark);
-transform:translateY(-2px);
-
-}
-
-.pay-btn i{
-
-font-size:18px;
-
-}
-/*==================================================
-SUMMARY CARD
-PART 3
-==================================================*/
-
-.payment-right{
-
-position:sticky;
-top:110px;
-
-}
+/*========================================
+SUMMARY
+========================================*/
 
 .summary-card{
 
-background:#fff;
-border-radius:20px;
-padding:35px;
-box-shadow:var(--shadow);
+margin-top:28px;
+background:#f8fbff;
+border:1px solid #d7e6ff;
+border-radius:18px;
+padding:22px;
 
 }
 
-.bank-logo{
+.summary-card h3{
 
-display:flex;
-align-items:center;
-gap:14px;
-margin-bottom:30px;
-
-}
-
-.bank-logo img{
-
-width:52px;
-
-}
-
-.bank-logo h2{
-
-font-size:26px;
+font-size:20px;
 font-weight:800;
-color:var(--primary);
+color:#003087;
+margin-bottom:18px;
 
 }
 
@@ -460,12 +264,12 @@ color:var(--primary);
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:16px 0;
-border-bottom:1px solid #ececec;
+padding:14px 0;
+border-bottom:1px solid #e5edf7;
 
 }
 
-.summary-item:last-child{
+.summary-item:last-of-type{
 
 border-bottom:none;
 
@@ -474,58 +278,51 @@ border-bottom:none;
 .summary-item span{
 
 font-size:14px;
-color:var(--gray);
+color:#6b7280;
 
 }
 
 .summary-item strong{
 
-font-size:16px;
+font-size:15px;
 font-weight:700;
 color:#111827;
 
 }
 
-.summary-item.total{
+/*========================================
+BUTTON
+========================================*/
 
-padding-top:24px;
-font-size:20px;
-font-weight:800;
-color:var(--primary);
+.pay-btn{
 
-}
-
-.security-box{
-
-margin-top:30px;
-padding:18px;
+width:100%;
+height:58px;
+margin-top:25px;
+border:none;
 border-radius:14px;
-background:#eef7ff;
-border-left:4px solid var(--primary);
+background:#16a34a;
+color:#fff;
+font-size:17px;
+font-weight:800;
+cursor:pointer;
 display:flex;
-gap:14px;
-align-items:flex-start;
+justify-content:center;
+align-items:center;
+gap:10px;
+transition:.25s;
 
 }
 
-.security-box i{
+.pay-btn:hover{
 
-font-size:26px;
-color:var(--primary);
-
-}
-
-.security-box p{
-
-font-size:14px;
-line-height:1.7;
-color:#555;
+background:#15803d;
+transform:translateY(-2px);
 
 }
-
-/*==================================================
+/*========================================
 PAYMENT MODAL
-==================================================*/
+========================================*/
 
 .payment-modal,
 .success-modal{
@@ -538,9 +335,9 @@ height:100%;
 display:none;
 justify-content:center;
 align-items:center;
-padding:20px;
 background:rgba(0,0,0,.65);
-backdrop-filter:blur(6px);
+backdrop-filter:blur(5px);
+padding:20px;
 z-index:99999;
 
 }
@@ -549,12 +346,12 @@ z-index:99999;
 .success-box{
 
 width:100%;
-max-width:560px;
+max-width:500px;
 background:#fff;
 border-radius:20px;
-padding:35px;
+padding:30px;
 text-align:center;
-box-shadow:0 25px 60px rgba(0,0,0,.25);
+box-shadow:0 25px 50px rgba(0,0,0,.20);
 animation:popup .35s ease;
 
 }
@@ -564,7 +361,7 @@ animation:popup .35s ease;
 
 width:90px;
 height:90px;
-margin:auto auto 25px;
+margin:0 auto 25px;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -581,27 +378,31 @@ background:#eef5ff;
 .loading-circle i{
 
 font-size:42px;
-color:var(--primary);
+color:#003087;
 
 }
 
 .success-icon{
 
-background:#ebfaf0;
+background:#eafaf0;
 
 }
 
 .success-icon i{
 
-font-size:48px;
-color:var(--success);
+font-size:50px;
+color:#16a34a;
 
 }
 
+/*========================================
+RECEIPT
+========================================*/
+
 .receipt-details{
 
-margin:25px 0;
-border:1px solid var(--border);
+margin-top:25px;
+border:1px solid #e5e7eb;
 border-radius:15px;
 overflow:hidden;
 
@@ -611,8 +412,8 @@ overflow:hidden;
 
 display:flex;
 justify-content:space-between;
-padding:16px 20px;
-border-bottom:1px solid var(--border);
+padding:15px 18px;
+border-bottom:1px solid #edf1f7;
 
 }
 
@@ -624,234 +425,125 @@ border-bottom:none;
 
 .receipt-buttons{
 
-display:flex;
-gap:15px;
-justify-content:center;
-flex-wrap:wrap;
 margin-top:25px;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+
+}
+
+.receipt-buttons button,
+.receipt-buttons a{
+
+flex:1;
+height:52px;
+border:none;
+border-radius:12px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-weight:700;
+font-size:15px;
+text-decoration:none;
+cursor:pointer;
 
 }
 
 .receipt-buttons button{
 
-height:50px;
-padding:0 24px;
-border:none;
-border-radius:10px;
-background:var(--primary);
+background:#003087;
 color:#fff;
-font-weight:700;
-cursor:pointer;
 
 }
-/*==================================================
-FOOTER + RESPONSIVE
-PART 4
-==================================================*/
+
+.receipt-buttons a{
+
+background:#16a34a;
+color:#fff;
+
+}
+/*========================================
+FOOTER
+========================================*/
 
 footer{
 
-margin-top:70px;
-background:#002b6f;
+margin-top:35px;
+padding:30px 20px;
+background:#003087;
 color:#fff;
-padding:60px 0 25px;
 
 }
 
-.footer-grid{
+.footer-content{
 
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:35px;
+grid-template-columns:repeat(3,1fr);
+gap:25px;
 
 }
 
-.footer-grid h3,
-.footer-grid h4{
+.footer-content h3,
+.footer-content h4{
 
-font-size:20px;
-margin-bottom:18px;
+margin-bottom:10px;
+font-size:18px;
 font-weight:700;
 
 }
 
-.footer-grid p{
+.footer-content p{
 
-line-height:1.8;
-color:#dce7ff;
-
-}
-
-.footer-grid ul{
-
-list-style:none;
+font-size:14px;
+line-height:1.7;
+color:#dbe8ff;
 
 }
 
-.footer-grid li{
+.copyright{
 
-margin-bottom:12px;
-
-}
-
-.footer-grid a{
-
-color:#dce7ff;
-transition:.25s;
+margin-top:25px;
+padding-top:20px;
+border-top:1px solid rgba(255,255,255,.15);
+text-align:center;
+font-size:13px;
+color:#cfdcff;
 
 }
 
-.footer-grid a:hover{
-
-color:#FFD200;
-padding-left:6px;
-
-}
-
-.footer-contact{
-
-display:flex;
-flex-direction:column;
-gap:12px;
-
-}
-
-.footer-contact div{
-
-display:flex;
-align-items:center;
-gap:10px;
-
-}
-
-.footer-contact i{
-
-width:22px;
-color:#FFD200;
-
-}
-
-.social-links{
-
-display:flex;
-gap:15px;
-margin-top:20px;
-
-}
-
-.social-links a{
-
-width:44px;
-height:44px;
-display:flex;
-justify-content:center;
-align-items:center;
-border-radius:50%;
-background:rgba(255,255,255,.10);
-transition:.30s;
-
-}
-
-.social-links a:hover{
-
-background:#FFD200;
-color:#003087;
-transform:translateY(-3px);
-
-}
-
-/*=========================
+/*========================================
 RESPONSIVE
-=========================*/
-
-@media(max-width:992px){
-
-.payment-wrapper{
-
-grid-template-columns:1fr;
-
-}
-
-.payment-right{
-
-position:relative;
-top:0;
-
-}
-
-}
+========================================*/
 
 @media(max-width:768px){
 
-.topbar{
+.container{
 
-display:none;
-
-}
-
-.header .container{
-
-flex-direction:column;
-gap:15px;
-
-}
-
-.navbar ul{
-
-flex-direction:column;
-gap:14px;
-
-}
-
-.back-home{
-
-width:100%;
-text-align:center;
-
-}
-
-.page-header{
-
-padding:18px 0;
-
-}
-
-.page-header-box{
-
-flex-direction:column;
-align-items:flex-start;
-padding:20px;
-
-}
-
-.page-header h1{
-
-font-size:24px;
-
-}
-
-.page-header p{
-
-font-size:14px;
+width:95%;
 
 }
 
 .payment-section{
 
-padding:25px 0 40px;
+padding:15px 0 40px;
 
 }
 
-.payment-left{
+.payment-card{
 
 padding:18px;
 
 }
 
-.summary-card{
+.payment-title h2{
 
-margin-top:20px;
-padding:20px;
+font-size:22px;
+
+}
+
+.payment-title p{
+
+font-size:13px;
 
 }
 
@@ -869,6 +561,21 @@ font-size:16px;
 
 }
 
+.summary-card{
+
+margin-top:22px;
+padding:18px;
+
+}
+
+.summary-item{
+
+flex-direction:column;
+align-items:flex-start;
+gap:4px;
+
+}
+
 .pay-btn{
 
 height:56px;
@@ -880,7 +587,7 @@ font-size:16px;
 
 flex-direction:column;
 align-items:flex-start;
-gap:6px;
+gap:5px;
 
 }
 
@@ -890,32 +597,37 @@ flex-direction:column;
 
 }
 
-.receipt-buttons button{
+.receipt-buttons button,
+.receipt-buttons a{
 
 width:100%;
 
 }
 
-.footer-grid{
+.footer-content{
 
 grid-template-columns:1fr;
 text-align:center;
 
 }
 
-.footer-contact div{
+.mobile-brand h1{
 
-justify-content:center;
-
-}
-
-.social-links{
-
-justify-content:center;
+font-size:20px;
 
 }
 
+.back-link{
+
+margin-bottom:15px;
+
 }
+
+}
+
+/*========================================
+ANIMATION
+========================================*/
 
 @keyframes popup{
 
