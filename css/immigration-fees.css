@@ -646,3 +646,49 @@ transform:scale(1);
 }
 
 }
+/*========================================
+PHONE BOX
+========================================*/
+
+.phone-box{
+display:flex;
+align-items:center;
+width:100%;
+height:56px;
+border:1px solid #dde5ef;
+border-radius:14px;
+overflow:hidden;
+background:#fff;
+}
+
+#countryCode{
+width:90px;
+height:56px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#f5f7fb;
+border-right:1px solid #dde5ef;
+font-size:16px;
+font-weight:700;
+color:#003087;
+flex-shrink:0;
+}
+
+.phone-box input{
+flex:1 !important;
+width:auto !important;
+height:56px !important;
+border:none !important;
+border-radius:0 !important;
+background:#fff !important;
+padding:0 16px !important;
+margin:0 !important;
+box-shadow:none !important;
+}
+
+.phone-box input:focus{
+outline:none;
+box-shadow:none !important;
+border:none !important;
+}
