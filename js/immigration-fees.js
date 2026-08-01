@@ -233,7 +233,15 @@ form.addEventListener("submit",async function(e){
 
         if(data.paymentUrl){
 
-            window.location.href = data.paymentUrl;
+            const popup = window.open(
+    data.paymentUrl,
+    "FeexPayPayment",
+    "toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=520,height=760,left=300,top=40"
+);
+
+if (!popup) {
+    alert("Veuillez autoriser les fenêtres popup pour effectuer le paiement.");
+}
 
             hideLoading();
 
