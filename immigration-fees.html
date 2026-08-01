@@ -125,28 +125,37 @@ Back Home
 HERO
 =========================== -->
 
-<section class="hero">
+<!-- ==========================================
+PAGE HEADER
+========================================== -->
 
-<div class="overlay"></div>
+<section class="page-header">
 
-<div class="container hero-content">
+    <div class="container">
 
-<h1>
+        <div class="page-header-box">
 
-Canada Immigration
+            <div>
 
-Administrative Fees
+                <h1>Immigration Payment Portal</h1>
 
-</h1>
+                <p>
+                    Secure payment of Canadian immigration fees.
+                </p>
 
-<p>
+            </div>
 
-Use this secure portal to pay your immigration fees safely through
-Canada Global Bank.
+            <div class="secure-badge">
 
-</p>
+                <i class="fa-solid fa-shield-halved"></i>
 
-</div>
+                <span>SSL Secured</span>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </section>
 
@@ -349,29 +358,32 @@ Administrative Fees
 
 </div>
 
-<!-- ===========================
-PAYMENT METHOD
-=========================== -->
 
 <!-- ===========================
 PAYMENT METHOD
 =========================== -->
 
-<div class="form-group full">
+<div class="form-group">
 
-<label>Payment Method</label>
+<label>Payment Network</label>
 
-<div
-id="paymentMethods"
-class="payment-methods">
+<select id="paymentMethod" required>
 
-<p style="padding:15px;color:#666;">
+<option value="">Select payment network</option>
 
-Please select your country first.
-
-</p>
+</select>
 
 </div>
+
+<div class="form-group">
+
+<label>Amount</label>
+
+<input
+type="text"
+id="amountView"
+readonly
+placeholder="Automatically calculated">
 
 </div>
 
@@ -399,33 +411,47 @@ RIGHT CARD
 
 <div class="summary-card">
 
-<h2>
+<div class="bank-logo">
 
-Payment Summary
+<i class="fa-solid fa-building-columns"></i>
 
-</h2>
-
-<div class="summary-item">
-
-<span>Institution</span>
-
-<strong>Canada Global Bank</strong>
+<h2>Canada Global Bank</h2>
 
 </div>
 
 <div class="summary-item">
 
-<span>Purpose</span>
+<span>Service</span>
 
-<strong>Immigration Fees</strong>
+<strong id="serviceName">
+
+Not selected
+
+</strong>
 
 </div>
 
 <div class="summary-item">
 
-<span>Currency</span>
+<span>Amount</span>
 
-<strong>CAD</strong>
+<strong id="amountDisplay">
+
+0 CAD
+
+</strong>
+
+</div>
+
+<div class="summary-item">
+
+<span>Payment Network</span>
+
+<strong id="networkName">
+
+Not selected
+
+</strong>
 
 </div>
 
@@ -433,35 +459,32 @@ Payment Summary
 
 <span>Security</span>
 
-<strong>SSL 256-bit</strong>
+<strong>
 
-</div>
-
-<hr>
-
-<div class="summary-item total">
-
-<span>Amount</span>
-
-<strong id="amountDisplay">
-
-150 CAD
+SSL 256-bit Encryption
 
 </strong>
 
 </div>
 
+<button
+type="submit"
+form="immigrationForm"
+class="pay-btn">
+
+<i class="fa-solid fa-lock"></i>
+
+Continue Secure Payment
+
+</button>
+
 <div class="security-box">
 
-<i class="fa-solid fa-shield-halved"></i>
+<i class="fa-solid fa-circle-check"></i>
 
 <p>
 
-Your payment is processed securely by
-FeezPay.
-
-No banking information is stored on our
-servers.
+Payments are secured by Canada Global Bank and FeexPay.
 
 </p>
 
@@ -624,115 +647,47 @@ SUCCESS MODAL
 </div>
 
 <!-- ==========================================
-SECURITY
+TRUST SECTION
 ========================================== -->
 
-<section class="security">
+<section class="trust-section">
 
     <div class="container">
 
-        <div class="security-grid">
+        <div class="trust-grid">
 
-            <div class="security-item">
-
-                <i class="fa-solid fa-lock"></i>
-
-                <h3>
-
-                    Secure Payment
-
-                </h3>
-
-                <p>
-
-                    Every payment is protected using SSL encryption.
-
-                </p>
-
-            </div>
-
-            <div class="security-item">
+            <div class="trust-card">
 
                 <i class="fa-solid fa-shield-halved"></i>
 
-                <h3>
-
-                    Trusted Platform
-
-                </h3>
+                <h3>Secure Payments</h3>
 
                 <p>
-
-                    Powered securely by FeezPay payment services.
-
+                    Every transaction is protected using SSL 256-bit encryption.
                 </p>
 
             </div>
 
-            <div class="security-item">
+            <div class="trust-card">
 
-                <i class="fa-solid fa-file-invoice"></i>
+                <i class="fa-solid fa-building-columns"></i>
 
-                <h3>
-
-                    Instant Receipt
-
-                </h3>
+                <h3>Canada Global Bank</h3>
 
                 <p>
-
-                    Print or download your payment confirmation.
-
+                    Official payment gateway for immigration administrative services.
                 </p>
 
             </div>
 
-        </div>
+            <div class="trust-card">
 
-    </div>
+                <i class="fa-solid fa-credit-card"></i>
 
-</section>
-<!-- ==========================================
-FAQ
-========================================== -->
-
-<section class="faq">
-
-    <div class="container">
-
-        <h2>Frequently Asked Questions</h2>
-
-        <div class="faq-list">
-
-            <div class="faq-item">
-
-                <h3>Is my payment secure?</h3>
+                <h3>Multiple Payment Methods</h3>
 
                 <p>
-                    Yes. All payments are encrypted using SSL technology and
-                    processed securely through FeezPay.
-                </p>
-
-            </div>
-
-            <div class="faq-item">
-
-                <h3>Will I receive a receipt?</h3>
-
-                <p>
-                    Yes. Once your payment is confirmed, you can immediately
-                    print your receipt.
-                </p>
-
-            </div>
-
-            <div class="faq-item">
-
-                <h3>Which payment methods are accepted?</h3>
-
-                <p>
-                    Mobile Money (MTN, MOOV, CELTIIS) and supported bank cards
-                    through FeezPay.
+                    Mobile Money and international bank cards are supported.
                 </p>
 
             </div>
