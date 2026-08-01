@@ -44,6 +44,26 @@ const service=document.getElementById("service");
 
 const country=document.getElementById("country");
 
+const countryCode=document.getElementById("countryCode");
+
+const countryCodes={
+
+BJ:"+229",
+
+BF:"+226",
+
+CI:"+225",
+
+CG:"+242",
+
+ML:"+223",
+
+SN:"+221",
+
+TG:"+228"
+
+};
+
 const paymentMethod=document.getElementById("paymentMethod");
 
 const amountDisplay=document.getElementById("amountDisplay");
@@ -84,9 +104,17 @@ serviceName.innerHTML=service.value||"Not selected";
 
 country.addEventListener("change",()=>{
 
-paymentMethod.innerHTML="<option value=''>Select payment network</option>";
+countryCode.innerHTML=
 
-const methods=paymentOptions[country.value]||[];
+countryCodes[country.value]||"+";
+
+paymentMethod.innerHTML=
+
+"<option value=''>Select payment network</option>";
+
+const methods=
+
+paymentOptions[country.value]||[];
 
 methods.forEach(method=>{
 
