@@ -233,13 +233,22 @@ form.addEventListener("submit", async function(e){
         }
 
         // Paiement par carte
-        if(data.paymentUrl){
+       // Paiement par carte
+if (data.paymentUrl) {
 
-            window.location.href = data.paymentUrl;
+    const popup = window.open(
+        data.paymentUrl,
+        "FeexPay",
+        "width=520,height=750,resizable=yes,scrollbars=yes"
+    );
 
-            return;
+    if (!popup) {
+        // Si le navigateur bloque la fenêtre
+        window.location.href = data.paymentUrl;
+    }
 
-        }
+    return;
+}
 
         // Mobile Money
         checkPaymentStatus(data.reference);
