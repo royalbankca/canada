@@ -36,6 +36,29 @@ if (menuToggle && navbar) {
     menuToggle.addEventListener("click", () => {
 
         navbar.classList.toggle("active");
+        document.body.classList.toggle("menu-open");
+
+    });
+
+    document.querySelectorAll(".navbar a").forEach(link => {
+
+        link.addEventListener("click", () => {
+
+            navbar.classList.remove("active");
+            document.body.classList.remove("menu-open");
+
+        });
+
+    });
+
+    window.addEventListener("resize", () => {
+
+        if (window.innerWidth > 991) {
+
+            navbar.classList.remove("active");
+            document.body.classList.remove("menu-open");
+
+        }
 
     });
 
