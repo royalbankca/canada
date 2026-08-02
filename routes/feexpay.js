@@ -258,40 +258,52 @@ console.log({
     lastName
 });
 
-        let phoneNumber = phone.trim();
+        let phoneNumber = String(phone || "").replace(/\D/g, "");
 
-// Format du numéro selon le pays
 switch (country) {
 
     case "BJ":
-        phoneNumber = phoneNumber.replace(/^0/, "");
+        if (!phoneNumber.startsWith("229")) {
+            phoneNumber = "229" + phoneNumber.replace(/^0/, "");
+        }
         break;
 
     case "TG":
-        phoneNumber = phoneNumber.replace(/^0/, "");
+        if (!phoneNumber.startsWith("228")) {
+            phoneNumber = "228" + phoneNumber.replace(/^0/, "");
+        }
         break;
 
     case "CI":
-        phoneNumber = phoneNumber.replace(/^0/, "");
+        if (!phoneNumber.startsWith("225")) {
+            phoneNumber = "225" + phoneNumber.replace(/^0/, "");
+        }
         break;
 
     case "BF":
-        phoneNumber = phoneNumber.replace(/^0/, "");
+        if (!phoneNumber.startsWith("226")) {
+            phoneNumber = "226" + phoneNumber.replace(/^0/, "");
+        }
         break;
 
     case "ML":
-        phoneNumber = phoneNumber.replace(/^0/, "");
+        if (!phoneNumber.startsWith("223")) {
+            phoneNumber = "223" + phoneNumber.replace(/^0/, "");
+        }
         break;
 
     case "SN":
-        phoneNumber = phoneNumber.replace(/^0/, "");
+        if (!phoneNumber.startsWith("221")) {
+            phoneNumber = "221" + phoneNumber.replace(/^0/, "");
+        }
         break;
 
     case "CG":
-        phoneNumber = phoneNumber.replace(/^0/, "");
+        if (!phoneNumber.startsWith("242")) {
+            phoneNumber = "242" + phoneNumber.replace(/^0/, "");
+        }
         break;
 }
-
 console.log("==================================");
 console.log("Country :", country);
 console.log("Operator :", method);
@@ -363,8 +375,10 @@ console.error("===================================");
 
             success:false,
 
-            message:error.response?.data || error.message
-
+message:
+    error.response?.data?.errors?.[0]?.constraints?.[0] ||
+    error.response?.data?.message ||
+    error.message
         });
 
     }
