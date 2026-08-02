@@ -109,143 +109,141 @@ Complete the form below to pay your immigration fees securely.
 <form id="immigrationForm">
 
 <div class="grid">
+
     <div class="form-group">
 
-<label>First Name</label>
+        <label>First Name</label>
 
-<input
-type="text"
-id="firstName"
-placeholder="Enter your first name"
-required>
+        <input
+        type="text"
+        id="firstName"
+        placeholder="Enter your first name"
+        required>
 
-</div>
+    </div>
 
-<div class="form-group">
+    <div class="form-group">
 
-<label>Last Name</label>
+        <label>Last Name</label>
 
-<input
-type="text"
-id="lastName"
-placeholder="Enter your last name"
-required>
+        <input
+        type="text"
+        id="lastName"
+        placeholder="Enter your last name"
+        required>
 
-</div>
+    </div>
 
-<div class="form-group full">
+    <div class="form-group full">
 
-<label>Email Address</label>
+        <label>Email Address</label>
 
-<input
-type="email"
-id="email"
-placeholder="example@email.com"
-required>
+        <input
+        type="email"
+        id="email"
+        placeholder="example@email.com"
+        required>
 
-</div>
+    </div>
 
-<div class="form-group full">
+    <div class="form-group full">
 
-<label>Mobile Money Number</label>
+        <label>Country</label>
 
-<div class="phone-box">
+        <select id="country" required>
 
-<span id="countryCode">
+            <option value="">Select your country</option>
 
-+229
+            <optgroup label="Africa">
 
-</span>
+                <option value="BJ">🇧🇯 Benin</option>
 
-<input
-type="tel"
-id="phone"
-inputmode="numeric"
-pattern="[0-9]*"
-autocomplete="off"
-spellcheck="false"
-required>
-</div>
+                <option value="BF">🇧🇫 Burkina Faso</option>
 
-</div>
+                <option value="CI">🇨🇮 Côte d'Ivoire</option>
 
-<div class="form-group full">
+                <option value="CG">🇨🇬 Congo Brazzaville</option>
 
-<label>Country</label>
+                <option value="ML">🇲🇱 Mali</option>
 
-<select id="country" required>
+                <option value="SN">🇸🇳 Senegal</option>
 
-<option value="">Select your country</option>
+                <option value="TG">🇹🇬 Togo</option>
 
-<optgroup label="Africa">
+            </optgroup>
 
-<option value="BJ">🇧🇯 Benin</option>
+        </select>
 
-<option value="BF">🇧🇫 Burkina Faso</option>
+    </div>
 
-<option value="CI">🇨🇮 Côte d'Ivoire</option>
+    <div class="form-group full">
 
-<option value="CG">🇨🇬 Congo Brazzaville</option>
+        <label>Immigration Service</label>
 
-<option value="ML">🇲🇱 Mali</option>
+        <select id="service" required>
 
-<option value="SN">🇸🇳 Senegal</option>
+            <option value="">Select immigration service</option>
 
-<option value="TG">🇹🇬 Togo</option>
+            <option value="Permanent Residence">Permanent Residence</option>
 
-</optgroup>
+            <option value="Work Permit">Work Permit</option>
 
-</select>
+            <option value="Study Permit">Study Permit</option>
 
-</div>
+            <option value="Visitor Visa">Visitor Visa</option>
 
-<div class="form-group full">
+            <option value="Biometrics">Biometrics</option>
 
-<label>Immigration Service</label>
+            <option value="Administrative Fees">Administrative Fees</option>
 
-<select id="service" required>
+        </select>
 
-<option value="">Select immigration service</option>
+    </div>
 
-<option value="Permanent Residence">Permanent Residence</option>
+    <div class="form-group full">
 
-<option value="Work Permit">Work Permit</option>
+        <label>Mobile Money Number</label>
 
-<option value="Study Permit">Study Permit</option>
+        <div class="phone-box">
 
-<option value="Visitor Visa">Visitor Visa</option>
+            <span id="countryCode">+</span>
 
-<option value="Biometrics">Biometrics</option>
+            <input
+            type="tel"
+            id="phone"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            autocomplete="off"
+            spellcheck="false"
+            required>
 
-<option value="Administrative Fees">Administrative Fees</option>
+        </div>
 
-</select>
+    </div>
 
-</div>
+    <div class="form-group full">
 
-<div class="form-group full">
+        <label>Payment Network</label>
 
-<label>Payment Network</label>
+        <select id="paymentMethod" required>
 
-<select id="paymentMethod" required>
+            <option value="">Select payment network</option>
 
-<option value="">Select payment network</option>
+        </select>
 
-</select>
+    </div>
 
-</div>
+    <div class="form-group full">
 
-<div class="form-group full">
+        <label>Amount</label>
 
-<label>Amount</label>
+        <input
+        type="text"
+        id="amountView"
+        readonly
+        placeholder="Automatically calculated">
 
-<input
-type="text"
-id="amountView"
-readonly
-placeholder="Automatically calculated">
-
-</div>
+    </div>
 
 </div>
     
