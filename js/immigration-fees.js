@@ -63,6 +63,25 @@ SN:"+221",
 TG:"+228"
 
 };
+const phoneLengths = {
+
+    BJ:10,
+
+    BF:8,
+
+    CI:10,
+
+    CG:9,
+
+    ML:8,
+
+    SN:9,
+
+    TG:8
+
+};
+
+const phoneInput = document.getElementById("phone");
 
 const paymentMethod=document.getElementById("paymentMethod");
 
@@ -104,34 +123,63 @@ serviceName.innerHTML=service.value||"Not selected";
 
 country.addEventListener("change",()=>{
 
-countryCode.innerHTML=
+    countryCode.innerHTML =
+        countryCodes[country.value] || "+";
 
-countryCodes[country.value]||"+";
+    phoneInput.disabled = false;
 
-paymentMethod.innerHTML=
+    phoneInput.focus();
 
-"<option value=''>Select payment network</option>";
+    paymentMethod.innerHTML =
+        "<option value=''>Select payment network</option>";
 
-const methods=
+    const methods = paymentOptions[country.value] || [];
 
-paymentOptions[country.value]||[];
+    methods.forEach(method=>{
 
-methods.forEach(method=>{
+        const option = document.createElement("option");
 
-const option=document.createElement("option");
+        option.value = method;
 
-option.value=method;
+        option.textContent = method;
 
-option.textContent=method;
+        paymentMethod.appendChild(option);
 
-paymentMethod.appendChild(option);
+    });
 
+    networkName.innerHTML = "Not selected";
+
+    const max = phoneLengths[country.value] || 15;
+
+    phoneInput.value = "";
+
+    phoneInput.maxLength = max;
+
+    phoneInput.minLength = max;
+    phoneInput.setAttribute("pattern", `\\d{${max}}`);
+phoneInput.required = true;
+
+const phoneExamples = {
+
+    BJ: "Ex: 0197554285",
+
+    BF: "Ex: 70123456",
+
+    CI: "Ex: 0701234567",
+
+    CG: "Ex: 061234567",
+
+    ML: "Ex: 70123456",
+
+    SN: "Ex: 771234567",
+
+    TG: "Ex: 90123456"
+
+};
+
+phoneInput.placeholder =
+    phoneExamples[country.value] || "Phone number";
 });
-
-networkName.innerHTML="Not selected";
-
-});
-
 paymentMethod.addEventListener("change",()=>{
 
 networkName.innerHTML=
@@ -205,13 +253,30 @@ form.addEventListener("submit",async function(e){
 
     }
 
-    if(!paymentMethod.value){
+   if(!country.value){
 
-        alert("Please select a payment network.");
+    alert("Please select your country.");
 
-        return;
+    return;
 
-    }
+}
+
+if(!paymentMethod.value){
+
+    alert("Please select a payment network.");
+
+    return;
+
+}
+    const expectedLength = phoneLengths[country.value];
+
+if(document.getElementById("phone").value.length !== expectedLength){
+
+    alert(`This country requires exactly ${expectedLength} digits.`);
+
+    return;
+
+}
 
     showLoading();
 
@@ -385,7 +450,15 @@ function resetForm(){
         </option>
 
     `;
-
+    networkName.innerHTML = "Not selected";
+serviceName.innerHTML = "Not selected";
+amountDisplay.innerHTML = "0 CAD";
+amountView.value = "0 CAD";
+receiptAmount.innerHTML = "0 CAD";
+phoneInput.value = "";
+phoneInput.disabled = true;
+phoneInput.placeholder = "Select your country first";
+countryCode.innerHTML = "+";
 }
 /*==================================================
 CANADA GLOBAL BANK
@@ -404,6 +477,10 @@ document.addEventListener("DOMContentLoaded",()=>{
     serviceName.innerHTML="Not selected";
 
     networkName.innerHTML="Not selected";
+
+    phoneInput.disabled = true;
+
+    phoneInput.placeholder = "Select your country first";
 
 });
 
@@ -440,6 +517,20 @@ window.addEventListener("pageshow",()=>{
 window.addEventListener("focus",()=>{
 
     hideLoading();
+
+});
+
+phoneInput.addEventListener("input",function(){
+
+    this.value=this.value.replace(/\D/g,"");
+
+    const max=phoneLengths[country.value]||15;
+
+    if(this.value.length>max){
+
+        this.value=this.value.substring(0,max);
+
+    }
 
 });
 
