@@ -262,11 +262,11 @@ console.log({
 
 switch (country) {
 
-    case "BJ":
-        if (!phoneNumber.startsWith("229")) {
-            phoneNumber = "229" + phoneNumber.replace(/^0/, "");
-        }
-        break;
+   case "BJ":
+    if (!phoneNumber.startsWith("229")) {
+        phoneNumber = "229" + phoneNumber;
+    }
+    break;
 
     case "TG":
         if (!phoneNumber.startsWith("228")) {
