@@ -115,6 +115,8 @@ align-items:center;
 
 height:82px;
 
+gap:20px;
+
 }
 
 /*======================================================
@@ -127,21 +129,29 @@ display:flex;
 
 align-items:center;
 
-gap:15px;
+gap:12px;
+
+flex-shrink:0;
+
+min-width:220px;
 
 }
 
 .logo h2{
 
-font-size:34px;
+font-size:24px;
 
 font-weight:900;
+
+line-height:1.1;
 
 display:flex;
 
 align-items:center;
 
-gap:10px;
+gap:6px;
+
+flex-wrap:wrap;
 
 }
 
@@ -180,6 +190,15 @@ MENU
 ======================================================*/
 
 .navbar ul{
+    .navbar{
+
+flex:1;
+
+display:flex;
+
+justify-content:center;
+
+}
 
 display:flex;
 
