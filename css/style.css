@@ -131,9 +131,13 @@ align-items:center;
 
 gap:12px;
 
-flex-shrink:0;
+flex-shrink:1;
 
-min-width:220px;
+min-width:0;
+
+max-width:100%;
+
+overflow:hidden;
 
 }
 
@@ -152,6 +156,14 @@ align-items:center;
 gap:6px;
 
 flex-wrap:wrap;
+
+min-width:0;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+white-space:nowrap;
 
 }
 
@@ -189,8 +201,7 @@ color:var(--yellow);
 MENU
 ======================================================*/
 
-.navbar ul{
-    .navbar{
+.navbar{
 
 flex:1;
 
@@ -198,18 +209,25 @@ display:flex;
 
 justify-content:center;
 
+min-width:0;
+
 }
+
+.navbar ul{
 
 display:flex;
 
 align-items:center;
 
-gap:35px;
+justify-content:center;
+
+gap:28px;
 
 list-style:none;
 
-}
+flex-wrap:nowrap;
 
+}
 .navbar a{
 
 font-size:16px;
@@ -1734,152 +1752,7 @@ font-size:14px;
 
 }
 
-/*======================================================
-RESPONSIVE HEADER V2
-======================================================*/
 
-.menu-toggle{
-
-display:none;
-
-width:48px;
-height:48px;
-
-border:none;
-border-radius:10px;
-
-background:#0051A5;
-color:#fff;
-
-font-size:22px;
-cursor:pointer;
-
-}
-
-@media screen and (max-width:768px){
-
-.topbar{
-
-display:none;
-
-}
-
-.header{
-
-top:0;
-
-}
-
-.header .container{
-
-height:75px;
-
-display:flex;
-
-flex-direction:row;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:0 15px;
-
-}
-
-.logo{
-
-gap:10px;
-
-}
-
-.logo img{
-
-width:42px;
-height:42px;
-
-}
-
-.logo h2{
-
-font-size:22px;
-
-display:block;
-
-}
-
-.menu-toggle{
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-}
-
-.navbar{
-
-position:absolute;
-
-top:75px;
-
-left:0;
-
-width:100%;
-
-background:#fff;
-
-display:none;
-
-box-shadow:0 8px 20px rgba(0,0,0,.12);
-
-}
-
-.navbar.active{
-
-display:block;
-
-}
-
-.navbar ul{
-
-display:flex;
-
-flex-direction:column;
-
-gap:0;
-
-}
-
-.navbar li{
-
-border-bottom:1px solid #ececec;
-
-}
-
-.navbar a{
-
-display:block;
-
-padding:16px 20px;
-
-font-size:16px;
-
-}
-
-.header-buttons{
-
-display:none;
-
-}
-
-.hero{
-
-margin-top:75px;
-
-}
-
-}
 /*======================================================
 TESTIMONIALS
 ======================================================*/
@@ -2048,5 +1921,121 @@ IMMIGRATION BUTTON
 .immigration-btn i{
 
     font-size:18px;
+
+}
+@keyframes slideMenu{
+
+from{
+    opacity:0;
+    transform:translateY(-10px);
+}
+
+to{
+    opacity:1;
+    transform:translateY(0);
+}
+
+}
+/*======================================================
+MOBILE MENU
+======================================================*/
+
+@media(max-width:991px){
+
+.menu-toggle{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+width:48px;
+
+height:48px;
+
+border:none;
+
+border-radius:10px;
+
+background:#0051A5;
+
+color:#fff;
+
+font-size:22px;
+
+cursor:pointer;
+
+}
+
+.navbar{
+
+position:fixed;
+
+top:122px;
+
+left:0;
+
+width:100%;
+
+height:calc(100vh - 122px);
+
+background:#fff;
+
+display:none;
+
+overflow-y:auto;
+
+z-index:9998;
+
+box-shadow:0 10px 25px rgba(0,0,0,.12);
+
+}
+
+.header{
+
+z-index:9999;
+
+}
+
+.navbar.active{
+
+display:block;
+
+animation:slideMenu .25s ease;
+
+}
+
+.navbar ul{
+
+display:flex;
+
+flex-direction:column;
+
+gap:0;
+
+padding:20px 0;
+
+}
+
+.navbar li{
+
+width:100%;
+
+border-bottom:1px solid #ececec;
+
+}
+
+.navbar a{
+
+display:block;
+
+width:100%;
+
+padding:16px 22px;
+
+font-size:16px;
+
+}
 
 }
