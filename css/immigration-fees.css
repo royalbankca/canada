@@ -709,3 +709,8 @@ display:block !important;
 flex:1 !important;
 width:100% !important;
 }
+.required{
+    color:#d52b1e;
+    font-weight:700;
+    margin-left:2px;
+}
