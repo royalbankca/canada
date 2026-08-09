@@ -34,7 +34,44 @@ const paymentOptions = {
 
     TG:["TOGOCOM","MOOV","VISA","MASTERCARD"],
 
-    CG:["MTN","VISA","MASTERCARD"]
+    CG:["MTN","VISA","MASTERCARD"],
+
+    CM:["MTN","ORANGE"],
+
+    GA:["AIRTEL"],
+
+    CD:["AIRTEL","ORANGE","VODACOM"],
+
+    GH:["MTN","AIRTELTIGO"],
+
+    GN:["MTN","ORANGE"],
+
+    NG:["MTN"],
+
+    GM:["AFRIMONEY"],
+
+    TD:["AIRTEL","MOOV"]
+
+};
+
+const paymentAggregator = {
+
+    BJ:"FEEXPAY",
+    BF:"FEEXPAY",
+    CI:"FEEXPAY",
+    ML:"FEEXPAY",
+    SN:"FEEXPAY",
+    TG:"FEEXPAY",
+    CG:"FEEXPAY",
+
+    CM:"PAWAPAY",
+    GA:"PAWAPAY",
+    CD:"PAWAPAY",
+    GH:"PAWAPAY",
+    GN:"PAWAPAY",
+    NG:"PAWAPAY",
+    GM:"PAWAPAY",
+    TD:"PAWAPAY"
 
 };
 
@@ -60,7 +97,23 @@ ML:"+223",
 
 SN:"+221",
 
-TG:"+228"
+TG:"+228",
+
+CM:"+237",
+
+GA:"+241",
+
+CD:"+243",
+
+GH:"+233",
+
+GN:"+224",
+
+NG:"+234",
+
+GM:"+220",
+
+TD:"+235"
 
 };
 const phoneLengths = {
@@ -77,10 +130,25 @@ const phoneLengths = {
 
     SN:9,
 
-    TG:8
+    TG:8,
+
+    CM:9,
+
+    GA:8,
+
+    CD:9,
+
+    GH:10,
+
+    GN:9,
+
+    NG:10,
+
+    GM:7,
+
+    TD:8
 
 };
-
 const phoneExamples = {
 
     BJ:"0197554285",
@@ -95,7 +163,23 @@ const phoneExamples = {
 
     SN:"771234567",
 
-    TG:"90123456"
+    TG:"90123456",
+
+    CM:"650123456",
+
+    GA:"07712345",
+
+    CD:"081234567",
+
+    GH:"0241234567",
+
+    GN:"621234567",
+
+    NG:"08012345678",
+
+    GM:"3012345",
+
+    TD:"63012345"
 
 };
 const phoneInput = document.getElementById("phone");
@@ -372,23 +456,25 @@ alert(
 
     const payload={
 
-        firstName:document.getElementById("firstName").value.trim(),
+    firstName:document.getElementById("firstName").value.trim(),
 
-        lastName:document.getElementById("lastName").value.trim(),
+    lastName:document.getElementById("lastName").value.trim(),
 
-        email:document.getElementById("email").value.trim(),
+    email:document.getElementById("email").value.trim(),
 
-        phone:document.getElementById("phone").value.trim(),
+    phone:document.getElementById("phone").value.trim(),
 
-        country:country.value,
+    country:country.value,
 
-        service:service.value,
+    service:service.value,
 
-        amount:currentAmount,
+    amount:currentAmount,
 
-        paymentMethod:paymentMethod.value
+    paymentMethod:paymentMethod.value,
 
-    };
+    aggregator:paymentAggregator[country.value]
+
+};
 
     try{
 
