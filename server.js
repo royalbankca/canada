@@ -554,6 +554,45 @@ app.post("/api/immigration/pawapay", async (req, res) => {
             Math.round(amountCAD * config.rate);
 
         // =========================
+// NORMALISATION DU NUMÉRO
+// =========================
+
+let payerPhone = String(phone || "")
+    .replace(/\D/g, "");
+
+const PHONE_CODES = {
+
+    CM: "237",
+    GA: "241",
+    CD: "243",
+    GH: "233",
+    GN: "224",
+    NG: "234",
+    GM: "220",
+    TD: "235"
+
+};
+
+const phoneCode = PHONE_CODES[country];
+
+if (!phoneCode) {
+
+    return res.status(400).json({
+        success: false,
+        message: "Phone country code is not configured."
+    });
+
+}
+
+if (!payerPhone.startsWith(phoneCode)) {
+
+    payerPhone =
+        phoneCode +
+        payerPhone.replace(/^0+/, "");
+
+}
+
+        // =========================
         // IDENTIFIANT PAWAPAY
         // =========================
 
@@ -609,19 +648,19 @@ app.post("/api/immigration/pawapay", async (req, res) => {
                 new Date().toISOString(),
 
             statementDescription:
-                "Purchase",
+    "Purchase",
 
-            payer: {
+payer: {
 
-                type: "MSISDN",
+    type: "MSISDN",
 
-                address: {
+    address: {
 
-                    value: phone
+        value: payerPhone
 
-                }
+    }
 
-            }
+}
 
         };
 
