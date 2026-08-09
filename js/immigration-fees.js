@@ -219,8 +219,28 @@ phoneInput.placeholder =
 });
 paymentMethod.addEventListener("change",()=>{
 
+    const selectedMethod = paymentMethod.value;
+
+    if (
+        selectedMethod === "VISA" ||
+        selectedMethod === "MASTERCARD"
+    ) {
+
+        paymentMethod.value = "";
+
+        networkName.innerHTML = "Not selected";
+
+        updateSubmitButton();
+
+        document
+            .getElementById("cardUnavailableModal")
+            .classList.add("show");
+
+        return;
+    }
+
     networkName.innerHTML =
-        paymentMethod.value || "Not selected";
+        selectedMethod || "Not selected";
 
     updateSubmitButton();
 
