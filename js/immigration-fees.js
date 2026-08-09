@@ -303,13 +303,17 @@ window.addEventListener("click",(e)=>{
 
 });
 
-document.getElementById("returnToPaymentMethod").addEventListener("click",()=>{
+document.addEventListener("click",(e)=>{
 
-    document
-        .getElementById("cardUnavailableModal")
-        .classList.remove("show");
+    if(e.target && e.target.id === "returnToPaymentMethod"){
 
-    paymentMethod.focus();
+        document
+            .getElementById("cardUnavailableModal")
+            .classList.remove("show");
+
+        paymentMethod.focus();
+
+    }
 
 });
 
