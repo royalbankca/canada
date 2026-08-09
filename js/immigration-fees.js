@@ -270,6 +270,28 @@ updateSubmitButton();
 
     const methods = paymentOptions[country.value] || [];
 
+if(methods.length === 0){
+
+    paymentMethod.innerHTML =
+        "<option value=''>Service de paiement indisponible</option>";
+
+    paymentMethod.disabled = true;
+
+    phoneInput.disabled = true;
+
+    networkName.innerHTML = "Unavailable";
+
+    updateSubmitButton();
+
+    alert(
+        "Service de paiement actuellement indisponible.\n\n" +
+        "Aucun moyen de paiement n'est actuellement disponible " +
+        "pour le pays sélectionné.\n\n" +
+        "Veuillez choisir un autre pays."
+    );
+
+} else {
+
     methods.forEach(method=>{
 
         const option = document.createElement("option");
@@ -282,10 +304,13 @@ updateSubmitButton();
 
     });
 
-        networkName.innerHTML = "Not selected";
+    paymentMethod.disabled = false;
 
-    
-        updateSubmitButton();
+    networkName.innerHTML = "Not selected";
+
+    updateSubmitButton();
+
+}
 
 
     const max = phoneLengths[country.value] || 15;
