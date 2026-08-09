@@ -227,9 +227,17 @@ Complete the form below to pay your immigration fees securely.
 
         <select id="paymentMethod" required>
 
-            <option value="">Select payment network</option>
+    <option value="">Select payment network</option>
 
-        </select>
+    <option value="TOGOCOM">TOGOCOM</option>
+
+    <option value="MOOV">MOOV</option>
+
+    <option value="VISA">VISA</option>
+
+    <option value="MASTERCARD">MASTERCARD</option>
+
+</select>
 
     </div>
 
@@ -555,6 +563,28 @@ Visa / Mastercard
 </footer>
 
 <script src="js/immigration-fees.js"></script>
+
+    <div id="cardUnavailableModal" class="unavailable-modal">
+    <div class="unavailable-box">
+
+        <h2>Service actuellement indisponible</h2>
+
+        <p>
+            Le paiement par carte bancaire
+            <strong>Visa</strong> et <strong>Mastercard</strong>
+            est actuellement indisponible.
+        </p>
+
+        <p>
+            Veuillez choisir une autre option de paiement.
+        </p>
+
+        <button type="button" id="returnToPaymentMethod">
+            Retourner et modifier l'option
+        </button>
+
+    </div>
+</div>
 </body>
 
 </html>
