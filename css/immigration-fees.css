@@ -325,8 +325,8 @@ PAYMENT MODAL
 ========================================*/
 
 .payment-modal,
-.success-modal{
-
+.success-modal,
+.unavailable-modal{
 position:fixed;
 top:0;
 left:0;
@@ -339,7 +339,47 @@ background:rgba(0,0,0,.65);
 backdrop-filter:blur(5px);
 padding:20px;
 z-index:99999;
+}
 
+.unavailable-modal.show{
+display:flex;
+}
+
+.unavailable-box{
+width:100%;
+max-width:500px;
+background:#fff;
+border-radius:20px;
+padding:30px;
+text-align:center;
+box-shadow:0 25px 50px rgba(0,0,0,.20);
+animation:popup .35s ease;
+}
+
+.unavailable-box h2{
+color:#003087;
+font-size:24px;
+margin-bottom:15px;
+}
+
+.unavailable-box p{
+color:#243145;
+font-size:15px;
+line-height:1.6;
+margin:10px 0;
+}
+
+.unavailable-box button{
+margin-top:20px;
+width:100%;
+height:52px;
+border:none;
+border-radius:12px;
+background:#003087;
+color:#fff;
+font-size:15px;
+font-weight:700;
+cursor:pointer;
 }
 
 .payment-box,
