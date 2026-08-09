@@ -291,6 +291,26 @@ window.addEventListener("click",(e)=>{
 
     }
 
+    if(e.target===document.getElementById("cardUnavailableModal")){
+
+        document
+            .getElementById("cardUnavailableModal")
+            .classList.remove("show");
+
+        paymentMethod.focus();
+
+    }
+
+});
+
+document.getElementById("returnToPaymentMethod").addEventListener("click",()=>{
+
+    document
+        .getElementById("cardUnavailableModal")
+        .classList.remove("show");
+
+    paymentMethod.focus();
+
 });
 
 document.getElementById("printReceipt").addEventListener("click",()=>{
