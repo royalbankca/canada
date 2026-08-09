@@ -272,42 +272,33 @@ updateSubmitButton();
 
 if(methods.length === 0){
 
+    alert(
+        "Payment service currently unavailable.\n\n" +
+        "No payment method is currently available " +
+        "for the selected country.\n\n" +
+        "Please choose another country."
+    );
+
+    country.value = "";
+
     paymentMethod.innerHTML =
-        "<option value=''>Service de paiement indisponible</option>";
+        "<option value=''>Select payment network</option>";
 
     paymentMethod.disabled = true;
 
+    phoneInput.value = "";
+
     phoneInput.disabled = true;
 
-    networkName.innerHTML = "Unavailable";
+    phoneInput.placeholder = "Select your country first";
+
+    countryCode.textContent = "+";
+
+    networkName.innerHTML = "Not selected";
 
     updateSubmitButton();
 
-    alert(
-    "Payment service currently unavailable.\n\n" +
-    "No payment method is currently available " +
-    "for the selected country.\n\n" +
-    "Please choose another country."
-);
-
-country.value = "";
-
-paymentMethod.innerHTML =
-    "<option value=''>Select payment network</option>";
-
-paymentMethod.disabled = true;
-
-phoneInput.value = "";
-
-phoneInput.disabled = true;
-
-countryCode.textContent = "+";
-
-phoneExample.textContent = "";
-
-networkName.innerHTML = "Not selected";
-
-updateSubmitButton();
+    return;
 
 } else {
 
