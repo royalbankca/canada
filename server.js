@@ -1109,6 +1109,128 @@ console.log("Transaction =", transaction);
 
 });
 
+// ==================================================
+// PAWAPAY - IMMIGRATION PAYMENT STATUS
+// ==================================================
+
+app.get("/api/immigration/pawapay/status/:id", async (req, res) => {
+
+    try {
+
+        const depositId = req.params.id;
+
+        const response = await axios.get(
+            `https://api.pawapay.io/v2/deposits/${depositId}`,
+            {
+                headers: {
+                    Authorization:
+                        `Bearer ${PAWAPAY_API_KEY}`,
+
+                    Accept:
+                        "application/json"
+                }
+            }
+        );
+
+        console.log(
+            "===== PAWAPAY IMMIGRATION STATUS ====="
+        );
+
+        console.log(
+            JSON.stringify(response.data, null, 2)
+        );
+
+        const deposit = response.data.data;
+
+        if (!deposit) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                status: "NOT_FOUND",
+
+                message:
+                    "Immigration payment not found."
+
+            });
+
+        }
+
+        const transaction =
+            await ImmigrationTransaction.findOne({
+                depositId
+            });
+
+        if (transaction) {
+
+            if (deposit.status === "COMPLETED") {
+
+                transaction.status = "COMPLETED";
+
+                await transaction.save();
+
+            }
+
+            if (deposit.status === "FAILED") {
+
+                transaction.status = "FAILED";
+
+                await transaction.save();
+
+            }
+
+        }
+
+        return res.json({
+
+            success: true,
+
+            depositId,
+
+            status: deposit.status,
+
+            amount:
+                transaction?.amountCAD || null,
+
+            currency:
+                transaction?.currency || null,
+
+            service:
+                transaction?.service || null,
+
+            paymentMethod:
+                transaction?.paymentMethod || null
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "===== PAWAPAY IMMIGRATION STATUS ERROR ====="
+        );
+
+        console.error(
+            error.response?.data ||
+            error.message
+        );
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                error.response?.data ||
+                error.message
+
+        });
+
+    }
+
+});
+
 // =========================
 // WEBHOOK PAWAPAY
 // =========================
