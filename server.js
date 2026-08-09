@@ -609,7 +609,7 @@ app.post("/api/immigration/pawapay", async (req, res) => {
                 new Date().toISOString(),
 
             statementDescription:
-                "Canada Global Bank Immigration Payment",
+                "Purchase",
 
             payer: {
 
