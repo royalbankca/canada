@@ -487,9 +487,22 @@ alert(
 
 }
 
-    showLoading();
+    const selectedAggregator = paymentAggregator[country.value];
 
-    const payload={
+if(selectedAggregator === "PAWAPAY"){
+
+    alert(
+        "Payment service currently unavailable.\n\n" +
+        "Payment processing for this country is currently unavailable.\n\n" +
+        "Please choose another payment option."
+    );
+
+    return;
+}
+
+showLoading();
+
+const payload={
 
     firstName:document.getElementById("firstName").value.trim(),
 
