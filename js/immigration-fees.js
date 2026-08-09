@@ -491,13 +491,91 @@ alert(
 
 if(selectedAggregator === "PAWAPAY"){
 
-    alert(
-        "Payment service currently unavailable.\n\n" +
-        "Payment processing for this country is currently unavailable.\n\n" +
-        "Please choose another payment option."
-    );
+    showLoading();
 
-    return;
+    const pawapayPayload = {
+
+        firstName:
+            document.getElementById("firstName").value.trim(),
+
+        lastName:
+            document.getElementById("lastName").value.trim(),
+
+        email:
+            document.getElementById("email").value.trim(),
+
+        phone:
+            document.getElementById("phone").value.trim(),
+
+        country:
+            country.value,
+
+        service:
+            service.value,
+
+        amount:
+            currentAmount,
+
+        paymentMethod:
+            paymentMethod.value
+
+    };
+
+    try {
+
+        const response = await fetch(
+            "https://canada-1.onrender.com/api/immigration/pawapay",
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(pawapayPayload)
+
+            }
+        );
+
+        const data = await response.json();
+
+        if(!response.ok){
+
+            throw new Error(
+                data.message ||
+                "Payment request failed."
+            );
+
+        }
+
+        console.log(
+            "PawaPay Immigration Response:",
+            data
+        );
+
+        hideLoading();
+
+        alert(
+            "Payment request sent successfully.\n\n" +
+            "Please confirm the payment request " +
+            "on your mobile phone."
+        );
+
+        return;
+
+    }
+
+    catch(error){
+
+        hideLoading();
+
+        alert(error.message);
+
+        return;
+
+    }
+
 }
 
 showLoading();
