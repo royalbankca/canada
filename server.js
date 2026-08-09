@@ -14,6 +14,9 @@ const Customer = require("./models/Customer");
 
 const Transaction = require("./models/Transaction");
 
+const ImmigrationTransaction =
+    require("./models/ImmigrationTransaction");
+
 const feexpayRoutes = require("./routes/feexpay");
 
 const app = express();
@@ -369,6 +372,366 @@ return res.status(200).json(response.data);
 }
 
 });
+
+// ==================================================
+// PAWAPAY - IMMIGRATION PAYMENT
+// ==================================================
+
+app.post("/api/immigration/pawapay", async (req, res) => {
+
+    try {
+
+        const {
+            firstName,
+            lastName,
+            email,
+            phone,
+            country,
+            service,
+            amount,
+            paymentMethod
+        } = req.body;
+
+        if (
+            !firstName ||
+            !lastName ||
+            !email ||
+            !phone ||
+            !country ||
+            !service ||
+            !amount ||
+            !paymentMethod
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Missing required payment information."
+            });
+
+        }
+
+        // =========================
+        // PAYS / DEVISES
+        // =========================
+
+        const COUNTRIES = {
+
+            CM: {
+                code: "CMR",
+                currency: "XAF",
+                rate: 600
+            },
+
+            GA: {
+                code: "GAB",
+                currency: "XAF",
+                rate: 600
+            },
+
+            CD: {
+                code: "COD",
+                currency: "CDF",
+                rate: 2850
+            },
+
+            GH: {
+                code: "GHA",
+                currency: "GHS",
+                rate: 12
+            },
+
+            GN: {
+                code: "GIN",
+                currency: "GNF",
+                rate: 8700
+            },
+
+            NG: {
+                code: "NGA",
+                currency: "NGN",
+                rate: 1650
+            },
+
+            GM: {
+                code: "GMB",
+                currency: "GMD",
+                rate: 72
+            },
+
+            TD: {
+                code: "TCD",
+                currency: "XAF",
+                rate: 600
+            }
+
+        };
+
+        const config = COUNTRIES[country];
+
+        if (!config) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Country is not supported by PawaPay."
+            });
+
+        }
+
+        // =========================
+        // CORRESPONDENTS
+        // =========================
+
+        const CORRESPONDENTS = {
+
+            CM: {
+                MTN: "MTN_MOMO_CMR",
+                ORANGE: "ORANGE_CMR"
+            },
+
+            GA: {
+                AIRTEL: "AIRTEL_GAB"
+            },
+
+            CD: {
+                AIRTEL: "AIRTEL_COD",
+                ORANGE: "ORANGE_COD",
+                VODACOM: "VODACOM_COD"
+            },
+
+            GH: {
+                MTN: "MTN_MOMO_GHA",
+                AIRTELTIGO: "AIRTELTIGO_GHA"
+            },
+
+            GN: {
+                MTN: "MTN_GIN",
+                ORANGE: "ORANGE_GIN"
+            },
+
+            NG: {
+                MTN: "MTN_MOMO_NGA"
+            },
+
+            GM: {
+                AFRIMONEY: "AFRIMONEY_GMB"
+            },
+
+            TD: {
+                AIRTEL: "AIRTEL_TCD",
+                MOOV: "MOOV_TCD"
+            }
+
+        };
+
+        const correspondent =
+            CORRESPONDENTS[country]?.[paymentMethod];
+
+        if (!correspondent) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Payment network is not supported."
+            });
+
+        }
+
+        // =========================
+        // CONVERSION CAD -> LOCAL
+        // =========================
+
+        const amountCAD = Number(amount);
+
+        if (!Number.isFinite(amountCAD) || amountCAD <= 0) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid payment amount."
+            });
+
+        }
+
+        const localAmount =
+            Math.round(amountCAD * config.rate);
+
+        // =========================
+        // IDENTIFIANT PAWAPAY
+        // =========================
+
+        const depositId = randomUUID();
+
+        // =========================
+        // TRANSACTION IMMIGRATION
+        // =========================
+
+        await ImmigrationTransaction.create({
+
+            depositId,
+
+            firstName,
+            lastName,
+            email,
+            phone,
+
+            country,
+            service,
+
+            paymentMethod,
+
+            aggregator: "PAWAPAY",
+
+            amountCAD,
+
+            localAmount,
+
+            currency: config.currency,
+
+            status: "PENDING"
+
+        });
+
+        // =========================
+        // PAYLOAD PAWAPAY
+        // =========================
+
+        const payload = {
+
+            depositId,
+
+            amount: String(localAmount),
+
+            currency: config.currency,
+
+            country: config.code,
+
+            correspondent,
+
+            customerTimestamp:
+                new Date().toISOString(),
+
+            statementDescription:
+                "Canada Global Bank Immigration Payment",
+
+            payer: {
+
+                type: "MSISDN",
+
+                address: {
+
+                    value: phone
+
+                }
+
+            }
+
+        };
+
+        console.log(
+            "===== PAWAPAY IMMIGRATION REQUEST ====="
+        );
+
+        console.log(
+            JSON.stringify(payload, null, 2)
+        );
+
+        // =========================
+        // ENVOI PAWAPAY
+        // =========================
+
+        const response = await axios.post(
+
+            "https://api.pawapay.io/v1/deposits",
+
+            payload,
+
+            {
+
+                headers: {
+
+                    Authorization:
+                        `Bearer ${PAWAPAY_API_KEY}`,
+
+                    "Content-Type":
+                        "application/json"
+
+                }
+
+            }
+
+        );
+
+        console.log(
+            "===== PAWAPAY IMMIGRATION RESPONSE ====="
+        );
+
+        console.log(
+            JSON.stringify(response.data, null, 2)
+        );
+
+        // =========================
+        // REJET IMMÉDIAT
+        // =========================
+
+        if (response.data.status === "REJECTED") {
+
+            await ImmigrationTransaction.updateOne(
+
+                { depositId },
+
+                {
+                    status: "FAILED"
+                }
+
+            );
+
+            return res.status(400).json(
+                response.data
+            );
+
+        }
+
+        return res.status(200).json({
+
+            success: true,
+
+            depositId,
+
+            status: response.data.status,
+
+            amount: localAmount,
+
+            currency: config.currency,
+
+            aggregator: "PAWAPAY"
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "===== PAWAPAY IMMIGRATION ERROR ====="
+        );
+
+        console.error(
+            error.response?.data ||
+            error.message
+        );
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                error.response?.data ||
+                error.message
+
+        });
+
+    }
+
+});
+
 // =========================
 // CRÉATION D'UN COMPTE
 // =========================
