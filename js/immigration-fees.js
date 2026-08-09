@@ -284,11 +284,11 @@ if(methods.length === 0){
     updateSubmitButton();
 
     alert(
-        "Service de paiement actuellement indisponible.\n\n" +
-        "Aucun moyen de paiement n'est actuellement disponible " +
-        "pour le pays sélectionné.\n\n" +
-        "Veuillez choisir un autre pays."
-    );
+    "Payment service currently unavailable.\n\n" +
+    "No payment method is currently available " +
+    "for the selected country.\n\n" +
+    "Please choose another country."
+);
 
 } else {
 
