@@ -290,6 +290,25 @@ if(methods.length === 0){
     "Please choose another country."
 );
 
+country.value = "";
+
+paymentMethod.innerHTML =
+    "<option value=''>Select payment network</option>";
+
+paymentMethod.disabled = true;
+
+phoneInput.value = "";
+
+phoneInput.disabled = true;
+
+countryCode.textContent = "+";
+
+phoneExample.textContent = "";
+
+networkName.innerHTML = "Not selected";
+
+updateSubmitButton();
+
 } else {
 
     methods.forEach(method=>{
