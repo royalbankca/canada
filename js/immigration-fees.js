@@ -6,17 +6,17 @@ PART 1 / 4
 
 const immigrationFees = {
 
-    "Permanent Residence":250,
+    "Permanent Residence":1250,
 
     "Work Permit":180,
 
     "Study Permit":150,
 
-    "Visitor Visa":100,
+    "Language test Fees":150,
 
     "Biometrics":85,
 
-    "Administrative Fees":1
+    "Administrative Fees":220
 
 };
 
