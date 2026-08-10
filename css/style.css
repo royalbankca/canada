@@ -1,5 +1,5 @@
 /*======================================================
-RBC ONLINE BANKING
+CGB ONLINE BANKING
 STYLE.CSS
 PARTIE 1
 ======================================================*/
@@ -611,10 +611,10 @@ line-height:1.8;
 }
 
 /*======================================================
-WHY RBC
+WHY CGB
 ======================================================*/
 
-.why-rbc{
+.why-CGB{
 
 padding:100px 0;
 
@@ -622,7 +622,7 @@ background:#f7f9fc;
 
 }
 
-.why-rbc h2{
+.why-CGB h2{
 
 text-align:center;
 
@@ -1089,7 +1089,7 @@ max-width:320px;
 
 .services,
 .products,
-.why-rbc,
+.why-CGB,
 .digital,
 .contact{
 
@@ -1099,7 +1099,7 @@ padding:70px 0;
 
 .services h2,
 .products h2,
-.why-rbc h2,
+.why-CGB h2,
 .digital h2,
 .contact h2{
 
