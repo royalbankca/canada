@@ -486,9 +486,37 @@ display:flex;
 
 justify-content:center;
 
-gap:20px;
+align-items:center;
+
+gap:26px;
 
 flex-wrap:wrap;
+
+}
+
+.hero-btns .btn{
+
+min-width:210px;
+
+height:76px;
+
+padding:0 28px;
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:10px;
+
+border-radius:8px;
+
+font-size:18px;
+
+font-weight:700;
+
+box-sizing:border-box;
 
 }
 
@@ -1885,30 +1913,18 @@ font-size:32px;
 
 }
 /*==========================================
-IMMIGRATION BUTTON
+administrative BUTTON
 ==========================================*/
 
-.immigration-btn{
+.administrative-btn{
 
     background:#0f8b4c;
+
     color:#fff;
-
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-
-    padding:15px 35px;
-
-    border-radius:8px;
-
-    font-weight:700;
-
-    transition:.3s;
 
 }
 
-.immigration-btn:hover{
+.administrative-btn:hover{
 
     background:#0a6b39;
 
@@ -1918,7 +1934,23 @@ IMMIGRATION BUTTON
 
 }
 
-.immigration-btn i{
+.administrative-btn i{
+
+    font-size:18px;
+
+}
+
+.administrative-btn:hover{
+
+    background:#0a6b39;
+
+    transform:translateY(-3px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
+
+}
+
+.administrative-btn i{
 
     font-size:18px;
 
