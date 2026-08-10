@@ -201,6 +201,7 @@ const receiptMethod=document.getElementById("receiptMethod");
 const receiptDate=document.getElementById("receiptDate");
 
 const receiptReference=document.getElementById("receiptReference");
+const receiptService=document.getElementById("receiptService");
 
 const paymentModal=document.getElementById("paymentModal");
 
@@ -387,6 +388,8 @@ function showSuccess(reference){
     hideLoading();
 
     receiptReference.innerHTML=reference;
+    
+    receiptService.innerHTML=service.value;
 
     receiptMethod.innerHTML=paymentMethod.value;
 
