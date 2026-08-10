@@ -202,6 +202,7 @@ const receiptDate=document.getElementById("receiptDate");
 
 const receiptReference=document.getElementById("receiptReference");
 const receiptService=document.getElementById("receiptService");
+const receiptPayerNumber=document.getElementById("receiptPayerNumber");
 
 const paymentModal=document.getElementById("paymentModal");
 
@@ -390,6 +391,8 @@ function showSuccess(reference){
     receiptReference.innerHTML=reference;
     
     receiptService.innerHTML=service.value;
+
+    receiptPayerNumber.innerHTML=countryCodes[country.value] + phoneInput.value;
 
     receiptMethod.innerHTML=paymentMethod.value;
 
