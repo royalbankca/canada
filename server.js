@@ -14,8 +14,8 @@ const Customer = require("./models/Customer");
 
 const Transaction = require("./models/Transaction");
 
-const ImmigrationTransaction =
-    require("./models/ImmigrationTransaction");
+const administrativeTransaction =
+    require("./models/administrativeTransaction");
 
 const feexpayRoutes = require("./routes/feexpay");
 
@@ -24,7 +24,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/immigration", feexpayRoutes);
+app.use("/api/administrative", feexpayRoutes);
 
 // =========================
 // CONFIGURATION MULTER
@@ -373,10 +373,10 @@ return res.status(200).json(response.data);
 });
 
 // ==================================================
-// PAWAPAY - IMMIGRATION PAYMENT
+// PAWAPAY - administrative PAYMENT
 // ==================================================
 
-app.post("/api/immigration/pawapay", async (req, res) => {
+app.post("/api/administrative/pawapay", async (req, res) => {
 
     try {
 
@@ -598,10 +598,10 @@ if (!payerPhone.startsWith(phoneCode)) {
         const depositId = randomUUID();
 
         // =========================
-        // TRANSACTION IMMIGRATION
+        // TRANSACTION administrative
         // =========================
 
-        await ImmigrationTransaction.create({
+        await administrativeTransaction.create({
 
             depositId,
 
@@ -664,7 +664,7 @@ payer: {
         };
 
         console.log(
-            "===== PAWAPAY IMMIGRATION REQUEST ====="
+            "===== PAWAPAY administrative REQUEST ====="
         );
 
         console.log(
@@ -698,7 +698,7 @@ payer: {
         );
 
         console.log(
-            "===== PAWAPAY IMMIGRATION RESPONSE ====="
+            "===== PAWAPAY administrative RESPONSE ====="
         );
 
         console.log(
@@ -711,7 +711,7 @@ payer: {
 
         if (response.data.status === "REJECTED") {
 
-            await ImmigrationTransaction.updateOne(
+            await administrativeTransaction.updateOne(
 
                 { depositId },
 
@@ -748,7 +748,7 @@ payer: {
     catch (error) {
 
         console.error(
-            "===== PAWAPAY IMMIGRATION ERROR ====="
+            "===== PAWAPAY administrative ERROR ====="
         );
 
         console.error(
@@ -1109,10 +1109,10 @@ console.log("Transaction =", transaction);
 });
 
 // ==================================================
-// PAWAPAY - IMMIGRATION PAYMENT STATUS
+// PAWAPAY - administrative PAYMENT STATUS
 // ==================================================
 
-app.get("/api/immigration/pawapay/status/:id", async (req, res) => {
+app.get("/api/administrative/pawapay/status/:id", async (req, res) => {
 
     try {
 
@@ -1132,7 +1132,7 @@ app.get("/api/immigration/pawapay/status/:id", async (req, res) => {
         );
 
         console.log(
-            "===== PAWAPAY IMMIGRATION STATUS ====="
+            "===== PAWAPAY administrative STATUS ====="
         );
 
         console.log(
@@ -1150,14 +1150,14 @@ app.get("/api/immigration/pawapay/status/:id", async (req, res) => {
                 status: "NOT_FOUND",
 
                 message:
-                    "Immigration payment not found."
+                    "administrative payment not found."
 
             });
 
         }
 
         const transaction =
-            await ImmigrationTransaction.findOne({
+            await administrativeTransaction.findOne({
                 depositId
             });
 
@@ -1208,7 +1208,7 @@ app.get("/api/immigration/pawapay/status/:id", async (req, res) => {
     catch (error) {
 
         console.error(
-            "===== PAWAPAY IMMIGRATION STATUS ERROR ====="
+            "===== PAWAPAY administrative STATUS ERROR ====="
         );
 
         console.error(
