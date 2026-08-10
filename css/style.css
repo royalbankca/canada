@@ -527,7 +527,7 @@ width:285px;
 
 }
 
-.hero-btns .immigration-btn{
+.hero-btns .administrative-btn{
 
 width:350px;
 
@@ -2059,7 +2059,7 @@ display:none;
 }
 /* HERO - ADMINISTRATIVE SERVICE BUTTON */
 
-.hero-btns .immigration-btn{
+.hero-btns .administrative-btn{
 
     width:380px;
     height:76px;
@@ -2083,7 +2083,7 @@ display:none;
 
 }
 
-.hero-btns .immigration-btn:hover{
+.hero-btns .administrative-btn:hover{
 
     background:#0a6b39 !important;
 
