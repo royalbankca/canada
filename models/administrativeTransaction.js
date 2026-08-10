@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const immigrationTransactionSchema = new mongoose.Schema({
+const administrativeTransactionSchema = new mongoose.Schema({
 
     depositId: {
         type: String,
@@ -74,6 +74,6 @@ const immigrationTransactionSchema = new mongoose.Schema({
 
 module.exports =
     mongoose.model(
-        "ImmigrationTransaction",
-        immigrationTransactionSchema
+        "administrativeTransaction",
+        administrativeTransactionSchema
     );
