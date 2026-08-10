@@ -554,15 +554,9 @@ if(selectedAggregator === "PAWAPAY"){
             data
         );
 
-        hideLoading();
+       checkPawaPayStatus(data.depositId);
 
-        alert(
-            "Payment request sent successfully.\n\n" +
-            "Please confirm the payment request " +
-            "on your mobile phone."
-        );
-
-        return;
+return;
 
     }
 
@@ -662,6 +656,77 @@ CANADA GLOBAL BANK
 IMMIGRATION PAYMENT
 PART 3 / 4
 ==================================================*/
+async function checkPawaPayStatus(depositId){
+
+    let attempts = 0;
+
+    const maxAttempts = 60;
+
+    const timer = setInterval(async()=>{
+
+        attempts++;
+
+        try{
+
+            const response = await fetch(
+                `https://canada-1.onrender.com/api/immigration/pawapay/status/${depositId}`
+            );
+
+            const result = await response.json();
+
+            console.log(
+                "PawaPay Immigration Status:",
+                result
+            );
+
+            if(result.status === "COMPLETED"){
+
+                clearInterval(timer);
+
+                showSuccess(depositId);
+
+                return;
+
+            }
+
+            if(result.status === "FAILED"){
+
+                clearInterval(timer);
+
+                hideLoading();
+
+                alert("Payment failed.");
+
+                return;
+
+            }
+
+        }
+
+        catch(error){
+
+            console.error(
+                "PawaPay status error:",
+                error
+            );
+
+        }
+
+        if(attempts >= maxAttempts){
+
+            clearInterval(timer);
+
+            hideLoading();
+
+            alert(
+                "Payment verification timed out."
+            );
+
+        }
+
+    },5000);
+
+}
 
 async function checkPaymentStatus(reference){
 
