@@ -24,6 +24,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/robots.txt', (req, res) => {
+    res.type('text/plain');
+    res.send("User-agent: *\nDisallow: /");
+});
+
 app.use("/api/administrative", feexpayRoutes);
 
 // =========================
