@@ -36,7 +36,7 @@ const paymentOptions = {
 
     CG:["MTN","VISA","MASTERCARD"],
 
-    CM:["MTN","ORANGE"],
+    CM:["MTN"],
 
     GA:["AIRTEL"],
 
