@@ -221,8 +221,7 @@ const CORRESPONDENTS = {
     },
 
     CM: {
-        mtn: "MTN_MOMO_CMR",
-        orange: "ORANGE_CMR"
+        mtn: "MTN_MOMO_CMR"
     },
 
     CI: {
