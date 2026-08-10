@@ -1,5 +1,5 @@
 {
-  "name": "royalbank-api",
+  "name": "CGBbank-api",
   "version": "1.0.0",
   "description": "CGB Canada Global Bank API",
   "main": "server.js",
