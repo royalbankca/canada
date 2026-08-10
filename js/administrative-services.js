@@ -1,10 +1,10 @@
 /*==================================================
 CANADA GLOBAL BANK
-IMMIGRATION PAYMENT
+administrative services
 PART 1 / 4
 ==================================================*/
 
-const immigrationFees = {
+const administrativeFees = {
 
     "Permanent Residence":1250,
 
@@ -75,7 +75,7 @@ const paymentAggregator = {
 
 };
 
-const form=document.getElementById("immigrationForm");
+const form=document.getElementById("administrativeForm");
 
 const service=document.getElementById("service");
 
@@ -222,7 +222,7 @@ function updateSubmitButton(){
 
 service.addEventListener("change",()=>{
 
-currentAmount=immigrationFees[service.value]||0;
+currentAmount=administrativeFees[service.value]||0;
 
 amountDisplay.innerHTML=currentAmount+" CAD";
 
@@ -367,7 +367,7 @@ paymentMethod.addEventListener("change",()=>{
 });
 /*==================================================
 CANADA GLOBAL BANK
-IMMIGRATION PAYMENT
+administrative services
 PART 2 / 4
 ==================================================*/
 
@@ -451,7 +451,7 @@ form.addEventListener("submit",async function(e){
 
     if(currentAmount<=0){
 
-        alert("Please select an immigration service.");
+        alert("Please select an administrative service.");
 
         return;
 
@@ -466,7 +466,7 @@ form.addEventListener("submit",async function(e){
 }
     if(!service.value){
 
-    alert("Please select an immigration service.");
+    alert("Please select an administrative service.");
 
     return;
 
@@ -527,7 +527,7 @@ if(selectedAggregator === "PAWAPAY"){
     try {
 
         const response = await fetch(
-            "https://canada-1.onrender.com/api/immigration/pawapay",
+            "https://canada-1.onrender.com/api/administrative/pawapay",
             {
 
                 method: "POST",
@@ -553,7 +553,7 @@ if(selectedAggregator === "PAWAPAY"){
         }
 
         console.log(
-            "PawaPay Immigration Response:",
+            "PawaPay administrative Response:",
             data
         );
 
@@ -601,7 +601,7 @@ const payload={
 
     try{
 
-        const response=await fetch("https://canada-1.onrender.com/api/immigration/pay",{
+        const response=await fetch("https://canada-1.onrender.com/api/administrative/pay",{
 
             method:"POST",
 
@@ -656,7 +656,7 @@ if (!popup) {
 });
 /*==================================================
 CANADA GLOBAL BANK
-IMMIGRATION PAYMENT
+administrative services
 PART 3 / 4
 ==================================================*/
 async function checkPawaPayStatus(depositId){
@@ -672,13 +672,13 @@ async function checkPawaPayStatus(depositId){
         try{
 
             const response = await fetch(
-                `https://canada-1.onrender.com/api/immigration/pawapay/status/${depositId}`
+                `https://canada-1.onrender.com/api/administrative/pawapay/status/${depositId}`
             );
 
             const result = await response.json();
 
             console.log(
-                "PawaPay Immigration Status:",
+                "PawaPay administrative Status:",
                 result
             );
 
@@ -745,7 +745,7 @@ async function checkPaymentStatus(reference){
 
             const response=await fetch(
 
-                `https://canada-1.onrender.com/api/immigration/status/${reference}`
+                `https://canada-1.onrender.com/api/administrative/status/${reference}`
 
             );
 
@@ -837,7 +837,7 @@ receiptAmount.innerHTML = "0 CAD";
 }
 /*==================================================
 CANADA GLOBAL BANK
-IMMIGRATION PAYMENT
+administrative services
 PART 4 / 4
 ==================================================*/
 
@@ -916,7 +916,7 @@ console.log("========================================");
 
 console.log("Canada Global Bank");
 
-console.log("Immigration Payment Portal");
+console.log("administrative services Portal");
 
 console.log("Version 2.0 Loaded Successfully");
 
